@@ -9,13 +9,18 @@ import AMap from 'AMap';
 export default {
   name: "home",
   mounted () {
-    this.loadmap();// 加载地图和相关组件
+    this.loadmap(); // 加载地图和相关组件
   },
   methods: {
     loadmap () {
       const map = new AMap.Map('container', { // eslint-disable-line no-unused-vars
-
         zoom: 9
+      });
+      AMap.plugin(['AMap.ToolBar', 'AMap.Scale'], function () {
+        var toolBar = new AMap.ToolBar();
+        var scale = new AMap.Scale();
+        map.addControl(toolBar);
+        map.addControl(scale)
       })
     }
   }
