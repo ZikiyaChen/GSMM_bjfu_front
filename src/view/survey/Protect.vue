@@ -379,7 +379,7 @@ import { protectList, soil_improveList, is_blockList, fit_statusList, drain_hole
   outerList, clean_statusList, antisepticList, is_supportList, steadyList, support_typeList,
   support_isreaList, hoop_statusList, rubber_isList, hoop_isList, has_ditchList,
   ditch_typeList, matrix_constituteList, position_isList, capillary_rootsList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
 export default {
   name: "Protect",
   data () {

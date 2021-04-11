@@ -387,7 +387,7 @@
 <script>
 import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList, soil_textureList, organic_contentList,
   is_buriedList, other_plantsList, evaluationList, has_structuresList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
 
 export default {
   name: "environment",

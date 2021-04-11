@@ -489,7 +489,7 @@ import AMap from 'AMap';
 import { is_signedList, levelList, familyList, palceList, placing_characterList,
   ownerList, reasonList, has_brandList, brand_rightList, is_rightList, g_vigorList,
   g_environmentList, conserve_statusList, yhfz_statusList } from "@/view/survey/right_base_options";
-import { dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
 
 export default {
   name: "right",
@@ -602,7 +602,7 @@ export default {
       address: '',
 
       ruleValidate: {
-        tree_code: [{ required: true,  message: '请输入古树编号' }],
+        tree_code: [{ required: true, message: '请输入古树编号' }],
         'Dong.investigate_id': [{ required: true, trigger: 'blur', message: '请输入调查顺序号' }],
         'Base.zw_name': [{ required: true, message: '请选择中文名' }],
         'Base.ld_name': [{ required: true, message: '请选择拉丁名' }],

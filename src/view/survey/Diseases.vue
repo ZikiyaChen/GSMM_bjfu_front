@@ -370,7 +370,7 @@
 
 <script>
 import { damageList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
 
 export default {
   name: "Diseases",

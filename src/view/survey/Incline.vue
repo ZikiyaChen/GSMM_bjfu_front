@@ -453,7 +453,7 @@
 
 <script>
 import { base_looseList, damageList, has_absoundList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
 
 export default {
   name: "Incline",

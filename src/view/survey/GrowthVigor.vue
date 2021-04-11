@@ -170,7 +170,7 @@
 <script>
 import { shoot_typeList, shootList1, shootList2, normal_blade_rateList, blade_persistentList,
   growth_vigorList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
 
 export default {
   name: "GrowthVigor",
