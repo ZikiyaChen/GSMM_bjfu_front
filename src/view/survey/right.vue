@@ -477,7 +477,8 @@
       </Form>
       <div style="text-align: center">
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-        <Button @click="NextPage" type="primary">下一页</Button>
+        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
       </div>
       <Button @click="Tree">古树编号</Button>
     </Card>
@@ -489,7 +490,9 @@ import AMap from 'AMap';
 import { is_signedList, levelList, familyList, palceList, placing_characterList,
   ownerList, reasonList, has_brandList, brand_rightList, is_rightList, g_vigorList,
   g_environmentList, conserve_statusList, yhfz_statusList } from "@/view/survey/right_base_options";
-import { dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
+import axios from "@/libs/api.request";
+import { getTest, AddBasicProperty, AddDynamicProperty, AddGeoProperty, AddTreeBrand, AddPicRecord } from "@/api/table";
 
 export default {
   name: "right",
@@ -513,7 +516,7 @@ export default {
       YhfzStatusList: yhfz_statusList,
 
       TreeInformation: {
-        tree_code: '',
+        tree_code: '1',
         Base: {
           zw_name: '', // 中文名（即树种）
           ld_name: '', // 拉丁名
@@ -538,6 +541,7 @@ export default {
           gh_unit: '', // 管护单位
           username: '', // 管护人
           is_signed: 0, // 是否签订管护责任书
+          tree_code: '1',
         },
         Position: {
           adcode: '', // 行政区划编码
@@ -547,14 +551,15 @@ export default {
           aspect: '', // 坡向
           slope: 0, // 坡度
           slope_position: '', // 坡位
+          tree_code: '1',
         },
         Dong: {
-          investigate_id: '', // 调查顺序号
+          investigate_id: '1', // 调查顺序号
           describe: '', // 树木奇特性状描述
           reason: '', // 新增古树名木原因
           affect_factor: '', // 影响生长环境因素
-          height: '', // 树高
-          bust: '', // 胸围
+          height: 0, // 树高
+          bust: 0, // 胸围
           c_average: 0, // 冠幅平均
           c_dx: 0, // 冠幅东西
           c_nb: 0, // 冠幅南北
@@ -569,11 +574,13 @@ export default {
           yhfz_status: [], // 养护复壮现状
           username: '', // 调查人
           investigate_time: '', // 调查日期
+          tree_code: '1',
         },
         Pic: {
           path: '', // 图片路径
           explain: '', // 图片说明
           update_time: '', // 更新时间
+          tree_code: '1',
         },
         Brand: {
           has_brand: 0, // 有无树牌
@@ -582,6 +589,7 @@ export default {
           brand_right: '', // 现有树牌信息是否准确
           brand_pic: '', // 树牌照片
           update_time: '', // 更新时间
+          tree_code: '1',
         },
 
       },
@@ -602,7 +610,7 @@ export default {
       address: '',
 
       ruleValidate: {
-        tree_code: [{ required: true,  message: '请输入古树编号' }],
+        tree_code: [{ required: true, message: '请输入古树编号' }],
         'Dong.investigate_id': [{ required: true, trigger: 'blur', message: '请输入调查顺序号' }],
         'Base.zw_name': [{ required: true, message: '请选择中文名' }],
         'Base.ld_name': [{ required: true, message: '请选择拉丁名' }],
@@ -634,6 +642,39 @@ export default {
         } else {
           this.$Message.error('请填写完整信息')
         }
+      })
+    },
+    Submit: function () {
+      this.TreeInformation.Base.tree_code = this.TreeInformation.tree_code
+      // 基本信息
+      AddBasicProperty(this.TreeInformation.Base).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+      // 动态属性
+      AddDynamicProperty(this.TreeInformation.Dong).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+      // 地理信息
+      AddGeoProperty(this.TreeInformation.Position).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+      // 树牌信息
+      AddTreeBrand(this.TreeInformation.Brand).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+      // 古树图片记录
+      AddPicRecord(this.TreeInformation.Pic).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
       })
     },
     // loadMap () {

@@ -160,7 +160,8 @@
       <div style="text-align: center">
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-        <Button @click="PreviousPage" type="primary">上一页</Button>
+        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
       </div>
       <Button @click="Tree">古树编号</Button>
     </Card>
@@ -170,7 +171,8 @@
 <script>
 import { shoot_typeList, shootList1, shootList2, normal_blade_rateList, blade_persistentList,
   growth_vigorList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
+import { AddGeAnalysis, AddGpAnalysis } from "@/api/table"
 
 export default {
   name: "GrowthVigor",
@@ -196,10 +198,11 @@ export default {
         normal_blade_rate: '', // 正常叶片率
         blade_persistent: '', // 叶片宿存（常绿树）
         growth_vigor: '', // 生长势总体评价
-        chlorophyll: '', // 叶片叶绿素含量
+        chlorophyll: 0, // 叶片叶绿素含量
         Fo: 0,
         Fm: 0,
-        update_time: ''
+        update_time: '',
+        tree_code: ''
       },
 
       ruleValidate: {
@@ -219,6 +222,14 @@ export default {
     Tree () {
       console.log(11, this.tree_code)
       console.log(typeof (this.tree_code))
+    },
+    Submit: function () {
+      this.GrowthVigor.tree_code = this.tree_code
+      AddGpAnalysis(this.GrowthVigor).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     },
     Save: function () {
       // this.changeLoading()

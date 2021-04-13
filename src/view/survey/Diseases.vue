@@ -361,7 +361,8 @@
     </Form>
     <div style="text-align: center">
       <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-      <Button @click="PreviousPage" type="primary">上一页</Button>
+      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
     </div>
     <Button @click="Tree">古树编号</Button>
   </Card>
@@ -370,7 +371,8 @@
 
 <script>
 import { damageList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
+import { AddBchAnalysis} from "@/api/table"
 
 export default {
   name: "Diseases",
@@ -425,7 +427,8 @@ export default {
         branch_pic: '', // 枝梢-特征照片
 
         total_eval: '', // 总体评价
-        update_time: ''
+        update_time: '',
+        tree_code: ''
       },
       ruleValidate: {
         bmoth_status: [{ required: true, trigger: 'change', message: '请选择' }],
@@ -448,6 +451,14 @@ export default {
     Tree () {
       console.log(11, this.tree_code)
       console.log(typeof (this.tree_code))
+    },
+    Submit: function () {
+      this.Diseases.tree_code = this.tree_code
+      AddBchAnalysis(this.Incline).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     },
     Save: function () {
       // this.changeLoading()

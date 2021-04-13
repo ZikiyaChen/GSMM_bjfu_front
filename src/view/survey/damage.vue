@@ -455,7 +455,8 @@
     <div style="text-align: center">
       <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
       <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
-      <Button @click="PreviousPage" type="primary">上一页</Button>
+      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
     </div>
     <Button @click="Tree">古树编号</Button>
   </Card>
@@ -464,7 +465,8 @@
 
 <script>
 import { damageList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
+import { AddFzbhAnalysis, AddStssAnalysis } from "@/api/table";
 
 export default {
   name: "damage",
@@ -523,7 +525,8 @@ export default {
         pic_ske3: '', // (照片)构成骨架大枝-木质部（达到心材）比例
 
         damage_status: '', // 损伤情况评价
-        update_time: ''
+        update_time: '',
+        tree_code: ''
       },
       ruleValidate: {
         base1: [{ required: true, trigger: 'change', message: '请选择' }],
@@ -550,6 +553,14 @@ export default {
     Tree () {
       console.log(11, this.tree_code)
       console.log(typeof (this.tree_code))
+    },
+    Submit: function () {
+      this.Damage.tree_code = this.tree_code
+      AddStssAnalysis(this.Damage).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     },
     Save: function () {
       // this.changeLoading()

@@ -367,7 +367,8 @@
       <div style="text-align: center">
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
-        <Button @click="PreviousPage" type="primary">上一页</Button>
+        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
       </div>
       <Button @click="Tree">古树编号</Button>
     </Card>
@@ -379,7 +380,9 @@ import { protectList, soil_improveList, is_blockList, fit_statusList, drain_hole
   outerList, clean_statusList, antisepticList, is_supportList, steadyList, support_typeList,
   support_isreaList, hoop_statusList, rubber_isList, hoop_isList, has_ditchList,
   ditch_typeList, matrix_constituteList, position_isList, capillary_rootsList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
+import { AddFzbhAnalysis, AddGpAnalysis } from "@/api/table";
+
 export default {
   name: "Protect",
   data () {
@@ -448,7 +451,8 @@ export default {
 
         protect_eval: '', // 现有复壮保护措施评价
         pic: '', // 特征照片
-        update_time: ''
+        update_time: '',
+        tree_code: '',
       },
       ruleValidate: {
         protect: [{ required: true, message: '请选择' }],
@@ -469,6 +473,14 @@ export default {
     Tree () {
       console.log(11, this.tree_code)
       console.log(typeof (this.tree_code))
+    },
+    Submit: function () {
+      this.Protect.tree_code = this.tree_code
+      AddFzbhAnalysis(this.Protect).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     },
     Save: function () {
       // this.changeLoading()

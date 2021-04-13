@@ -375,7 +375,8 @@
     <div style="text-align: center">
       <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
       <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
-      <Button @click="PreviousPage" type="primary">上一页</Button>
+      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
     </div>
 
   </Card>
@@ -387,7 +388,8 @@
 <script>
 import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList, soil_textureList, organic_contentList,
   is_buriedList, other_plantsList, evaluationList, has_structuresList } from "@/view/survey/options";
-import {dateToString} from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
+import { AddBasicProperty, AddGeAnalysis } from "@/api/table";
 
 export default {
   name: "environment",
@@ -444,7 +446,8 @@ export default {
         structures_affect: '', // 筑构物影响
         nutrient_status: '', // 土壤营养状况分析
         pic_path: '', // 特征照片
-        update_time: ''
+        update_time: '',
+        tree_code: ''
       },
       tree_code: Number(this.$route.params.tree_code),
 
@@ -540,6 +543,14 @@ export default {
     //     })
     //   }, 5)
     // },
+    Submit: function () {
+      this.environment.tree_code = this.tree_code
+      AddGeAnalysis(this.environment).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     Save: function () {
       // this.changeLoading()
       this.$refs.environment_form.validate((valid) => {
