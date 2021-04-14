@@ -444,7 +444,8 @@
     <div style="text-align: center">
       <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
       <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-      <Button @click="PreviousPage" type="primary">上一页</Button>
+      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
     </div>
     <Button @click="Tree">古树编号</Button>
   </Card>
@@ -454,6 +455,7 @@
 <script>
 import { base_looseList, damageList, has_absoundList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
+import { AddqxkfDetect, AddStssAnalysis } from "@/api/table";
 
 export default {
   name: "Incline",
@@ -505,7 +507,8 @@ export default {
         pic_8: '', // 枝条整理留茬照片
         empty_rot_rate: 0, // 主干空腐率
         qxkf_eval: '', // 倾斜空腐情况评价
-        update_time: ''
+        update_time: '',
+        tree_code: ''
       },
       ruleValidate: {
         base_loose: [{ required: true, trigger: 'change', message: '请选择' }],
@@ -530,6 +533,14 @@ export default {
     Tree () {
       console.log(11, this.tree_code)
       console.log(typeof (this.tree_code))
+    },
+    Submit: function () {
+      this.Incline.tree_code = this.tree_code
+      AddqxkfDetect(this.Incline).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
     },
     Save: function () {
       // this.changeLoading()
