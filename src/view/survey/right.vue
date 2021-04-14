@@ -536,7 +536,7 @@ export default {
           owner: '', // 权属
           level: '', // 古树等级
 
-          character_code: '', // 特征代码
+          character_code: 0, // 特征代码
           jd_record: '', // 树种鉴定记载
           gh_unit: '', // 管护单位
           username: '', // 管护人
@@ -544,14 +544,14 @@ export default {
           tree_code: '1',
         },
         Position: {
-          adcode: '', // 行政区划编码
-          longitude: '', // 经度
-          latitude: '', // 纬度
-          elevation: '', // 海拔
+          adcode: 0, // 行政区划编码
+          longitude: 0, // 经度
+          latitude: 0, // 纬度
+          elevation: 0, // 海拔
           aspect: '', // 坡向
           slope: 0, // 坡度
           slope_position: '', // 坡位
-          tree_code: '1',
+          tree_code: 1,
         },
         Dong: {
           investigate_id: '1', // 调查顺序号
