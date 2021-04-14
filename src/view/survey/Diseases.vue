@@ -372,7 +372,7 @@
 <script>
 import { damageList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
-import { AddBchAnalysis} from "@/api/table"
+import { AddBchAnalysis } from "@/api/table"
 
 export default {
   name: "Diseases",
@@ -454,7 +454,7 @@ export default {
     },
     Submit: function () {
       this.Diseases.tree_code = this.tree_code
-      AddBchAnalysis(this.Incline).then(res => {
+      AddBchAnalysis(this.Diseases).then(res => {
         console.log(res)
       }).catch(err => {
         console.log(err)

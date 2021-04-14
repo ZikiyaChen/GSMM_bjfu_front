@@ -407,30 +407,30 @@ export default {
       i2: 0,
 
       environment: {
-        elevation: '', // 海拔
+        elevation: 0, // 海拔
         habitat_type: '', // 生长环境类型
         plain_type: [], // 平原类型
         highland_type: '', // 山地类型
         aspect: '', // 坡向
-        slope: '', // 坡度
+        slope: 0, // 坡度
         slope_position: '', // 坡位
         is_pollution: 0, // 土壤污染有无
         varia: '', // 土壤是否有杂物
         soil_texture: '', // 土壤质地
-        soil_capacity: '', // 土壤容量
+        soil_capacity: 0, // 土壤容量
         organic_content: '', // 有机质含量
         sample_result: '', // 采样测定结果
 
-        hydrolyze_N: '', // 水解N
-        valid_P: '', // 有效P
-        rapid_K: '', // 速效K
-        saltness: '', // 含盐量
-        ec_value: '', // EC值
-        ph_value: '', // PC值
+        hydrolyze_N: 0, // 水解N
+        valid_P: 0, // 有效P
+        rapid_K: 0, // 速效K
+        saltness: 0, // 含盐量
+        ec_value: 0, // EC值
+        ph_value: 0, // PC值
 
         is_buried: 0, // 是否埋干
-        buried_depth: '', // 埋干深度
-        root_water: '', // 土壤含水量
+        buried_depth: 0, // 埋干深度
+        root_water: 0, // 土壤含水量
 
         protect_E: 0, // 保护范围四至 东向
         protect_W: 0, // 西向
