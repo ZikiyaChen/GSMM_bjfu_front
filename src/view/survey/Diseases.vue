@@ -55,9 +55,9 @@
           <FormItem prop="base_pic">
             <span slot="label" style="font-size: 13px">特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_base" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_base(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_base(index)"></Icon>
               </div>
             </div>
@@ -70,14 +70,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="visible_base">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_base" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -128,9 +128,9 @@
           <FormItem prop="trunk_pic">
             <span slot="label" style="font-size: 13px">特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_trunk" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_trunk(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_trunk(index)"></Icon>
               </div>
             </div>
@@ -143,14 +143,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="visible_trunk">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_trunk" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -201,9 +201,9 @@
           <FormItem prop="ske_pic">
             <span slot="label" style="font-size: 13px">特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_ske" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_ske(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_ske(index)"></Icon>
               </div>
             </div>
@@ -216,14 +216,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="visible_ske">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_ske" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -260,9 +260,9 @@
           <FormItem prop="blade_pic">
             <span slot="label" style="font-size: 13px">特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_blade" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_blade(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_blade(index)"></Icon>
               </div>
             </div>
@@ -275,14 +275,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="visible_blade">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_blade" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -318,9 +318,9 @@
           <FormItem prop="branch_pic">
             <span slot="label" style="font-size: 13px">特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_branch" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_branch(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_branch(index)"></Icon>
               </div>
             </div>
@@ -333,14 +333,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="visible_branch">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_branch" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -373,6 +373,7 @@
 import { damageList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import { AddBchAnalysis} from "@/api/table"
+import {ShowPic} from "@/api/upload";
 
 export default {
   name: "Diseases",
@@ -382,20 +383,24 @@ export default {
       OptionList: damageList,
 
       showImageUrl: '',
-      visible: false,
 
+      visible_base: false,
       i_base: 0,
       PicUrlList_base: [],
 
+      visible_trunk: false,
       i_trunk: 0,
       PicUrlList_trunk: [],
 
+      visible_ske: false,
       i_ske: 0,
       PicUrlList_ske: [],
 
+      visible_blade: false,
       i_blade: 0,
       PicUrlList_blade: [],
 
+      visible_branch: false,
       i_branch: 0,
       PicUrlList_branch: [],
 
@@ -404,27 +409,27 @@ export default {
         bmoth_name: '', // 树干基部-害虫名称
         bdisease_status: '无', // 树干基部-病害情况
         bdisease_name: '', // 树干基部-病害名称
-        base_pic: '', // 树干基部-特征照片
+        base_pic: [], // 树干基部-特征照片
 
         tmoth_status: '无', // 树干-蛀干害虫情况
         tmoth_name: '', // 树干-蛀干害虫名称
         tdisease_status: '无', // 树干-病害情况
         tdisease_name: '', // 树干-病害名称
-        trunk_pic: '', // 树干-特征照片
+        trunk_pic: [], // 树干-特征照片
 
         smoth_status: '无', // 构成骨架大枝-蛀干害虫情况
         smoth_name: '', // 构成骨架大枝-蛀干害虫名称
         sdisease_status: '无', // 构成骨架大枝-病害情况
         sdisease_name: '', // 构成骨架大枝-病害名称
-        ske_pic: '', // 构成骨架大枝-特征照片
+        ske_pic: [], // 构成骨架大枝-特征照片
 
         blade_status: '无', // 叶片-病害情况
         blade_name: '', // 叶片-病害名称
-        blade_pic: '', // 叶片-特征照片
+        blade_pic: [], // 叶片-特征照片
 
         branch_status: '无', // 枝梢-蛀干害虫情况
         branch_name: '', // 枝梢-蛀干害虫名称
-        branch_pic: '', // 枝梢-特征照片
+        branch_pic: [], // 枝梢-特征照片
 
         total_eval: '', // 总体评价
         update_time: '',
@@ -454,7 +459,7 @@ export default {
     },
     Submit: function () {
       this.Diseases.tree_code = this.tree_code
-      AddBchAnalysis(this.Incline).then(res => {
+      AddBchAnalysis(this.Diseases).then(res => {
         console.log(res)
       }).catch(err => {
         console.log(err)
@@ -481,67 +486,104 @@ export default {
         desc: '文件 ' + file.name + '太大,不能超过 2M.'
       })
     },
-    handleView (imageUrl) {
-      this.showImageUrl = '/api' + imageUrl
-      this.visible = true
+    handleView_base (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.visible_base = true
     },
     handleRemoveList_base (index) {
       // 删除
       this.PicUrlList_base.splice(index, 1)
+      this.Diseases.base_pic.splice(index, 1)
     },
     handleSuccessList_base: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList_base.push(res.path)
+        this.Diseases.base_pic.push(res.path)
         this.i_base++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList_base.push(resp.data)
+        }))
       }
     },
+
     // 特征照片trunk
+    handleView_trunk (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.visible_trunk = true
+    },
     handleRemoveList_trunk (index) {
       // 删除
       this.PicUrlList_trunk.splice(index, 1)
+      this.Diseases.trunk_pic.splice(index, 1)
     },
     handleSuccessList_trunk: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList_trunk.push(res.path)
+        this.Diseases.trunk_pic.push(res.path)
         this.i_trunk++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList_trunk.push(resp.data)
+        }))
       }
     },
 
     // 特征照片ske
+    handleView_ske (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.visible_ske = true
+    },
     handleRemoveList_ske (index) {
       // 删除
       this.PicUrlList_ske.splice(index, 1)
+      this.Diseases.ske_pic.splice(index, 1)
     },
     handleSuccessList_ske: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList_ske.push(res.path)
+        this.Diseases.ske_pic.push(res.path)
         this.i_ske++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList_ske.push(resp.data)
+        }))
       }
     },
 
     // 特征照片blade
+    handleView_blade (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.visible_blade = true
+    },
     handleRemoveList_blade (index) {
       // 删除
       this.PicUrlList_blade.splice(index, 1)
+      this.Diseases.blade_pic.splice(index, 1)
     },
     handleSuccessList_blade: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList_blade.push(res.path)
+        this.Diseases.blade_pic.push(res.path)
         this.i_blade++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList_blade.push(resp.data)
+        }))
       }
     },
 
     // 特征照片branch
+    handleView_branch (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.visible_branch = true
+    },
     handleRemoveList_branch (index) {
       // 删除
       this.PicUrlList_branch.splice(index, 1)
+      this.Diseases.branch_pic.splice(index, 1)
     },
     handleSuccessList_branch: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList_branch.push(res.path)
+        this.Diseases.branch_pic.push(res.path)
         this.i_branch++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList_branch.push(resp.data)
+        }))
       }
-    },
+    }
   }
 }
 </script>
@@ -552,5 +594,23 @@ export default {
 }
 .ivu-radio-wrapper {
   margin-right: 20px;
+}
+.demo-upload-list {
+  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
+  position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
+}
+.demo-upload-list img {
+  width: 100%;height: 100%;
+}
+.demo-upload-list-cover {
+  display: none;position: absolute;top: 0;bottom: 0;
+  left: 0;right: 0;background: rgba(0, 0, 0, 0.6);
+}
+.demo-upload-list:hover .demo-upload-list-cover {
+  display: block;
+}
+.demo-upload-list-cover i {
+  color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;
 }
 </style>
