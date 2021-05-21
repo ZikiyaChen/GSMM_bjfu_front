@@ -230,3 +230,19 @@ export const objEqual = (obj1, obj2) => {
   /* eslint-disable-next-line */
   else return !keysArr1.some(key => obj1[key] != obj2[key])
 }
+
+export function updateWithinField (src_obj, des_obf) {
+  /* 用于更新src_obj的字典用另一个 */
+  for (let item in src_obj) {
+    if (des_obf.hasOwnProperty(item)) {
+      // 存在更新src
+      if (typeof src_obj[item] === 'number') {
+        src_obj[item] = Number(des_obf[item])
+      } else if (typeof src_obj[item] === 'string') {
+        src_obj[item] = String(des_obf[item])
+      } else {
+        src_obj[item] = des_obf[item]
+      }
+    }
+  }
+}

@@ -389,7 +389,7 @@
 import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList, soil_textureList, organic_contentList,
   is_buriedList, other_plantsList, evaluationList, has_structuresList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
-import { AddBasicProperty, AddGeAnalysis } from "@/api/table";
+import {AddBasicProperty, AddGeAnalysis, getNewGeAnalysis, postTjxmRecord} from "@/api/table";
 
 export default {
   name: "environment",
@@ -405,6 +405,12 @@ export default {
       showImageUrl2: '',
       visible2: false,
       i2: 0,
+
+      tjxm_record:{
+        t_id: 0,
+        type: '生长环境评估',
+        username: 'xxx'
+      },
 
       environment: {
         elevation: 0, // 海拔
@@ -546,6 +552,15 @@ export default {
     Submit: function () {
       this.environment.tree_code = this.tree_code
       AddGeAnalysis(this.environment).then(res => {
+        getNewGeAnalysis(this.tree_code).then((resp=>{
+          console.log(resp.data)
+          this.tjxm_record.t_id =resp.data.new_ge_analysis.id
+          postTjxmRecord(this.tjxm_record).then((record=>{
+            if(record.data.code ===200){
+              this.$Message.success('成功')
+            }
+          }))
+        }))
         console.log(res)
       }).catch(err => {
         console.log(err)

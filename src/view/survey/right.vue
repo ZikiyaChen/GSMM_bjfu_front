@@ -24,7 +24,7 @@
           </Col>
           <Col span="9">
             <FormItem label="调查时间" prop="Dong.investigate_time">
-              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="date" placeholder="请选择日期"></DatePicker>
+              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="datetime" placeholder="请选择日期"></DatePicker>
             </FormItem>
           </Col>
 
@@ -81,15 +81,17 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="科" prop="Base.family">
-              <Select v-model="TreeInformation.Base.family" placeholder="请选择科" style="width: 200px" clearable>
-                <Option v-for="item in FamilyList" :value="item.fid" :key="item.fid">{{ item.label }}</Option>
+              <Select v-model="TreeInformation.Base.family" placeholder="请选择科" style="width: 200px" clearable
+                      @on-change="showGenusTypes" >
+                <Option v-for="item in FamilyList" :value="item.fid"  :key="item.fname" >{{item.fname}}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="9">
             <FormItem label="属" prop="Base.genus">
-              <Select v-model="TreeInformation.Base.genus" placeholder="请选择属" style="width: 200px" clearable>
-                <Option v-for="item in FamilyList" :value="item.fid" :key="item.fid">{{ item.label }}</Option>
+              <Select v-model="TreeInformation.Base.genus" placeholder="请选择属" style="width: 200px" clearable
+               @on-change="showClassTypes">
+                <Option v-for="item in GenusList" :value="item.gid"  :key="item.genus">{{ item.genus }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -98,15 +100,16 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="中文名" prop="Base.zw_name">
-              <Select v-model="TreeInformation.Base.zw_name" placeholder="请选择中文名" style="width: 200px" clearable>
-                <Option v-for="item in FamilyList" :value="item.fid" :key="item.fid">{{ item.label }}</Option>
+              <Select v-model="TreeInformation.Base.zw_name" placeholder="请选择中文名" style="width: 200px" clearable
+               @on-change="showLdname">
+                <Option v-for="item in ClassList" :value="item.cid"  :key="item.zw_name">{{ item.zw_name }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="9">
             <FormItem label="拉丁名" prop="Base.ld_name">
               <Select v-model="TreeInformation.Base.ld_name" placeholder="请选择拉丁名" style="width: 200px" clearable>
-                <Option v-for="item in FamilyList" :value="item.fid" :key="item.fid">{{ item.label }}</Option>
+                <Option v-for="item in LDnameList" :value="item.cid"  :key="item.ld_name">{{ item.ld_name }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -115,9 +118,8 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="俗名" prop="Base.bm_name">
-              <Select v-model="TreeInformation.Base.bm_name" placeholder="请选择别名" style="width: 200px" clearable>
-                <Option v-for="item in FamilyList" :value="item.fid" :key="item.fid">{{ item.label }}</Option>
-              </Select>
+              <Input v-model="TreeInformation.Base.bm_name" placeholder="请输入别名" style="width: 200px" clearable>
+              </Input>
             </FormItem>
           </Col>
         </Row>
@@ -340,30 +342,30 @@
         <Row>
           <Col offset="1">
         <FormItem label="文化历史照片" prop="Dong.history_pic">
-          <div class="demo-upload-list" v-for="(item,index) in brandPicUrlList" :key="index">
-            <img :src="'/api'+item"  />
+          <div class="demo-upload-list" v-for="(item,index) in historyPicUrlList" :key="index">
+            <img :src="'data:image/jpg;base64,'+item"  />
             <div class="demo-upload-list-cover">
-              <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-              <Icon type="ios-trash-outline" @click.native="handleRemoveList(index)"></Icon>
+              <Icon type="ios-eye-outline" @click.native="handleView_history(item)"></Icon>
+              <Icon type="ios-trash-outline" @click.native="handleRemoveList_history(index)"></Icon>
             </div>
           </div>
           <Upload
             :show-upload-list="false"
             name="filename"
             :on-exceeded-size="handleMaxSize"
-            :on-success="handleSuccessList"
+            :on-success="handleSuccessList_history"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
             multiple
             type="drag"
-            action="/api/upload"
+            action="/api/uploadpic"
             style="display: inline-block;width:70px;">
             <div style="width: 70px;height:70px;line-height: 70px;">
               <Icon type="ios-camera" size="20"></Icon>
             </div>
           </Upload>
-          <Modal title="图片预览" v-model="visible">
-            <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+          <Modal title="图片预览" v-model="visible_h">
+            <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_h" style="width: 100%" />
           </Modal>
         </FormItem>
           </Col>
@@ -492,7 +494,18 @@ import { is_signedList, levelList, familyList, palceList, placing_characterList,
   g_environmentList, conserve_statusList, yhfz_statusList } from "@/view/survey/right_base_options";
 import { dateToString } from "@/libs/tools";
 import axios from "@/libs/api.request";
-import { getTest, AddBasicProperty, AddDynamicProperty, AddGeoProperty, AddTreeBrand, AddPicRecord } from "@/api/table";
+import {
+  getTest,
+  AddBasicProperty,
+  AddDynamicProperty,
+  AddGeoProperty,
+  AddTreeBrand,
+  AddPicRecord,
+  queryFamilyTypes, queryGenusTypes, queryClassTypes,
+  postFamilyTypes, postGenusTypes,postClassTypes,
+  getBasic,postTjxmRecord
+} from "@/api/table";
+import {ShowPic} from "@/api/upload";
 
 export default {
   name: "right",
@@ -502,7 +515,11 @@ export default {
       suggestRemnant: 300,
       IsSignedList: is_signedList,
       LevelList: levelList,
-      FamilyList: familyList,
+      // FamilyList: familyList,
+      FamilyList: [],
+      GenusList: [],
+      ClassList: [],
+      LDnameList: [],
       PalceList: palceList,
       PlacingCharacterList: placing_characterList,
       OwnerList: ownerList,
@@ -514,6 +531,12 @@ export default {
       GEnvironmentList: g_environmentList,
       ConserveStatusList: conserve_statusList,
       YhfzStatusList: yhfz_statusList,
+
+      basic_record:{
+        t_id: 0,
+        type: '基本信息',
+        username: 'ccc'
+      },
 
       TreeInformation: {
         tree_code: '1',
@@ -569,7 +592,7 @@ export default {
           estimate_age: 0, // 预估树龄
           basis: '', // 树龄估测依据
           history: '', // 古树历史信息描述
-          history_pic: '', // 古树历史信息图片
+          history_pic: [], // 古树历史信息图片
           conserve_status: [], // 保护现状
           yhfz_status: [], // 养护复壮现状
           username: '', // 调查人
@@ -599,6 +622,10 @@ export default {
       visible: false,
       i: 0,
 
+      visible_h:false,
+      i_h: 0,
+      historyPicUrlList: [],
+
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
@@ -624,7 +651,47 @@ export default {
   mounted () {
     this.loadMap()
   },
+  created() {
+    queryFamilyTypes().then(( res => {
+      this.FamilyList = res.data.species_types
+      console.log(11,this.FamilyList)
+    }))
+
+  },
   methods: {
+    showGenusTypes (fid){
+      console.log(22,fid)
+      if( fid!==undefined ){
+        queryGenusTypes({'fid':fid}).then((res => {
+          this.GenusList = res.data.genus_types
+        }))
+      }else {
+        this.GenusList = []
+      }
+    },
+
+    showClassTypes (gid){
+      console.log(22,gid)
+      if( gid!==undefined ){
+        queryClassTypes({'gid':gid}).then((res => {
+          this.ClassList = res.data.class_types
+        }))
+      }else {
+        this.ClassList = []
+      }
+    },
+
+    showLdname (cid) {
+      console.log(44,cid)
+      if(cid!==undefined) {
+        queryClassTypes({'cid': cid}).then((res => {
+          this.LDnameList = res.data.class_types
+        }))
+      }else {
+        this.LDnameList=[]
+      }
+    },
+
     Tree () {
       console.log(11, this.TreeInformation.tree_code)
       console.log(typeof (this.TreeInformation.tree_code))
@@ -646,9 +713,23 @@ export default {
     },
     Submit: function () {
       this.TreeInformation.Base.tree_code = this.TreeInformation.tree_code
+      this.TreeInformation.Dong.tree_code = this.TreeInformation.tree_code
+      this.TreeInformation.Position.tree_code = this.TreeInformation.tree_code
+      this.TreeInformation.Brand.tree_code =this.TreeInformation.tree_code
+      this.TreeInformation.Pic.tree_code = this.TreeInformation.tree_code
+      this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
       // 基本信息
       AddBasicProperty(this.TreeInformation.Base).then(res => {
         console.log(res)
+        getBasic(this.TreeInformation.tree_code).then((resp=>{
+          console.log(resp.data)
+          this.basic_record.t_id =resp.data.basic.id
+          postTjxmRecord(this.basic_record).then((record=>{
+            if(record.data.code ===200){
+              this.$Message.success('成功')
+            }
+          }))
+        }))
       }).catch(err => {
         console.log(err)
       })
@@ -712,11 +793,20 @@ export default {
     },
     regionChange (data) {
       console.log(data)
-      this.TreeInformation.Base.province = data.province.value
-      this.TreeInformation.Base.city = data.city.value
-      this.TreeInformation.Base.area = data.area.value
-      this.TreeInformation.Base.town = data.town.value
-      console.error(this.TreeInformation)
+      if(data.province!==null){
+        this.TreeInformation.Base.province = data.province.value
+      }
+      if(data.city!==null){
+        this.TreeInformation.Base.city = data.city.value
+      }
+      if(data.area!==null){
+        this.TreeInformation.Base.area = data.area.value
+        this.TreeInformation.Position.adcode = data.area.key
+      }
+      if(data.town!==null){
+        this.TreeInformation.Base.town = data.town.value
+      }
+      console.log(this.TreeInformation)
     },
 
     handleMaxSize (file) {
@@ -725,6 +815,27 @@ export default {
         desc: '文件 ' + file.name + '太大,不能超过 2M.'
       })
     },
+    //文化历史照片
+    handleView_history (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.visible_h = true
+    },
+    handleRemoveList_history (index) {
+      // 删除
+      this.TreeInformation.Dong.history_pic.splice(index, 1)
+      this.historyPicUrlList.splice(index, 1)
+    },
+    handleSuccessList_history: function (res, file) {
+      if (res.code === 500) {
+        this.TreeInformation.Dong.history_pic.push(res.path)
+        this.i_h++
+        ShowPic(res.path).then((resp=>{
+          this.historyPicUrlList.push(resp.data)
+        }))
+      }
+    },
+
+
     handleView (imageUrl) {
       this.showImageUrl = '/api' + imageUrl
       this.visible = true
@@ -790,5 +901,24 @@ export default {
 }
 .regionStyle >>> div.rg-select div.rg-select__el div.rg-select__content  {
   font-size: 12px;
+}
+
+.demo-upload-list {
+  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
+  position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
+}
+.demo-upload-list img {
+  width: 100%;height: 100%;
+}
+.demo-upload-list-cover {
+  display: none;position: absolute;top: 0;bottom: 0;
+  left: 0;right: 0;background: rgba(0, 0, 0, 0.6);
+}
+.demo-upload-list:hover .demo-upload-list-cover {
+  display: block;
+}
+.demo-upload-list-cover i {
+  color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;
 }
 </style>

@@ -9,6 +9,9 @@
         <DropdownItem name="message">
           消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
         </DropdownItem>
+        <DropdownItem name="userinfo" >
+          用户中心<Badge style="margin-left: 10px"></Badge>
+        </DropdownItem>
         <DropdownItem name="logout">退出登录</DropdownItem>
       </DropdownMenu>
     </Dropdown>
@@ -46,12 +49,18 @@ export default {
         name: 'message_page'
       })
     },
+    userinfo () {
+      this.$router.push({
+        name: 'userinfo'
+      })
+    },
     handleClick (name) {
       switch (name) {
         case 'logout': this.logout()
           break
         case 'message': this.message()
           break
+        case 'userinfo': this.userinfo()
       }
     }
   }

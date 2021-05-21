@@ -1,4 +1,5 @@
 import directive from './directives'
+import permission from "./permission";
 
 const importDirective = Vue => {
   /**
@@ -19,6 +20,7 @@ const importDirective = Vue => {
    * }
    */
   Vue.directive('clipboard', directive.clipboard)
+  Vue.directive('role', permission)
 }
 
 export default importDirective

@@ -1,26 +1,38 @@
 import axios from '@/libs/api.request'
+import {getToken} from "@/libs/util";
 
-export const login = ({ userName, password }) => {
+export const login = ({ username, password }) => {
   const data = {
-    userName,
+    username,
     password
   }
   return axios.request({
-    url: 'login',
+    url: 'user/login',
     data,
     method: 'post'
   })
 }
 
 export const getUserInfo = (token) => {
+  const data ={
+    t: getToken()
+  }
   return axios.request({
-    url: 'get_info',
+    url: 'current_user',
     params: {
-      token
+      username: data.t
     },
     method: 'get'
   })
 }
+
+// // 当前用户
+// export const currentUser = (params) => {
+//   return axios.request({
+//     url: 'current_user',
+//     method: 'get'
+//   })
+// }
 
 export const logout = (token) => {
   return axios.request({
@@ -80,5 +92,36 @@ export const restoreTrash = msg_id => {
     data: {
       msg_id
     }
+  })
+}
+
+export const queryUsers = (params) => {
+  return axios.request({
+    url: 'users',
+    method: 'get',
+    params: params
+  })
+}
+
+export const AddUser = (data) => {
+  return axios.request({
+    url: 'adduser',
+    method: 'post',
+    data: data
+  })
+}
+export const GetUserByUsername = (username) =>{
+  return axios.request({
+    url: 'getUserByUsername/'+username,
+    method: 'get',
+    username: username
+  })
+}
+export const changePassword = (username, params) => {
+  return axios.request({
+    url: 'user/'+ username +'/password',
+    method: 'put',
+    username: username,
+    params: params
   })
 }
