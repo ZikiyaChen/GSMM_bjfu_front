@@ -49,7 +49,7 @@ export const AddTreeBrand = (data) => {
 
 export const AddGeAnalysis = (data) => {
   return axios.request({
-    url: 'http://127.0.0.1:5000/add_ge_analysis',
+    url: 'add_ge_analysis',
     method: 'post',
     data: data
   })
@@ -188,3 +188,91 @@ export const getNewGeAnalysis = (tree_code) => {
     tree_code: tree_code
   })
 }
+
+//修改操作基本信息等
+export const updateBasic =(tree_code,data) =>{
+  return axios.request({
+    url: 'update_basic/'+tree_code,
+    method: 'put',
+    // method: 'POST',
+    tree_code: tree_code,
+    data: data
+  })
+}
+export const updateDynamic =(id,data) =>{
+  return axios.request({
+    url: 'update_dynamic/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+export const updateGeo =(id,data) =>{
+  return axios.request({
+    url: 'update_geo/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+
+export const updatePic =(id,data) =>{
+  return axios.request({
+    url: 'update_pic/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+
+export const updateBrand =(id,data) =>{
+  return axios.request({
+    url: 'update_brand/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+export const updateTjxmRecord =(id,data) =>{
+  return axios.request({
+    url: 'update_tjxm_record/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+
+export const getOneTjxmRecord =(t_id, type)=>{
+  return axios.request({
+    url: 'get/'+t_id+'/tjxm_record/'+type,
+    method: 'get',
+    t_id: t_id,
+    type: type
+  })
+}
+export const updateEnvironment =(id,data) =>{
+  return axios.request({
+    url: 'update_ge_analysis/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+//传入tjxm_record 先删除提交tjxm,再删record
+export const deleteTjxmRecord =(data) =>{
+  return axios.request({
+    url: 'delete_tjxm_and_tjxm_record',
+    method: 'delete',
+    data: data
+  })
+}
+
+export const deleteOneTree =(tree_code) =>{
+  return axios.request({
+    url: 'delete_tree/'+tree_code,
+    method: 'delete',
+    tree_code:tree_code
+  })
+}
+
+

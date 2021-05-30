@@ -4,7 +4,7 @@
     <h2 slot="title">名木古树信息</h2>
     <Form :label-width="80" :model="query" inline>
       <FormItem label="古树编号:" :label-width="80">
-        <Input v-model="query.tree_code" style="width: 150px" ></Input>
+        <Input v-model="query.tree_code" style="width: 150px" clearable></Input>
       </FormItem>
       <FormItem label="古树等级:" :label-width="80">
         <Select style="width:100px" v-model="query.level" clearable>
@@ -13,7 +13,7 @@
       </FormItem>
       <FormItem label="科:" :label-width="80">
         <Select style="width:100px" v-model="query.family" clearable>
-          <Option v-for="item in FamilyList" :value="item.fid" :key="item.fid">{{ item.fname }}</Option>
+          <Option v-for="item in FamilyList" :value="item.fname" :key="item.fname">{{ item.fname }}</Option>
         </Select>
       </FormItem>
       <FormItem >
@@ -33,20 +33,31 @@
         <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
       </div>
     </div>
+
+    <RightDeleteTree
+      :show="showDeleteModal"
+      :tree_code="this.seleceted_tree_code"
+      title="提醒"
+      @onOK="ok"
+      @onCancel="cancel">
+    </RightDeleteTree>
   </Card>
 </div>
 </template>
 
 <script>
-import {queryFamilyTypes, queryTreeBasicProperty} from '@/api/table'
+import {deleteOneTree, queryFamilyTypes, queryTreeBasicProperty} from '@/api/table'
 import {queryUsers} from "@/api/user";
 import {getToken} from "@/libs/util";
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
+import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
 export default {
   name: "base_survey",
-  components:{tjxm_record_extend_table},
+  components:{RightDeleteTree, tjxm_record_extend_table},
   data () {
     return {
+      seleceted_tree_code: undefined,
+      showDeleteModal: false,
       query: {
         level: undefined,
         tree_code: undefined,
@@ -60,16 +71,11 @@ export default {
       }, // 分页
       trees_basic_property:{
         tree_code: undefined,
-        family: {
-          fname: undefined,
-        },
-        genus:{
-          genus: undefined
-        },
-        class:{
-          zw_name: undefined,
-          ld_name: undefined
-        },
+        family: undefined,
+        genus: undefined,
+        zw_name: undefined,
+        ld_name: undefined,
+
         dynamic_property:{
           real_age: undefined,
           investigate_time: undefined
@@ -108,28 +114,28 @@ export default {
           title: '科',
           align: 'center',
           render: function (h, params) {
-            return h('span', params.row.family.fname)
+            return h('span', params.row.family)
           }
         },
         {
           title: '属',
           align: 'center',
           render: function (h, params) {
-            return h('span', params.row.genus.genus)
+            return h('span', params.row.genus)
           }
         },
         {
           title: '中文名',
           align: 'center',
           render: function (h, params) {
-            return h('span', params.row.class.zw_name)
+            return h('span', params.row.zw_name)
           }
         },
         {
           title: '拉丁名',
           align: 'center',
           render: function (h, params) {
-            return h('span', params.row.class.ld_name)
+            return h('span', params.row.ld_name)
           }
         },
         {
@@ -215,7 +221,7 @@ export default {
                 on: {
                   click: () => {
                     console.log('pp',params.row)
-                    this.$router.push({ path: `/survey/BaseInfo/${params.row.tree_code}` })
+                    this.$router.push({ path: `/survey/update/BasicInformation/${params.row.tree_code}` })
                   }
                 }
               }, '查看'),
@@ -230,6 +236,14 @@ export default {
                 on: {
                   click: () => {
                     console.log('删除',params)
+                    this.seleceted_tree_code = params.row.tree_code
+                    this.showDeleteModal=true
+
+                    // deleteOneTree(params.row.tree_code).then((res=>{
+                    //   if(res.data.code === 200){
+                    //     this.$Message.success('该古树删除成功')
+                    //   }
+                    // }))
 
                   }
                 }
@@ -273,9 +287,30 @@ export default {
     }
   },
   methods :{
+    ok(tree_code){
+      console.log('###',tree_code)
+      deleteOneTree(tree_code).then((res=>{
+        if(res.data.code === 200){
+          this.$Message.success('该古树删除成功')
+          this.fetchData()
+        }else {
+          this.$Message.error('该古树删除失败')
+        }
+      }))
+      this.showDeleteModal=false
+    },
+    cancel(){
+      this.showDeleteModal =false
+    },
     fetchData: function () {
       // 数据表发生变化请求数据
-      let args = { ...this.query, ...this.pages }
+      console.error('####',this.query.tree_code)
+      let args={}
+      if(this.query.tree_code) {
+        args = {...this.query, ...this.pages}
+      }else {
+        args= {'level':this.query.level,'family':this.query.family,...this.pages}
+      }
       return queryTreeBasicProperty(args).then((resp) => {
         this.tableData = resp.data.trees_basic_property
         this.total = resp.data.total

@@ -2,7 +2,7 @@
   <div >
     <keep-alive>
     <Card>
-      <h2 slot="title" style="text-align: center">名木古树基本信息</h2>
+      <h2 slot="title" style="text-align: center">名木古树基本信息---修改</h2>
       <Form :label-width="120" label-position="right" ref="Tree_form" v-model="TreeInformation" inline>
         <h4>基本信息：</h4>
         <Row>

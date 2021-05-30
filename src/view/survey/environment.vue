@@ -2,16 +2,67 @@
 <div>
   <Card>
     <h2 slot="title" style="text-align: center">生长环境评价分析</h2>
-    <Form :label-width="140" label-position="right"  ref="environment_form" :model="environment" :rules="ruleValidate" inline>
-      <h4>生长环境：</h4>
+    <Form :label-width="100" label-position="right" :model="TreeInformation" inline >
+    <h4>古树基本信息</h4>
+    <Row>
+      <Col  span="5" offset="2">
+        <FormItem label="古树编号">
+          <Input disabled  v-model="tree_code" class="TextColor"></Input>
+        </FormItem>
+      </Col>
+    </Row>
       <Row>
-        <Col offset="1" span="9">
-          <FormItem label="古树编号">
-            <Input disabled  v-model="tree_code"></Input>
+      <Col span="5" offset="2">
+        <FormItem label="科" prop="Base.family">
+          <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
+        </FormItem>
+      </Col>
+      <Col span="5" >
+        <FormItem label="属" prop="Base.genus">
+          <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
+        </FormItem>
+      </Col>
+      <Col span="5" >
+        <FormItem label="中文名" prop="Base.zw_name">
+          <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
+        </FormItem>
+      </Col>
+    </Row>
+
+      <Row>
+        <Col span="5" offset="2">
+          <FormItem label="拉丁名" prop="Base.ld_name">
+            <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
           </FormItem>
         </Col>
+        <Col span="5">
+          <FormItem label="俗名" prop="Base.bm_name">
+            <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
+            </Input>
+          </FormItem>
+        </Col>
+      </Row>
+    </Form>
+
+    <Form :label-width="150" label-position="right"  ref="environment_form" :model="environment" :rules="ruleValidate" inline>
 <!--      记住一定要加prop，不然验证不起作用-->
+      <Divider></Divider>
+        <h4>生长环境：</h4>
+
+      <Row>
+        <Col span="9" offset="1">
+          <FormItem label="调查人" prop="investigate_username">
+            <Input v-model="environment.investigate_username" placeholder="请输入调查人姓名"></Input>
+          </FormItem>
+        </Col>
         <Col span="9">
+          <FormItem label="调查时间" prop="update_time">
+            <DatePicker v-model="environment.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="9" offset="1">
           <FormItem label="海拔" prop="elevation">
             <Input v-model="environment.elevation" placeholder="请输入海拔（单位：米）">
               <span slot="append"> m </span>
@@ -38,7 +89,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row v-else>
+      <Row v-if="environment.habitat_type==='山地'">
         <Col offset="1">
           <FormItem label="山坡类型" prop="highland_type" :key="environment.highland_type" :rules="[{ required: true, trigger: 'change',message: '请选择山地类型'}]">
             <RadioGroup v-model="environment.highland_type">
@@ -242,7 +293,7 @@
         <Col offset="1">
           <FormItem label="现状保护示意图" prop="protect_pic">
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList1" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
                 <Icon type="ios-eye-outline" @click.native="handleView1(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList1(index)"></Icon>
@@ -251,20 +302,20 @@
             <Upload
               :show-upload-list="false"
               name="filename"
-              :on-exceeded-size="handleMaxSize1"
+              :on-exceeded-size="handleMaxSize"
               :on-success="handleSuccessList1"
               :format="['jpg','jpeg','png']"
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
             <Modal title="图片预览" v-model="visible1">
-              <img :src="showImageUrl1" v-if="visible1" style="width: 100%" />
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible1" style="width: 100%" />
             </Modal>
           </FormItem>
         </Col>
@@ -343,7 +394,7 @@
               <Icon type="md-alert" size="15" color="#808695"/>
             </Tooltip>特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList2" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
                 <Icon type="ios-eye-outline" @click.native="handleView2(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList2(index)"></Icon>
@@ -352,20 +403,20 @@
             <Upload
               :show-upload-list="false"
               name="filename"
-              :on-exceeded-size="handleMaxSize2"
+              :on-exceeded-size="handleMaxSize"
               :on-success="handleSuccessList2"
               :format="['jpg','jpeg','png']"
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
             <Modal title="图片预览" v-model="visible2">
-              <img :src="showImageUrl2" v-if="visible2" style="width: 100%" />
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible2" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -377,6 +428,9 @@
       <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
       <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
       <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
+      <router-link :to="{path: `/survey/base_survey`}">
+        <Button type="primary" style="margin-right: 30px">返回</Button>
+      </router-link>
     </div>
 
   </Card>
@@ -389,30 +443,53 @@
 import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList, soil_textureList, organic_contentList,
   is_buriedList, other_plantsList, evaluationList, has_structuresList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
-import {AddBasicProperty, AddGeAnalysis, getNewGeAnalysis, postTjxmRecord} from "@/api/table";
+import {
+  AddBasicProperty,
+  AddGeAnalysis,
+  getNewGeAnalysis,
+  getOneTreeBaseInfo,
+  postTjxmRecord, queryClassTypes,
+  queryFamilyTypes, queryGenusTypes
+} from "@/api/table";
+import {ShowPic} from "@/api/upload";
 
 export default {
   name: "environment",
   data () {
     return {
       loading: false,
+
+      showImageUrl: '',
+
       PicUrlList1: [],
-      showImageUrl1: '',
       visible1: false,
       i1: 0,
 
       PicUrlList2: [],
-      showImageUrl2: '',
       visible2: false,
       i2: 0,
 
+
       tjxm_record:{
         t_id: 0,
-        type: '生长环境评估',
-        username: 'xxx'
+        type: '生长环境评价分析',
+        username: '',
+        status: '',
+        type_yw: 'environment',
+        time: ''
+      },
+
+      TreeInformation:{
+        Base:{
+          family:'',
+          genus:'',
+          zw_name:'',
+          ld_name:''
+        }
       },
 
       environment: {
+        investigate_username: '',
         elevation: 0, // 海拔
         habitat_type: '', // 生长环境类型
         plain_type: [], // 平原类型
@@ -442,7 +519,7 @@ export default {
         protect_W: 0, // 西向
         protect_S: 0, // 南向
         protect_N: 0, // 北向
-        protect_pic: '', // 保护范围示意图
+        protect_pic: [], // 保护范围示意图
         other_plants: '', // 保护范围内其他植物
         evaluation: '', // 生长环境总体评价
         envoriment_problem: '', // 生长环境问题
@@ -451,7 +528,7 @@ export default {
         structures_type: '', // 筑构物类型
         structures_affect: '', // 筑构物影响
         nutrient_status: '', // 土壤营养状况分析
-        pic_path: '', // 特征照片
+        pic_path: [], // 特征照片
         update_time: '',
         tree_code: ''
       },
@@ -470,16 +547,18 @@ export default {
       HasStructuresList: has_structuresList,
 
       ruleValidate: {
+        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
+        investigate_username: [{ required: true, message: '请填写调查人姓名'}],
         elevation: [{ required: true, trigger: 'blur', message: '请填写海拔' }],
         habitat_type: [{ required: true, trigger: 'change', message: '请选择生长环境类型' }],
         plain_type: [{ required: true, type: 'array', min: 1, trigger: 'change', message: '请选择平原类型' }],
         aspect: [{ required: true, trigger: 'blur', message: '请填写坡向' }],
         slope: [{ required: true, trigger: 'blur', message: '请填写坡度' }],
         slope_position: [{ required: true, trigger: 'blur', message: '请填写坡位' }],
-        protect_E: [{ required: true, type: 'float', min: 0, trigger: 'change', message: '请填写数据' }],
-        protect_W: [{ required: true, type: 'float', min: 0, trigger: 'change', message: '请填写数据' }],
-        protect_N: [{ required: true, type: 'float', min: 0, trigger: 'change', message: '请填写数据' }],
-        protect_S: [{ required: true, type: 'float', min: 0, trigger: 'change', message: '请填写数据' }],
+        protect_E: [{ required: true, message: '请填写数据' }],
+        protect_W: [{ required: true,  message: '请填写数据' }],
+        protect_N: [{ required: true,  message: '请填写数据' }],
+        protect_S: [{ required: true,  message: '请填写数据' }],
         other_plants: [{ required: true, trigger: 'change', message: '请选择' }],
         evaluation: [{ required: true, trigger: 'change', message: '请选择' }],
         envoriment_problem: [{ required: true, trigger: 'blur', message: '请填写' }],
@@ -489,58 +568,194 @@ export default {
       }
     }
   },
+  created() {
+    this.fetchTreeBasicData()
+  },
+  mounted() {
+
+    // this.fetchOptions()
+  },
   methods: {
 
+    TiJiao(){
+      this.$refs.environment_form.validate((valid) => {
+        console.log(valid)
+        if (valid) {
+          this.environment.update_time = dateToString(this.environment.update_time, 'yyyy-MM-dd hh:mm:ss')
+          this.environment.tree_code = this.tree_code
+          this.tjxm_record.username = this.environment.investigate_username
+
+          if( this.environment.habitat_type === '平原' ){
+            this.environment.highland_type=''
+          }else {
+            this.environment.plain_type=[]
+          }
+          if(this.environment.is_buried === 0){
+            this.environment.buried_depth = 0
+          }
+          if(this.environment.evaluation === '良好'){
+            this.environment.envoriment_problem =''
+          }
+          if(this.environment.has_structures === 0){
+            this.environment.structures_affect=''
+            this.environment.structures_type=''
+          }
+
+          console.error('!!!!',this.environment)
+          AddGeAnalysis(this.environment).then(res => {
+            getNewGeAnalysis(this.tree_code).then((resp=>{
+              this.tjxm_record.t_id =resp.data.new_ge_analysis.id
+              postTjxmRecord(this.tjxm_record).then((record=>{
+                if(record.data.code ===200){
+                  if(this.tjxm_record.status === '已完成'){
+                    this.$Message.success('提交成功')
+                  }else {
+                    this.$Message.success('保存成功')
+                  }
+                }else {
+                  if(this.tjxm_record.status === '已完成'){
+                    this.$Message.success('提交失败')
+                  }else {
+                    this.$Message.success('保存失败')
+                  }
+                }
+              }))
+            }))
+            console.log('####',res)
+          }).catch(err => {
+            console.log(err)
+          })
+        } else {
+          this.$Message.error('请填写完整信息')
+        }
+      })
+    },
+
+    Submit() {
+      this.tjxm_record.status ='已完成'
+      this.TiJiao()
+      // this.$refs.environment_form.validate((valid) => {
+      //   console.log(valid)
+      //   this.tjxm_record.status='已完成'
+      //   if (valid) {
+      //     this.environment.update_time = dateToString(this.environment.update_time, 'yyyy-MM-dd hh:mm:ss')
+      //     this.environment.tree_code = this.tree_code
+      //     this.tjxm_record.username = this.environment.investigate_username
+      //
+      //     if( this.environment.habitat_type === '平原' ){
+      //       this.environment.highland_type=''
+      //     }else {
+      //       this.environment.plain_type=[]
+      //     }
+      //     if(this.environment.is_buried === 0){
+      //       this.environment.buried_depth = 0
+      //     }
+      //     if(this.environment.evaluation === '良好'){
+      //       this.environment.envoriment_problem =''
+      //     }
+      //     if(this.environment.has_structures === 0){
+      //       this.environment.structures_affect=''
+      //       this.environment.structures_type=''
+      //     }
+      //
+      //     console.error('!!!!',this.environment)
+      //     AddGeAnalysis(this.environment).then(res => {
+      //       getNewGeAnalysis(this.tree_code).then((resp=>{
+      //         this.tjxm_record.t_id =resp.data.new_ge_analysis.id
+      //         postTjxmRecord(this.tjxm_record).then((record=>{
+      //           if(record.data.code ===200){
+      //             if(this.tjxm_record.status === '已完成'){
+      //               this.$Message.success('提交成功')
+      //             }else {
+      //               this.$Message.success('保存成功')
+      //             }
+      //           }else {
+      //             if(this.tjxm_record.status === '已完成'){
+      //               this.$Message.success('提交失败')
+      //             }else {
+      //               this.$Message.success('保存失败')
+      //             }
+      //           }
+      //         }))
+      //       }))
+      //       console.log('####',res)
+      //     }).catch(err => {
+      //       console.log(err)
+      //     })
+      //   } else {
+      //     this.$Message.error('请填写完整信息')
+      //   }
+      // })
+      // this.$router.push({path:'/survey/base_survey'})
+    },
+    Save(){
+      this.tjxm_record.status = '待提交'
+      this.TiJiao()
+    },
+
     PreviousPage () {
-      this.$router.push({ path: `/survey/right/${this.tree_code}` })
+      this.$router.push({ path: `/survey/update/BasicInformation/${this.tree_code}` })
     },
     Tree () {
       console.log(11, this.tree_code)
       console.log(typeof (this.tree_code))
     },
 
-    // 保护范围示意图
-    handleMaxSize1 (file) {
+    fetchTreeBasicData(){
+      getOneTreeBaseInfo(this.tree_code).then((res => {
+        this.TreeInformation.Base = res.data.tree_basic_info.basic
+
+      }))
+
+    },
+
+    handleMaxSize (file) {
       this.$Notice.warning({
         title: '图片大小限制',
         desc: '文件 ' + file.name + '太大,不能超过 2M.'
       })
     },
+
+
+    // 保护范围示意图
     handleView1 (imageUrl) {
-      this.showImageUrl1 = '/api' + imageUrl
+      this.showImageUrl =  imageUrl
       this.visible1 = true
     },
     handleRemoveList1 (index) {
       // 删除
+      this.environment.protect_pic.splice(index, 1)
       this.PicUrlList1.splice(index, 1)
     },
     handleSuccessList1: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList1.push(res.path)
+        this.environment.protect_pic.push(res.path)
         this.i1++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList1.push(resp.data)
+        }))
       }
     },
     // 特征照片
-    handleMaxSize2 (file) {
-      this.$Notice.warning({
-        title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
-      })
-    },
     handleView2 (imageUrl) {
-      this.showImageUrl2 = '/api' + imageUrl
+      this.showImageUrl =  imageUrl
       this.visible2 = true
     },
     handleRemoveList2 (index) {
       // 删除
+      this.environment.pic_path.splice(index, 1)
       this.PicUrlList2.splice(index, 1)
     },
     handleSuccessList2: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList2.push(res.path)
+        this.environment.pic_path.push(res.path)
         this.i2++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList2.push(resp.data)
+        }))
       }
     },
+
     // changeLoading: function () {
     //   setTimeout(() => {
     //     this.loading = false;
@@ -549,36 +764,20 @@ export default {
     //     })
     //   }, 5)
     // },
-    Submit: function () {
-      this.environment.tree_code = this.tree_code
-      AddGeAnalysis(this.environment).then(res => {
-        getNewGeAnalysis(this.tree_code).then((resp=>{
-          console.log(resp.data)
-          this.tjxm_record.t_id =resp.data.new_ge_analysis.id
-          postTjxmRecord(this.tjxm_record).then((record=>{
-            if(record.data.code ===200){
-              this.$Message.success('成功')
-            }
-          }))
-        }))
-        console.log(res)
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    Save: function () {
-      // this.changeLoading()
-      this.$refs.environment_form.validate((valid) => {
-        console.log(valid)
-        if (valid) {
-          this.environment.update_time = dateToString(this.date, 'yyyy-MM-dd hh:mm:ss')
-          console.error(this.environment)
-          this.$Message.success('保存成功')
-        } else {
-          this.$Message.error('请填写完整信息')
-        }
-      })
-    },
+
+    // Save: function () {
+    //   // this.changeLoading()
+    //   this.$refs.environment_form.validate((valid) => {
+    //     console.log(valid)
+    //     if (valid) {
+    //       this.environment.update_time = dateToString(this.date, 'yyyy-MM-dd hh:mm:ss')
+    //       console.error(this.environment)
+    //       this.$Message.success('保存成功')
+    //     } else {
+    //       this.$Message.error('请填写完整信息')
+    //     }
+    //   })
+    // },
 
     // 下一页跳转
     NextPage () {
@@ -608,6 +807,29 @@ export default {
 
 .ivu-radio-wrapper {
   margin-right: 20px;
+}
+
+.TextColor >>> .ivu-input[disabled], fieldset[disabled] .ivu-input {
+  color: #999999 !important;
+}
+
+.demo-upload-list {
+  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
+  position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
+}
+.demo-upload-list img {
+  width: 100%;height: 100%;
+}
+.demo-upload-list-cover {
+  display: none;position: absolute;top: 0;bottom: 0;
+  left: 0;right: 0;background: rgba(0, 0, 0, 0.6);
+}
+.demo-upload-list:hover .demo-upload-list-cover {
+  display: block;
+}
+.demo-upload-list-cover i {
+  color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;
 }
 
 </style>

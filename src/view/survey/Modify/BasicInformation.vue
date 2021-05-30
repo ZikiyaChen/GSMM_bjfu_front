@@ -1,13 +1,13 @@
 <template>
   <div>
     <Card>
-      <h2 slot="title" style="text-align: center">名木古树每木调查表</h2>
+      <h2 slot="title" style="text-align: center">名木古树每木调查表--修改</h2>
       <Form :label-width="120" label-position="right" ref="Tree_form" :model="TreeInformation" :rules="ruleValidate" inline>
         <h4>基本信息：</h4>
         <Row>
           <Col span="9" offset="1">
             <FormItem label="古树编号" prop="tree_code">
-              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" style="width: 200px"></Input>
+              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" style="width: 200px" disabled></Input>
             </FormItem>
           </Col>
           <Col span="9">
@@ -36,12 +36,12 @@
               <Input v-model="TreeInformation.Base.username" placeholder="请输入管护人姓名" style="width: 200px"></Input>
             </FormItem>
           </Col>
-
           <Col span="9">
-            <FormItem label="调查人" prop="Dong.username">
-              <Input v-model="TreeInformation.Dong.username" placeholder="请输入调查人姓名" style="width: 200px"></Input>
-            </FormItem>
+              <FormItem label="调查人" prop="Dong.username">
+                <Input v-model="TreeInformation.Dong.username" placeholder="请输入调查人姓名" style="width: 200px"></Input>
+              </FormItem>
           </Col>
+
         </Row>
 
         <Row>
@@ -86,32 +86,13 @@
           </Col>
         </Row>
         <Divider />
-         <h4>树种信息：</h4>
-
-<!--        <Row>-->
-<!--          <Col span="9" offset="1">-->
-<!--            <FormItem label="科" prop="Base.family">-->
-<!--              <Select v-model="TreeInformation.Base.family" placeholder="请选择科" style="width: 200px" clearable-->
-<!--                      @on-change="showGenusTypes" >-->
-<!--                <Option v-for="item in FamilyList" :value="item.fname"  :key="item.fname" >{{item.fname}}</Option>-->
-<!--              </Select>-->
-<!--            </FormItem>-->
-<!--          </Col>-->
-<!--          <Col span="9">-->
-<!--            <FormItem label="属" prop="Base.genus">-->
-<!--              <Select v-model="TreeInformation.Base.genus" placeholder="请选择属" style="width: 200px" clearable-->
-<!--               @on-change="showClassTypes">-->
-<!--                <Option v-for="item in GenusList" :value="item.gid"  :key="item.genus">{{ item.genus }}</Option>-->
-<!--              </Select>-->
-<!--            </FormItem>-->
-<!--          </Col>-->
-<!--        </Row>-->
+        <h4>树种信息：</h4>
 
         <Row>
           <Col span="9" offset="1">
             <FormItem label="科属种" prop="Base.treetype">
               <Cascader v-model="TreeInformation.Base.treetype" :data="options" clearable	trigger="hover"
-              @on-change="(value, selectedData) => showLdname(value, selectedData)">
+                        @on-change="(value, selectedData) => showLdname(value, selectedData)">
               </Cascader>
             </FormItem>
           </Col>
@@ -121,25 +102,6 @@
             </FormItem>
           </Col>
         </Row>
-
-
-<!--        <Row>-->
-<!--          <Col span="9" offset="1">-->
-<!--            <FormItem label="中文名" prop="Base.zw_name">-->
-<!--              <Select v-model="TreeInformation.Base.zw_name" placeholder="请选择中文名" style="width: 200px" clearable-->
-<!--               @on-change="showLdname">-->
-<!--                <Option v-for="item in ClassList" :value="item.cid"  :key="item.zw_name">{{ item.zw_name }}</Option>-->
-<!--              </Select>-->
-<!--            </FormItem>-->
-<!--          </Col>-->
-<!--          <Col span="9">-->
-<!--            <FormItem label="拉丁名" prop="Base.ld_name">-->
-<!--              <Select v-model="TreeInformation.Base.ld_name" placeholder="请选择拉丁名" style="width: 200px" clearable>-->
-<!--                <Option v-for="item in LDnameList" :value="item.cid"  :key="item.ld_name">{{ item.ld_name }}</Option>-->
-<!--              </Select>-->
-<!--            </FormItem>-->
-<!--          </Col>-->
-<!--        </Row>-->
 
         <Row>
           <Col span="9" offset="1">
@@ -153,20 +115,20 @@
         <Divider />
         <h4>树龄：</h4>
         <Row>
-        <Col span="7" offset="1">
-          <FormItem label="真实树龄" prop="Dong.real_age">
-            <InputNumber v-model="TreeInformation.Dong.real_age"
-                         :formatter="value => `${value}   年`"
-                         :parser="value => value.replace('   年', '')"></InputNumber>
-          </FormItem>
-        </Col>
-        <Col span="7">
-          <FormItem label="预估树龄" prop="Dong.estimate_age">
-            <InputNumber v-model="TreeInformation.Dong.estimate_age"
-                         :formatter="value => `${value}   年`"
-                         :parser="value => value.replace('   年', '')"></InputNumber>
-          </FormItem>
-        </Col>
+          <Col span="7" offset="1">
+            <FormItem label="真实树龄" prop="Dong.real_age">
+              <InputNumber v-model="TreeInformation.Dong.real_age"
+                           :formatter="value => `${value}   年`"
+                           :parser="value => value.replace('   年', '')"></InputNumber>
+            </FormItem>
+          </Col>
+          <Col span="7">
+            <FormItem label="预估树龄" prop="Dong.estimate_age">
+              <InputNumber v-model="TreeInformation.Dong.estimate_age"
+                           :formatter="value => `${value}   年`"
+                           :parser="value => value.replace('   年', '')"></InputNumber>
+            </FormItem>
+          </Col>
         </Row>
 
         <Row>
@@ -199,30 +161,6 @@
             </FormItem>
           </Col>
         </Row>
-
-<!--        <Row>-->
-<!--          <Col style="margin-left: 120px;margin-bottom: 15px" offset="2">-->
-<!--            <div id="mapContainer" style="width: 500px;height: 200px">-->
-<!--                <Input style="width: 300px;float: left" v-model="address" placeholder="请输入位置进行经纬度查询" search enter-button @on-search="getCode">-->
-<!--                </Input>-->
-<!--            </div>-->
-<!--          </Col>-->
-<!--        </Row>-->
-<!--        <Row>-->
-
-<!--        </Row>-->
-<!--        <Row style="margin-bottom: 20px" offset="2">-->
-<!--          <Col span="8">-->
-<!--              <Input style="width: 160px;margin-left: 120px" v-model="lng" disabled>-->
-<!--                <span slot="prepend">经  度</span>-->
-<!--              </Input>-->
-<!--          </Col>-->
-<!--          <Col span="6">-->
-<!--              <Input style="width: 160px" v-model="lat" disabled>-->
-<!--                <span slot="prepend">纬  度</span>-->
-<!--              </Input>-->
-<!--          </Col>-->
-<!--        </Row>-->
 
         <Row>
           <Col offset="1" span="6">
@@ -272,10 +210,10 @@
         <Row>
           <Col offset="1" span="7">
             <FormItem label="平均" prop="Dong.c_average">
-<!--              <InputNumber v-model="TreeInformation.Dong.c_average"-->
-<!--                           :step="0.01"-->
-<!--                           :formatter="value => `${value}  m`"-->
-<!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
+              <!--              <InputNumber v-model="TreeInformation.Dong.c_average"-->
+              <!--                           :step="0.01"-->
+              <!--                           :formatter="value => `${value}  m`"-->
+              <!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
               <Input v-model="TreeInformation.Dong.c_average" placeholder="请输入冠幅平均" style="width: 160px">
                 <span slot="append"> m </span>
               </Input>
@@ -283,10 +221,10 @@
           </Col>
           <Col span="7">
             <FormItem label="东西" prop="Dong.c_dx">
-<!--              <InputNumber v-model="TreeInformation.Dong.c_dx"-->
-<!--                           :step="0.01"-->
-<!--                           :formatter="value => `${value}  m`"-->
-<!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
+              <!--              <InputNumber v-model="TreeInformation.Dong.c_dx"-->
+              <!--                           :step="0.01"-->
+              <!--                           :formatter="value => `${value}  m`"-->
+              <!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
               <Input v-model="TreeInformation.Dong.c_dx" placeholder="请输入冠幅东西" style="width: 160px">
                 <span slot="append"> m </span>
               </Input>
@@ -294,10 +232,10 @@
           </Col>
           <Col span="7">
             <FormItem label="南北" prop="Dong.c_nb">
-<!--              <InputNumber v-model="TreeInformation.Dong.c_nb"-->
-<!--                           :step="0.01"-->
-<!--                           :formatter="value => `${value}  m`"-->
-<!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
+              <!--              <InputNumber v-model="TreeInformation.Dong.c_nb"-->
+              <!--                           :step="0.01"-->
+              <!--                           :formatter="value => `${value}  m`"-->
+              <!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
               <Input v-model="TreeInformation.Dong.c_nb" placeholder="请输入冠幅南北" style="width: 160px">
                 <span slot="append"> m </span>
               </Input>
@@ -360,9 +298,9 @@
         <Row>
           <Col offset="1">
             <FormItem label="新增古树原因" prop="Dong.reason">
-            <RadioGroup v-model="TreeInformation.Dong.reason">
-              <Radio v-for="item in ReasonList" :label="item.value" :key="item.value"></Radio>
-            </RadioGroup>
+              <RadioGroup v-model="TreeInformation.Dong.reason">
+                <Radio v-for="item in ReasonList" :label="item.value" :key="item.value"></Radio>
+              </RadioGroup>
             </FormItem>
           </Col>
         </Row>
@@ -370,40 +308,39 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="影响生长环境因素" prop="Dong.affect_factor">
-              <Input v-model="TreeInformation.Dong.affect_factor" type="textarea" :autosize="{minRows: 2,maxRows: 10}"
-                     placeholder="Enter something..." style="width: 500px"  class="TextStyle"/>
+              <Input v-model="TreeInformation.Dong.affect_factor" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col offset="1">
-        <FormItem label="文化历史照片" prop="Dong.history_pic">
-          <div class="demo-upload-list" v-for="(item,index) in historyPicUrlList" :key="index">
-            <img :src="'data:image/jpg;base64,'+item"  />
-            <div class="demo-upload-list-cover">
-              <Icon type="ios-eye-outline" @click.native="handleView_history(item)"></Icon>
-              <Icon type="ios-trash-outline" @click.native="handleRemoveList_history(index)"></Icon>
-            </div>
-          </div>
-          <Upload
-            :show-upload-list="false"
-            name="filename"
-            :on-exceeded-size="handleMaxSize"
-            :on-success="handleSuccessList_history"
-            :format="['jpg','jpeg','png']"
-            :max-size="2048"
-            multiple
-            type="drag"
-            action="/api/uploadpic"
-            style="display: inline-block;width:70px;">
-            <div style="width: 70px;height:70px;line-height: 70px;">
-              <Icon type="ios-camera" size="20"></Icon>
-            </div>
-          </Upload>
-          <Modal title="图片预览" v-model="visible_h">
-            <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_h" style="width: 100%" />
-          </Modal>
-        </FormItem>
+            <FormItem label="文化历史照片" prop="Dong.history_pic">
+              <div class="demo-upload-list" v-for="(item,index) in historyPicUrlList" :key="index">
+                <img :src="'data:image/jpg;base64,'+item"  />
+                <div class="demo-upload-list-cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView_history(item)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_history(index)"></Icon>
+                </div>
+              </div>
+              <Upload
+                :show-upload-list="false"
+                name="filename"
+                :on-exceeded-size="handleMaxSize"
+                :on-success="handleSuccessList_history"
+                :format="['jpg','jpeg','png']"
+                :max-size="2048"
+                multiple
+                type="drag"
+                action="/api/uploadpic"
+                style="display: inline-block;width:70px;">
+                <div style="width: 70px;height:70px;line-height: 70px;">
+                  <Icon type="ios-camera" size="20"></Icon>
+                </div>
+              </Upload>
+              <Modal title="图片预览" v-model="visible_h">
+                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_h" style="width: 100%" />
+              </Modal>
+            </FormItem>
           </Col>
         </Row>
 
@@ -411,7 +348,7 @@
           <Col span="9" offset="1">
             <FormItem label="古树历史描述" prop="Dong.history">
               <Input v-model="TreeInformation.Dong.history" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."
-                     :maxlength="300" @input="suggestInput" style="width: 500px" class="TextStyle"/>
+                     :maxlength="300" @input="suggestInput" style="width: 500px" />
               <span class="tips">{{suggestRemnant}}/300</span>
             </FormItem>
           </Col>
@@ -420,8 +357,7 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="树种奇特性状描述" prop="Dong.describe">
-              <Input v-model="TreeInformation.Dong.describe" type="textarea" :autosize="{minRows: 2,maxRows: 10}"
-                     placeholder="Enter something..." style="width: 500px"  class="TextStyle"/>
+              <Input v-model="TreeInformation.Dong.describe" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
             </FormItem>
           </Col>
         </Row>
@@ -429,8 +365,7 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="树种鉴定记载" prop="Base.jd_record">
-              <Input v-model="TreeInformation.Base.jd_record" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px"
-              class="TextStyle"/>
+              <Input v-model="TreeInformation.Base.jd_record" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
             </FormItem>
           </Col>
         </Row>
@@ -555,94 +490,68 @@
               </Modal>
             </FormItem>
           </Col>
+          <Button @click="showTree">kan</Button>
         </Row>
+
       </Form>
       <div style="text-align: center">
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
-        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
+        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交修改</Button>
         <router-link :to="{path: `/survey/base_survey`}">
-          <Button type="primary" >返回</Button>
+          <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
+        <Button  @click="NextPage()" type="primary" style="margin-right: 30px">下一页</Button>
       </div>
+
 
       <Modal
         v-model="showModal"
         title="提醒"
         @on-ok="ok"
         @on-cancel="cancel">
-        <p>请先填写名木古树基本信息表，并提交或保存该表</p>
+        <p>下一页为生长环境评价分析，该古树的生长环境评价分析尚未填写，</p>
         <p>如果需要填写，请点击“确定”</p>
       </Modal>
-
     </Card>
   </div>
 </template>
 
 <script>
-import AMap from 'AMap';
-import { is_signedList, levelList, familyList, palceList, placing_characterList,
-  ownerList, reasonList, has_brandList, brand_rightList, is_rightList, g_vigorList,
-  g_environmentList, conserve_statusList, yhfz_statusList } from "@/view/survey/right_base_options";
-import { dateToString } from "@/libs/tools";
-import axios from "@/libs/api.request";
 import {
-  getTest,
   AddBasicProperty,
-  AddDynamicProperty,
-  AddGeoProperty,
-  AddTreeBrand,
-  AddPicRecord,
-  queryFamilyTypes, queryGenusTypes, queryClassTypes,
-  postFamilyTypes, postGenusTypes, postClassTypes,
-  getBasic, postTjxmRecord, queryTreeBasicProperty
+  AddDynamicProperty, AddGeoProperty, AddPicRecord, AddTreeBrand, getBasic,
+  getOneTreeBaseInfo, postTjxmRecord,
+  queryClassTypes,
+  queryFamilyTypes,
+  queryGenusTypes,
+  updateBasic, updateDynamic, updateBrand, updateGeo, updatePic, updateTjxmRecord,
+  getOneTjxmRecord, queryTreeBasicProperty, queryTjxmRecord
 } from "@/api/table";
 import {ShowPic} from "@/api/upload";
-
-import {forEach} from "@/libs/tools";
+import {dateToString, forEach} from "@/libs/tools";
+import {
+  brand_rightList, conserve_statusList, g_environmentList, g_vigorList,
+  has_brandList, is_rightList,
+  is_signedList,
+  levelList,
+  ownerList,
+  palceList,
+  placing_characterList,
+  reasonList, yhfz_statusList
+} from "@/view/survey/right_base_options";
 
 export default {
-  name: "right",
-  data () {
+  name: "BasicInformation",
+  data :function () {
     return {
       showModal: false,
-      date: new Date(),
-      suggestRemnant: 300,
-      IsSignedList: is_signedList,
-      LevelList: levelList,
-      // FamilyList: familyList,
-
       options:[],
-
-      FamilyList: [],
-      GenusList: [],
-      ClassList: [],
-      LDnameList: [],
-      PalceList: palceList,
-      PlacingCharacterList: placing_characterList,
-      OwnerList: ownerList,
-      ReasonList: reasonList,
-      HasBrandList: has_brandList,
-      BrandRightList: brand_rightList,
-      IsRightList: is_rightList,
-      GVigorList: g_vigorList,
-      GEnvironmentList: g_environmentList,
-      ConserveStatusList: conserve_statusList,
-      YhfzStatusList: yhfz_statusList,
-
-      basic_record:{
-        t_id: 0,
-        type: '基本信息',
-        username: '',
-        status: '已完成',
-        type_yw: 'BasicInformation',
-      },
-
+      tree_code: parseInt(this.$route.params.tree_code),
       TreeInformation: {
-        tree_code: 0,
+        tree_code: undefined,
         Base: {
+          id: 0,
           dizhi: undefined,
-          investigate_time: '', // 调查日期
           zw_name: '', // 中文名（即树种）
           ld_name: '', // 拉丁名
           bm_name: '', // 别名
@@ -670,30 +579,31 @@ export default {
           tree_code: '1',
         },
         Position: {
+          id: 0,
           province_code: '', // 省
           city_code: '', // 市
           area_code: '', // 区
           town_code: '', // 乡镇/街道
 
-          longitude: '', // 经度
-          latitude: '', // 纬度
-          elevation: '', // 海拔
+          longitude: 0, // 经度
+          latitude: 0, // 纬度
+          elevation: 0, // 海拔
           aspect: '', // 坡向
-          slope: '', // 坡度
+          slope: 0, // 坡度
           slope_position: '', // 坡位
           tree_code: 1,
         },
         Dong: {
-          investigate_id: 0, // 调查顺序号
+          id: 0,
+          investigate_id: '1', // 调查顺序号
           describe: '', // 树木奇特性状描述
           reason: '', // 新增古树名木原因
           affect_factor: '', // 影响生长环境因素
-          height: '', // 树高
-          bust: '', // 胸围
-
-          c_dx: '', // 冠幅东西
-          c_nb: '', // 冠幅南北
-          c_average: '', // 冠幅平均
+          height: 0, // 树高
+          bust: 0, // 胸围
+          c_average: 0, // 冠幅平均
+          c_dx: 0, // 冠幅东西
+          c_nb: 0, // 冠幅南北
           g_vigor: '', // 生长势
           g_environment: '', //  生长环境
           real_age: 0, // 真实树龄
@@ -705,25 +615,55 @@ export default {
           yhfz_status: [], // 养护复壮现状
           username: '', // 调查人
           investigate_time: '', // 调查日期
-          tree_code: 1,
+          tree_code: '1',
         },
         Pic: {
+          id: 0,
           path: [], // 图片路径
           explain: '', // 图片说明
           update_time: '', // 更新时间
-          tree_code: 1,
+          tree_code: '1',
         },
         Brand: {
+          id: 0,
           has_brand: 0, // 有无树牌
           is_right: 0, // 其他后台信息是否准确
           content: '', // 不准确需改正的内容
           brand_right: '', // 现有树牌信息是否准确
           brand_pic: [], // 树牌照片
           update_time: '', // 更新时间
-          tree_code: 1,
+          tree_code: '1',
         },
 
       },
+
+      tjxm_record:{
+        id: 0,
+        t_id: 0,
+        type: '基本信息',
+        username: '',
+        status: '',
+        type_yw: 'BasicInformation',
+        time: '',
+        tree_code: 0,
+      },
+
+      date: new Date(),
+      suggestRemnant: 300,
+      IsSignedList: is_signedList,
+      LevelList: levelList,
+
+      PalceList: palceList,
+      PlacingCharacterList: placing_characterList,
+      OwnerList: ownerList,
+      ReasonList: reasonList,
+      HasBrandList: has_brandList,
+      BrandRightList: brand_rightList,
+      IsRightList: is_rightList,
+      GVigorList: g_vigorList,
+      GEnvironmentList: g_environmentList,
+      ConserveStatusList: conserve_statusList,
+      YhfzStatusList: yhfz_statusList,
 
       showImageUrl: '',
 
@@ -740,15 +680,9 @@ export default {
       PicUrlList: [],
 
 
-      map: null,
-      lng: null,
-      lat: null,
-
-      address: '',
-
       ruleValidate: {
         tree_code: [{ required: true, message: '请输入古树编号' }],
-        'Dong.investigate_id': [{ required: true, trigger: 'blur', message: '请输入调查顺序号' }],
+        'Dong.investigate_id': [{ required: true,  message: '请输入调查顺序号' }],
         'Base.zw_name': [{ required: true, message: '请选择中文名' }],
         'Base.ld_name': [{ required: true, message: '请选择拉丁名' }],
         'Base.treetype': [{ required: true, message: '请选择科属种' }],
@@ -772,22 +706,55 @@ export default {
 
     }
   },
-  mounted () {
-    this.fetchOptions()
-  },
-  created() {
-    queryFamilyTypes().then(( res => {
-      this.FamilyList = res.data.species_types
-      console.log(11,this.FamilyList)
-    }))
-
-  },
-  methods: {
+  methods : {
     ok(){
-      this.showModal=false
+      this.showModal = false
+      this.$router.push({ path: `/survey/environment/${this.tree_code}` })
+
     },
     cancel(){
-      this.showModal=false
+      this.showModal = false
+    },
+    NextPage(){
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((res=>{
+        console.log('%%%%',res)
+        if(res.data.total !== 0){
+          this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
+        }else {
+          this.showModal = true
+          // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
+          // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
+
+        }
+      }))
+    },
+    showTree(){
+      console.log('1',this.TreeInformation)
+      console.log('2',this.tjxm_record)
+    },
+    //获取初始的科属种级联选择器中的值进行格式化
+    getTreeType(base){
+      let typelist=[base.family,base.genus,base.zw_name]
+      this.TreeInformation.Base.treetype = typelist
+    },
+
+    // showLdname (cid) {
+    //   console.log(44,cid)
+    //   if(cid!==undefined) {
+    //     queryClassTypes({'cid': cid}).then((res => {
+    //       this.LDnameList = res.data.class_types
+    //     }))
+    //   }else {
+    //     this.LDnameList=[]
+    //   }
+    // },
+    showLdname (value,selectedData) {
+      console.log('11',value)
+      console.log('xx',selectedData)
+      // console.log('22',this.TreeInformation.Base.treetype)
+      queryClassTypes({'zw_name':value[2]}).then((res=>{
+        this.TreeInformation.Base.ld_name = res.data.class_types[0].ld_name
+      }))
     },
 
 
@@ -836,194 +803,7 @@ export default {
       }))
     },
 
-
-     //选择完级联选择器，就会自动生产ld_name值
-    showLdname (value,selectedData) {
-      console.log('11',value)
-      console.log('xx',selectedData)
-      // console.log('22',this.TreeInformation.Base.treetype)
-      queryClassTypes({'zw_name':value[2]}).then((res=>{
-        this.TreeInformation.Base.ld_name = res.data.class_types[0].ld_name
-      }))
-    },
-
-    Tree () {
-      console.log(11, this.TreeInformation.tree_code)
-      console.log(typeof (this.TreeInformation.tree_code))
-    },
-    Save: function () {
-      // this.changeLoading()
-      this.$refs.Tree_form.validate((valid) => {
-        console.log(valid)
-        if (valid) {
-          this.TreeInformation.Base.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Dong.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Position.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Brand.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Pic.tree_code = this.TreeInformation.tree_code
-
-          this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
-          this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
-          this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
-          this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
-          this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
-          this.basic_record.username = this.TreeInformation.Dong.username
-          this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
-          this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
-          this.basic_record.status='待提交'
-          // 基本信息
-          AddBasicProperty(this.TreeInformation.Base).then(res => {
-            console.log(res)
-
-          }).catch(err => {
-            console.log(err)
-          })
-          setTimeout(()=>{
-
-
-            // 动态属性
-            AddDynamicProperty(this.TreeInformation.Dong).then(res => {
-              console.log(res)
-            }).catch(err => {
-              console.log(err)
-            })
-            // 地理信息
-            AddGeoProperty(this.TreeInformation.Position).then(res => {
-              console.log(res)
-            }).catch(err => {
-              console.log(err)
-            })
-            // 树牌信息
-            AddTreeBrand(this.TreeInformation.Brand).then(res => {
-              console.log(res)
-            }).catch(err => {
-              console.log(err)
-            })
-            // 古树图片记录
-            AddPicRecord(this.TreeInformation.Pic).then(res => {
-              console.log(res)
-            }).catch(err => {
-              console.log(err)
-            })
-
-
-            getBasic(this.TreeInformation.tree_code).then((resp => {
-              console.log(resp.data)
-              this.basic_record.t_id = resp.data.basic.id
-              postTjxmRecord(this.basic_record).then((record => {
-                if (record.data.code === 200) {
-                  this.$Message.success('成功')
-                }
-              }))
-            }))
-          },500)//  timeout
-        }
-        else {
-          this.$Message.error('请填写完整信息')
-        }
-      })
-    },
-
-
-    Submit: function () {
-      this.$refs.Tree_form.validate((valid) => {
-        console.log(valid)
-        if (valid) {
-          this.TreeInformation.Base.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Dong.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Position.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Brand.tree_code = this.TreeInformation.tree_code
-          this.TreeInformation.Pic.tree_code = this.TreeInformation.tree_code
-
-          this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
-          this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
-          this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
-          this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
-          this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
-          this.basic_record.username = this.TreeInformation.Dong.username
-          this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
-          this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
-          // 基本信息
-          AddBasicProperty(this.TreeInformation.Base).then(res => {
-            console.log(res)
-
-          }).catch(err => {
-            console.log(err)
-          })
-          setTimeout(()=>{
-
-
-          // 动态属性
-          AddDynamicProperty(this.TreeInformation.Dong).then(res => {
-            console.log(res)
-          }).catch(err => {
-            console.log(err)
-          })
-          // 地理信息
-          AddGeoProperty(this.TreeInformation.Position).then(res => {
-            console.log(res)
-          }).catch(err => {
-            console.log(err)
-          })
-          // 树牌信息
-          AddTreeBrand(this.TreeInformation.Brand).then(res => {
-            console.log(res)
-          }).catch(err => {
-            console.log(err)
-          })
-          // 古树图片记录
-          AddPicRecord(this.TreeInformation.Pic).then(res => {
-            console.log(res)
-          }).catch(err => {
-            console.log(err)
-          })
-
-
-          getBasic(this.TreeInformation.tree_code).then((resp => {
-            console.log(resp.data)
-            this.basic_record.t_id = resp.data.basic.id
-            postTjxmRecord(this.basic_record).then((record => {
-              if (record.data.code === 200) {
-                this.$Message.success('成功')
-              }
-            }))
-          }))
-          },500)//  timeout
-        }else {
-          this.$Message.error('请填写完整信息')
-        }
-      })
-    },
-    // loadMap () {
-    //   let that = this
-    //   that.map = new AMap.Map("mapContainer", {
-    //     resizeEnable: true
-    //   })
-    //   console.log(that.map)
-    // },
-    //  跳转到下一页，生长环境分析
-    NextPage () {
-      queryTreeBasicProperty({'tree_code':this.TreeInformation.tree_code}).then((res=>{
-        if(res.data.total !==0){
-          this.$router.push({ path: `/survey/environment/${this.TreeInformation.tree_code}` })
-        }
-        else {
-          this.showModal = true
-        }
-      }))
-    },
-
-
-    loadMap () {
-      this.map = new AMap.Map("mapContainer", {
-        resizeEnable: true
-      })
-      console.log(this.map)
-    },
-    suggestInput () {
-      const txtVal = this.TreeInformation.Dong.history.length
-      this.suggestRemnant = 300 - txtVal
-    },
+    //更新省市区街道信息
     regionChange (data) {
       console.log(data)
       if(data.province!==null){
@@ -1045,12 +825,170 @@ export default {
       console.log(this.TreeInformation)
     },
 
+    NowTree_code() {
+      console.error(this.tree_code)
+    },
+
+
+    //文本框字数输入控制
+    suggestInput () {
+      const txtVal = this.TreeInformation.Dong.history.length
+      this.suggestRemnant = 300 - txtVal
+    },
+
     handleMaxSize (file) {
       this.$Notice.warning({
         title: '图片大小限制',
         desc: '文件 ' + file.name + '太大,不能超过 2M.'
       })
     },
+    Save(){
+      this.$refs.Tree_form.validate((valid) => {
+        console.log(valid)
+        if (valid) {
+          this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
+          this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
+          this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
+          this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
+          this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
+          this.tjxm_record.username = this.TreeInformation.Dong.username
+          this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
+          this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
+          this.tjxm_record.status = '待提交'
+
+
+          updateBasic(this.tree_code, this.TreeInformation.Base).then((base=>{
+            if(base.data.code === 200){
+              console.log('base',base.data)
+              updateDynamic(this.TreeInformation.Dong.id,this.TreeInformation.Dong).then((dynamic=>{
+                if(dynamic.data.code === 200){
+                  updateGeo(this.TreeInformation.Position.id,this.TreeInformation.Position).then((geo=>{
+                    if(geo.data.code === 200){
+                      console.log('xxxxpic',this.TreeInformation.Pic.path)
+                      updatePic(this.TreeInformation.Pic.id,this.TreeInformation.Pic).then((pic=>{
+                        if(pic.data.code === 200){
+                          updateBrand(this.TreeInformation.Brand.id,this.TreeInformation.Brand).then((brand=>{
+                            if(brand.data.code === 200){
+                              updateTjxmRecord(this.TreeInformation.Base.id,this.tjxm_record).then((tjxm=>{
+                                if(tjxm.data.code === 200){
+                                  this.$Message.success('修改保存成功')
+                                  // setTimeout(()=>{
+                                  //   this.$router.push({ path: `/survey/base_survey` })
+                                  // },200)
+                                }
+                              }))
+                            }
+                          }))
+                        }
+                      }))
+                    }
+                  }))
+                }
+              }))
+            }
+          }))
+
+        }else {
+          this.$Message.error('请填写完整信息')
+        }
+      })
+    },
+    Submit: function () {
+
+      this.$refs.Tree_form.validate((valid) => {
+          console.log(valid)
+          if (valid) {
+            this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
+            this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
+            this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
+            this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
+            this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
+            this.tjxm_record.username = this.TreeInformation.Dong.username
+            this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
+            this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
+            this.tjxm_record.status = '已完成'
+
+
+            updateBasic(this.tree_code, this.TreeInformation.Base).then((base=>{
+              if(base.data.code === 200){
+                console.log('base',base.data)
+                updateDynamic(this.TreeInformation.Dong.id,this.TreeInformation.Dong).then((dynamic=>{
+                  if(dynamic.data.code === 200){
+                    updateGeo(this.TreeInformation.Position.id,this.TreeInformation.Position).then((geo=>{
+                      if(geo.data.code === 200){
+                        console.log('xxxxpic',this.TreeInformation.Pic.path)
+                        updatePic(this.TreeInformation.Pic.id,this.TreeInformation.Pic).then((pic=>{
+                          if(pic.data.code === 200){
+                            updateBrand(this.TreeInformation.Brand.id,this.TreeInformation.Brand).then((brand=>{
+                              if(brand.data.code === 200){
+                                updateTjxmRecord(this.TreeInformation.Base.id,this.tjxm_record).then((tjxm=>{
+                                  if(tjxm.data.code === 200){
+                                    this.$Message.success('修改提交成功')
+                                    // setTimeout(()=>{
+                                    //   this.$router.push({ path: `/survey/base_survey` })
+                                    // },200)
+                                  }
+                                }))
+                              }
+                            }))
+                          }
+                        }))
+                      }
+                    }))
+                  }
+                }))
+              }
+            }))
+
+          }else {
+            this.$Message.error('请填写完整信息')
+          }
+      })
+
+    },
+
+    fetchData(){
+      getOneTreeBaseInfo(this.tree_code).then((res => {
+        console.error(this.tree_code)
+        console.log('one_tree',res.data)
+        this.TreeInformation.Base = res.data.tree_basic_info.basic
+        this.TreeInformation.tree_code = this.tree_code
+        this.TreeInformation.Position = res.data.tree_basic_info.geo
+        this.TreeInformation.Pic = res.data.tree_basic_info.pic
+        this.TreeInformation.Brand = res.data.tree_basic_info.brand
+        this.TreeInformation.Dong = res.data.tree_basic_info.dynamic
+        this.tjxm_record = res.data.tree_basic_info.record
+        console.log('record',this.tjxm_record)
+        this.picTurnUrl()
+      }))
+
+    },
+    picTurnUrl(){
+      if(this.TreeInformation.Dong.history_pic.length!==0) {
+        this.TreeInformation.Dong.history_pic.forEach((pic_name) => {
+            ShowPic(pic_name).then((resp => {
+              this.historyPicUrlList.push(resp.data)
+            }))
+        })
+      }
+
+      if(this.TreeInformation.Brand.brand_pic.length!==0) {
+        this.TreeInformation.Brand.brand_pic.forEach((pic_name) => {
+            ShowPic(pic_name).then((resp => {
+              this.brandPicUrlList.push(resp.data)
+            }))
+        })
+      }
+
+      if(this.TreeInformation.Pic.path.length!==0) {
+        this.TreeInformation.Pic.path.forEach((pic_name) => {
+            ShowPic(pic_name).then((resp => {
+              this.PicUrlList.push(resp.data)
+            }))
+        })
+      }
+    },
+
     //文化历史照片
     handleView_history (imageUrl) {
       this.showImageUrl =  imageUrl
@@ -1107,66 +1045,58 @@ export default {
         this.i_p++
         ShowPic(res.path).then((resp=>{
           this.PicUrlList.push(resp.data)
+          console.log('&&&&&&pic',this.TreeInformation.Pic.path)
         }))
       }
     },
+  },
+  // created() {
+  //   this.fetchData()
+  // },
+  mounted:function (){
+    this.fetchData()
 
+    this.fetchOptions()
 
+    // setTimeout(()=>{
+    //   this.getTreeType(this.TreeInformation.Base)
+    //
+    // },400)
+    console.log('******',this.TreeInformation.Base.treetype)
+    // getOneTreeBaseInfo(this.tree_code).then((res => {
+    //   console.error(this.tree_code)
+    //   console.log('one_tree',res.data)
+    //   this.TreeInformation.Base = res.data.tree_basic_info.basic
+    //   this.TreeInformation.tree_code = this.tree_code
+    //   console.log('----',this.TreeInformation.Base)
+    //
+    //   this.TreeInformation.Position = res.data.tree_basic_info.geo
+    //   this.TreeInformation.Pic = res.data.tree_basic_info.pic
+    //   this.TreeInformation.Brand = res.data.tree_basic_info.brand
+    //   this.TreeInformation.Dong = res.data.tree_basic_info.dynamic
+    //   // this.TreeInformation.Dong.history_pic.forEach((pic_name)=>{
+    //   //   console.log('pic_name',pic_name)
+    //   //   if(pic_name!== ''){
+    //   //     ShowPic(pic_name).then((resp=>{
+    //   //       console.log('pic',resp)
+    //   //       this.historyPicUrlList.push(resp.data)
+    //   //     }))}
+    //   // })
+    //
+    // }))
+  },
 
-    // var address  = document.getElementById('address').value;
-    getCode (address) {
-      // let map = new AMap.Map("mapContainer", {
-      //   resizeEnable: true
-      // })
-      let that = this
-      console.log(address)
-      let geocoder = new AMap.Geocoder({
-        city: "010", // 城市设为北京，默认：“全国”
-      });
-
-      geocoder.getLocation(address, function (status, result) {
-        console.log(11, result)
-        if (status === 'complete' && result.geocodes.length) {
-          that.lng = result.geocodes[0].location.lng
-          that.lat = result.geocodes[0].location.lat
-          console.error(that.lng, that.lat)
-          let marker = new AMap.Marker({
-            position: new AMap.LngLat(that.lng, that.lat)
-          });
-          that.map.add(marker)
-          that.map.setFitView(marker); // 地图根据描点自适应显示（自动定位放大到标点处）
-        } else {
-          console.error('根据地址查询位置失败');
-        }
-      });
-    }
-
-  }
+  // watch: {
+  //   '$route' (to, from) {
+  //     this.$router.go(0)
+  //
+  //   }
+  //
+  // },
 }
-
 </script>
 
 <style scoped>
-.TextStyle >>> textarea.ivu-input {
-  font-size: 13px;
-}
-.ivu-radio-wrapper {
-  margin-right: 25px;
-}
-.tips {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  float:right;
-  color:#999;
-}
-.regionStyle >>> .ivu-form-item-content {
-  line-height: 16px;
-}
-.regionStyle >>> div.rg-select div.rg-select__el div.rg-select__content  {
-  font-size: 12px;
-}
-
 .demo-upload-list {
   display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
   border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
@@ -1184,5 +1114,12 @@ export default {
 }
 .demo-upload-list-cover i {
   color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;
+}
+
+.regionStyle >>> .ivu-form-item-content {
+  line-height: 16px;
+}
+.regionStyle >>> div.rg-select div.rg-select__el div.rg-select__content  {
+  font-size: 12px;
 }
 </style>

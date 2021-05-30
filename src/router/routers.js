@@ -184,13 +184,23 @@ export default [
         component: () => import('@/view/survey/Diseases')
       },
       {
-        path: 'BaseInfo/:tree_code',
+        path: 'update/BasicInformation/:tree_code',
         name: 'BaseInfo',
         meta: {
           title: '名木古树基本信息',
           hideInMenu: true
         },
-        component: () => import('@/view/survey/Profile/BaseInfo')
+        component: () => import('@/view/survey/Modify/BasicInformation')
+
+      },
+      {
+        path: 'update/environment/:tree_code',
+        name: 'environmentUpdate',
+        meta: {
+          title: '生长环境评价分析',
+          hideInMenu: true
+        },
+        component: () => import('@/view/survey/Modify/environmentUpdate')
 
       },
     ]
