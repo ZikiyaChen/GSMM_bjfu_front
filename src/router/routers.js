@@ -129,6 +129,16 @@ export default [
         },
         component: () => import('@/view/survey/right.vue')
       },
+
+      {
+        path: 'tree_class',
+        name: 'tree_class_page',
+        meta: {
+          icon: 'ios-document',
+          title: '名木古树树种管理'
+        },
+        component: () => import('@/view/survey/TreeClass/TreeClass')
+      },
       {
         path: 'environment/:tree_code',
         name: 'environment',
@@ -201,6 +211,26 @@ export default [
           hideInMenu: true
         },
         component: () => import('@/view/survey/Modify/environmentUpdate')
+
+      },
+      {
+        path: 'update/GrowthVigor/:tree_code',
+        name: 'GrowthVigorUpdate',
+        meta: {
+          title: '生长势分析查看修改',
+          hideInMenu: true
+        },
+        component: () => import('@/view/survey/Modify/GrowthVigorUpdate')
+
+      },
+      {
+        path: 'update/Protect/:tree_code',
+        name: 'ProtectUpdate',
+        meta: {
+          title: '已采取复壮保护措施情况与分析-查看修改',
+          hideInMenu: true
+        },
+        component: () => import('@/view/survey/Modify/ProtectUpdate')
 
       },
     ]

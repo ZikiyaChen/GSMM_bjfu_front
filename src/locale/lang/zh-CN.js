@@ -13,8 +13,14 @@ export default {
   userinfo: '用户个人信息',
   usermanager: '用户管理',
   users: '用户中心',
-  BaseInfo: '名木古树基本信息查看修改',
+
+  BaseInfo: '名木古树基本信息',
   environmentUpdate: '生长环境评估分析查看修改',
+  GrowthVigorUpdate:'生长势分析查看修改',
+  ProtectUpdate:'已采取复壮保护措施情况与分析-查看修改',
+
+  tree_class_page: '名木古树树种管理',
+
   components: '组件',
   count_to_page: '数字渐变',
   tables_page: '多功能表格',

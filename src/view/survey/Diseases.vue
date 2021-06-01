@@ -2,6 +2,48 @@
 <div>
   <Card>
     <h2 slot="title" style="text-align: center">病虫害情况分析</h2>
+    <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
+      <h4>古树基本信息</h4>
+      <Row>
+        <Col  span="5" offset="2">
+          <FormItem label="古树编号">
+            <Input disabled  v-model="tree_code" class="TextColor"></Input>
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="5" offset="2">
+          <FormItem label="科" prop="Base.family">
+            <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
+          </FormItem>
+        </Col>
+        <Col span="5" >
+          <FormItem label="属" prop="Base.genus">
+            <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
+          </FormItem>
+        </Col>
+        <Col span="5" >
+          <FormItem label="中文名" prop="Base.zw_name">
+            <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span="5" offset="2">
+          <FormItem label="拉丁名" prop="Base.ld_name">
+            <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
+          </FormItem>
+        </Col>
+        <Col span="5">
+          <FormItem label="俗名" prop="Base.bm_name">
+            <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
+            </Input>
+          </FormItem>
+        </Col>
+      </Row>
+    </Form>
+    <Divider></Divider>
     <Form :label-width="198" label-position="right"  ref="Diseases_form" :model="Diseases" :rules="ruleValidate" inline>
       <h4>树干基部：</h4>
       <Row>
@@ -358,27 +400,80 @@
         </Col>
       </Row>
 
+      <Row>
+        <Col span="9" offset="2">
+          <FormItem label="调查人" prop="investigate_username">
+            <Input v-model="Diseases.investigate_username" placeholder="请输入调查人姓名"></Input>
+          </FormItem>
+        </Col>
+        <Col span="9">
+          <FormItem label="调查时间" prop="update_time">
+            <DatePicker v-model="Diseases.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+          </FormItem>
+        </Col>
+      </Row>
+
     </Form>
-    <div style="text-align: center">
-      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-    </div>
-    <Button @click="Tree">古树编号</Button>
+
+    <float_bar>
+      <div style="text-align: center" v-show="isShow">
+        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+
+        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
+        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
+        <router-link :to="{path: `/survey/base_survey`}">
+          <Button type="primary" style="margin-right: 30px">返回</Button>
+        </router-link>
+      </div>
+
+      <div style="text-align: center" v-show="isSubmit">
+        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+
+        <router-link :to="{path: `/survey/base_survey`}">
+          <Button type="primary" style="margin-right: 30px">返回</Button>
+        </router-link>
+      </div>
+    </float_bar>
   </Card>
+
+  <Modal
+    v-model="showPreviousPageModal"
+    title="提醒"
+    @on-ok="okPrevious"
+    @on-cancel="cancelPrevious">
+    <p>上一页为《树体倾斜、空腐情况检测》，
+      该古树的《树体倾斜、空腐情况检测》尚未填写，</p>
+    <p>如果需要填写，请点击“确定”</p>
+  </Modal>
 </div>
 </template>
 
 <script>
 import { damageList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
-import { AddBchAnalysis} from "@/api/table"
+import {
+  AddBchAnalysis,
+  AddStssAnalysis,
+  getDamage,
+  getDiseases,
+  getOneTreeBaseInfo,
+  postTjxmRecord,
+  queryTjxmRecord, updateDamage, updateDiseases, updateTjxmRecord
+} from "@/api/table"
 import {ShowPic} from "@/api/upload";
+import Float_bar from "_c/FloatBar/float_bar";
 
 export default {
   name: "Diseases",
+  components: {Float_bar},
   data () {
     return {
+      showPreviousPageModal: false,
+
+      isShow: false,
+      isSubmit: false,
+
       tree_code: Number(this.$route.params.tree_code),
       OptionList: damageList,
 
@@ -404,30 +499,50 @@ export default {
       i_branch: 0,
       PicUrlList_branch: [],
 
+      TreeInformation:{
+        Base:{
+          family:'',
+          genus:'',
+          zw_name:'',
+          ld_name:''
+        }
+      },
+
+      tjxm_record:{
+        t_id: 0,
+        type: '病虫害情况分析',
+        username: '',
+        status: '',
+        type_yw: 'Diseases',
+        time: ''
+      },
+
       Diseases: {
-        bmoth_status: '无', // 树干基部-蛀干害虫情况
+        id: 0,
+        investigate_username: '',
+        bmoth_status: '', // 树干基部-蛀干害虫情况
         bmoth_name: '', // 树干基部-害虫名称
-        bdisease_status: '无', // 树干基部-病害情况
+        bdisease_status: '', // 树干基部-病害情况
         bdisease_name: '', // 树干基部-病害名称
         base_pic: [], // 树干基部-特征照片
 
-        tmoth_status: '无', // 树干-蛀干害虫情况
+        tmoth_status: '', // 树干-蛀干害虫情况
         tmoth_name: '', // 树干-蛀干害虫名称
-        tdisease_status: '无', // 树干-病害情况
+        tdisease_status: '', // 树干-病害情况
         tdisease_name: '', // 树干-病害名称
         trunk_pic: [], // 树干-特征照片
 
-        smoth_status: '无', // 构成骨架大枝-蛀干害虫情况
+        smoth_status: '', // 构成骨架大枝-蛀干害虫情况
         smoth_name: '', // 构成骨架大枝-蛀干害虫名称
-        sdisease_status: '无', // 构成骨架大枝-病害情况
+        sdisease_status: '', // 构成骨架大枝-病害情况
         sdisease_name: '', // 构成骨架大枝-病害名称
         ske_pic: [], // 构成骨架大枝-特征照片
 
-        blade_status: '无', // 叶片-病害情况
+        blade_status: '', // 叶片-病害情况
         blade_name: '', // 叶片-病害名称
         blade_pic: [], // 叶片-特征照片
 
-        branch_status: '无', // 枝梢-蛀干害虫情况
+        branch_status: '', // 枝梢-蛀干害虫情况
         branch_name: '', // 枝梢-蛀干害虫名称
         branch_pic: [], // 枝梢-特征照片
 
@@ -444,39 +559,190 @@ export default {
         sdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
         blade_status: [{ required: true, trigger: 'change', message: '请选择' }],
         branch_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        investigate_username: [{ required: true, trigger: 'blur', message: '请填写调查人姓名' }],
+        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }]
 
       }
     }
   },
+  created() {
+    this.fetchTreeBasicData()
+    this.fetchData()
+  },
   methods: {
 
-    PreviousPage () {
+    okPrevious(){
+      this.showPreviousPageModal = false
       this.$router.push({ path: `/survey/Incline/${this.tree_code}` })
+
     },
-    Tree () {
-      console.log(11, this.tree_code)
-      console.log(typeof (this.tree_code))
+    cancelPrevious(){
+      this.showPreviousPageModal = false
     },
-    Submit: function () {
+    PreviousPage () {
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Incline'}).then((res=>{
+        console.log('%%%%',res)
+        if(res.data.total !== 0){
+          // this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
+          this.$router.push({ path: `/survey/Incline/${this.tree_code}` })
+        }else {
+          this.showPreviousPageModal = true
+        }
+      }))
+    },
+
+
+    fetchTreeBasicData(){
+      getOneTreeBaseInfo(this.tree_code).then((res => {
+        this.TreeInformation.Base = res.data.tree_basic_info.basic
+      }))
+    },
+    fetchData(){
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Diseases'}).then((record=>{
+        if(record.data.total!==0){
+          this.isShow = false
+          this.isSubmit = true
+          this.tjxm_record = record.data.tjxm_records[0]
+          getDiseases({'id':this.tjxm_record.t_id}).then((res=>{
+            this.Diseases = res.data.tree_Bch
+            this.fetchPic()
+          }))
+        }else {
+          this.isShow =true
+          this.isSubmit = false
+        }
+      }))
+    },
+    fetchPic(){
+      this.PicUrlList_base=[]
+      this.PicUrlList_trunk=[]
+      this.PicUrlList_ske=[]
+      this.PicUrlList_blade=[]
+      this.PicUrlList_branch=[]
+
+      if(this.Diseases.base_pic.length!==0) {
+        this.Diseases.base_pic.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList_base.push(resp.data)
+          }))
+        })
+      }
+      if(this.Diseases.trunk_pic.length!==0) {
+        this.Diseases.trunk_pic.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList_trunk.push(resp.data)
+          }))
+        })
+      }
+      if(this.Diseases.ske_pic.length!==0) {
+        this.Diseases.ske_pic.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList_ske.push(resp.data)
+          }))
+        })
+      }
+      if(this.Diseases.blade_pic.length!==0) {
+        this.Diseases.blade_pic.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList_blade.push(resp.data)
+          }))
+        })
+      }
+      if(this.Diseases.branch_pic.length!==0) {
+        this.Diseases.branch_pic.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList_branch.push(resp.data)
+          }))
+        })
+      }
+    },//*****
+
+    TiJiao(){
       this.Diseases.tree_code = this.tree_code
-      AddBchAnalysis(this.Diseases).then(res => {
-        console.log(res)
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    Save: function () {
-      // this.changeLoading()
       this.$refs.Diseases_form.validate((valid) => {
         console.log(valid)
         if (valid) {
-          this.Diseases.update_time = dateToString(this.date, 'yyyy-MM-dd hh:mm:ss')
-          console.error(this.Diseases)
-          this.$Message.success('保存成功')
+          this.Diseases.update_time = dateToString(this.Diseases.update_time, 'yyyy-MM-dd hh:mm:ss')
+          this.tjxm_record.username = this.Diseases.investigate_username
+          AddBchAnalysis(this.Diseases).then(res => {
+            getDiseases({'tree_code':this.tree_code}).then((resp=>{
+              this.tjxm_record.t_id =resp.data.tree_Bch.id
+              postTjxmRecord(this.tjxm_record).then((record=>{
+                if(record.data.code ===200){
+                  if(this.tjxm_record.status === '已完成'){
+                    this.$Message.success('提交成功')
+                    this.fetchData()
+                  }else {
+                    this.$Message.success('保存成功')
+                    this.fetchData()
+                  }
+                }else {
+                  if(this.tjxm_record.status === '已完成'){
+                    this.$Message.success('提交失败')
+                  }else {
+                    this.$Message.success('保存失败')
+                  }
+                }
+              }))
+            }))
+            console.log('####',res)
+          }).catch(err => {
+            console.log(err)
+          })
+
         } else {
           this.$Message.error('请填写完整信息')
         }
       })
+    },
+
+    Submit: function () {
+      this.tjxm_record.status = '已完成'
+      this.TiJiao()
+    },
+    Save: function () {
+      // this.changeLoading()
+      this.tjxm_record.status = '待提交'
+      this.TiJiao()
+    },
+
+    Update(){
+      this.Diseases.tree_code = this.tree_code
+      this.$refs.Diseases_form.validate((valid) => {
+
+        if (valid) {
+          this.Diseases.update_time = dateToString(this.Diseases.update_time, 'yyyy-MM-dd hh:mm:ss')
+          this.tjxm_record.username = this.Diseases.investigate_username
+          updateDiseases(this.Diseases.id,this.Diseases).then((res=>{
+            if(res.data.code === 200 ){
+              updateTjxmRecord(this.Diseases.id,this.tjxm_record).then((record=>{
+                if(res.data.code === 200 ){
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.success('修改提交成功')
+                    this.fetchData()
+                  }else {
+                    this.$Message.success('修改保存成功')
+                    this.fetchData()
+                  }
+                }else {
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.error('修改提交失败')
+                  }else {
+                    this.$Message.error('修改保存失败')
+                  }
+                }
+              }))
+            }
+          }))
+        } else {
+          this.$Message.error('请填写完整信息')
+        }
+      })
+    },
+
+    SubmitUpdate(){
+      this.tjxm_record.status = '已完成'
+      this.Update()
     },
 
     // 特征照片base

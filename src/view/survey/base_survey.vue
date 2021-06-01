@@ -19,6 +19,11 @@
       <FormItem >
         <Button type="primary" @click=" onSearch">查询</Button>
       </FormItem>
+      <FormItem>
+      <router-link :to="{path: `/survey/right`}">
+        <Button type="success" style="margin-right: 30px">新增古树</Button>
+      </router-link>
+      </FormItem>
     </Form>
 <!--    <Steps :current="2" size="small">-->
 <!--      <Step title ="已完成"></Step>-->
@@ -235,15 +240,11 @@ export default {
                 },
                 on: {
                   click: () => {
-                    console.log('删除',params)
+
                     this.seleceted_tree_code = params.row.tree_code
                     this.showDeleteModal=true
 
-                    // deleteOneTree(params.row.tree_code).then((res=>{
-                    //   if(res.data.code === 200){
-                    //     this.$Message.success('该古树删除成功')
-                    //   }
-                    // }))
+
 
                   }
                 }
@@ -304,7 +305,7 @@ export default {
     },
     fetchData: function () {
       // 数据表发生变化请求数据
-      console.error('####',this.query.tree_code)
+
       let args={}
       if(this.query.tree_code) {
         args = {...this.query, ...this.pages}

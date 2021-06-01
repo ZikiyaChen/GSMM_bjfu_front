@@ -423,20 +423,29 @@
           </Col>
         </Row>
       </Form>
+      <float_bar>
       <div style="text-align: center">
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
         <router-link :to="{path: `/survey/update/BasicInformation/${this.tree_code}` }">
           <Button type="primary" style="margin-right: 30px">上一页</Button>
         </router-link>
+        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
         <router-link :to="{path: `/survey/base_survey`}">
-          <Button type="primary" >返回</Button>
+          <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
       </div>
-
+      </float_bar>
     </Card>
-    <Button @click="Tree">古树编号</Button>
+    <Modal
+      v-model="showNextPageModal"
+      title="提醒"
+      @on-ok="ok"
+      @on-cancel="cancel">
+      <p>下一页为《生长势分析》，
+        该古树的《生长势》尚未填写，</p>
+      <p>如果需要填写，请点击“确定”</p>
+    </Modal>
 
   </div>
 </template>
@@ -452,14 +461,25 @@ import {
   variaList
 } from "@/view/survey/options";
 import {dateToString} from "@/libs/tools";
-import {updateEnvironment,getNewGeAnalysis, getOneTjxmRecord, getOneTreeBaseInfo, postTjxmRecord,updateTjxmRecord} from "@/api/table";
+import {
+  updateEnvironment,
+  getNewGeAnalysis,
+  getOneTjxmRecord,
+  getOneTreeBaseInfo,
+  postTjxmRecord,
+  updateTjxmRecord,
+  queryTjxmRecord
+} from "@/api/table";
 import {ShowPic} from "@/api/upload";
 import environment from "@/view/survey/environment";
+import Float_bar from "_c/FloatBar/float_bar";
 
 export default {
   name: "environmentUpdate",
+  components: {Float_bar},
   data () {
     return {
+      showNextPageModal:false,
       loading: false,
 
       showImageUrl: '',
@@ -581,6 +601,26 @@ export default {
     // this.fetchOptions()
   },
   methods: {
+    ok(){
+      this.showNextPageModal = false
+      this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
+
+    },
+    cancel(){
+      this.showNextPageModal = false
+    },
+    NextPage(){
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'GrowthVigor'}).then((res=>{
+        console.log('%%%%',res)
+        if(res.data.total !== 0){
+          this.$router.push({ path: `/survey/update/GrowthVigor/${this.tree_code}` })
+        }else {
+          this.showNextPageModal = true
+          // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
+          // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
+        }
+      }))
+    },
     Tjxm(){
       console.error('*****',this.tjxm_record)
       console.error('#####',this.environment.investigate_username)
@@ -651,9 +691,9 @@ export default {
                   }
                 }else {
                   if(this.tjxm_record.status === '已完成') {
-                    this.$Message.error('修改提交成功')
+                    this.$Message.error('修改提交失败')
                   }else {
-                    this.$Message.error('修改保存成功')
+                    this.$Message.error('修改保存失败')
                   }
                 }
               }))
@@ -746,10 +786,10 @@ export default {
     //   }, 5)
     // },
 
-    // 下一页跳转
-    NextPage () {
-      this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
-    },
+    // // 下一页跳转
+    // NextPage () {
+    //   this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
+    // },
   }
 }
 </script>

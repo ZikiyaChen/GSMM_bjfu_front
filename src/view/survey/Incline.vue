@@ -2,6 +2,49 @@
 <div>
   <Card>
     <h2 slot="title" style="text-align: center">树体倾斜、空腐情况检测</h2>
+    <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
+      <h4>古树基本信息</h4>
+      <Row>
+        <Col  span="5" offset="3">
+          <FormItem label="古树编号">
+            <Input disabled  v-model="tree_code" class="TextColor"></Input>
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="5" offset="3">
+          <FormItem label="科" prop="Base.family">
+            <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
+          </FormItem>
+        </Col>
+        <Col span="5" >
+          <FormItem label="属" prop="Base.genus">
+            <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
+          </FormItem>
+        </Col>
+        <Col span="5" >
+          <FormItem label="中文名" prop="Base.zw_name">
+            <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span="5" offset="3">
+          <FormItem label="拉丁名" prop="Base.ld_name">
+            <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
+          </FormItem>
+        </Col>
+        <Col span="5">
+          <FormItem label="俗名" prop="Base.bm_name">
+            <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
+            </Input>
+          </FormItem>
+        </Col>
+      </Row>
+    </Form>
+    <Divider></Divider>
+    <h4>树体倾斜、空腐情况检测</h4>
     <Form :label-width="198" label-position="right"  ref="Incline_form" :model="Incline" :rules="ruleValidate" inline>
       <Row>
         <Col offset="2">
@@ -19,12 +62,12 @@
       </Row>
       <Row>
         <Col offset="2">
-          <FormItem prop="pic1">
+          <FormItem prop="pic_1">
             <span slot="label" style="font-size: 13px">树基松动特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList1" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_1(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_1(index)"></Icon>
               </div>
             </div>
@@ -37,14 +80,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v1">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v1" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -68,12 +111,12 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="pic2">
+          <FormItem prop="pic_2">
             <span slot="label" style="font-size: 13px">根部腐朽特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList2" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_2(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_2(index)"></Icon>
               </div>
             </div>
@@ -86,17 +129,16 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v2">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v2" style="width: 100%" />
             </Modal>
           </FormItem>
-
         </Col>
       </Row>
 
@@ -127,12 +169,12 @@
       </Row>
       <Row>
         <Col offset="2">
-          <FormItem prop="pic3">
+          <FormItem prop="pic_3">
             <span slot="label" style="font-size: 13px">根部裸露特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList3" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_3(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_3(index)"></Icon>
               </div>
             </div>
@@ -145,14 +187,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v3">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v3" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -191,12 +233,12 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="pic4">
+          <FormItem prop="pic_4">
             <span slot="label" style="font-size: 13px">主干倾斜特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList4" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_4(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_4(index)"></Icon>
               </div>
             </div>
@@ -209,14 +251,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v4">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v4" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -240,12 +282,12 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="pic5">
+          <FormItem prop="pic_5">
             <span slot="label" style="font-size: 13px">分枝点部位异常特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList5" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_5(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_5(index)"></Icon>
               </div>
             </div>
@@ -258,14 +300,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v5">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v5" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -288,12 +330,12 @@
       </Row>
       <Row>
         <Col offset="2">
-          <FormItem prop="pic6">
+          <FormItem prop="pic_6">
             <span slot="label" style="font-size: 13px">偏冠特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList6" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_6(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_6(index)"></Icon>
               </div>
             </div>
@@ -306,14 +348,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v6">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v6" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -336,12 +378,12 @@
       </Row>
       <Row>
         <Col offset="2">
-          <FormItem prop="pic7">
+          <FormItem prop="pic_7">
             <span slot="label" style="font-size: 13px">枯枝特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList7" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_7(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_7(index)"></Icon>
               </div>
             </div>
@@ -354,14 +396,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v7">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v7" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -384,12 +426,12 @@
       </Row>
       <Row>
         <Col offset="2">
-          <FormItem prop="pic8">
+          <FormItem prop="pic_8">
             <span slot="label" style="font-size: 13px">枝条整理留茬特征照片</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList8" :key="index">
-              <img :src="'/api'+item"  />
+              <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView_8(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemoveList_8(index)"></Icon>
               </div>
             </div>
@@ -402,14 +444,14 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/upload"
+              action="/api/uploadpic"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <Modal title="图片预览" v-model="visible">
-              <img :src="showImageUrl" v-if="visible" style="width: 100%" />
+            <Modal title="图片预览" v-model="v8">
+              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v8" style="width: 100%" />
             </Modal>
           </FormItem>
 
@@ -440,34 +482,96 @@
         </Col>
       </Row>
 
+      <Row>
+        <Col span="9" offset="2">
+          <FormItem label="调查人" prop="investigate_username">
+            <Input v-model="Incline.investigate_username" placeholder="请输入调查人姓名"></Input>
+          </FormItem>
+        </Col>
+        <Col span="9">
+          <FormItem label="调查时间" prop="update_time">
+            <DatePicker v-model="Incline.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+          </FormItem>
+        </Col>
+      </Row>
+
     </Form>
-    <div style="text-align: center">
-      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-      <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
+    <float_bar>
+    <div style="text-align: center" v-show="isShow">
       <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+      <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
       <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
+      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
+      <router-link :to="{path: `/survey/base_survey`}">
+        <Button type="primary" style="margin-right: 30px">返回</Button>
+      </router-link>
     </div>
-    <Button @click="Tree">古树编号</Button>
+
+    <div style="text-align: center" v-show="isSubmit">
+      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+      <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
+      <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+
+      <router-link :to="{path: `/survey/base_survey`}">
+        <Button type="primary" style="margin-right: 30px">返回</Button>
+      </router-link>
+    </div>
+    </float_bar>
   </Card>
+
+  <Modal
+    v-model="showNextPageModal"
+    title="提醒"
+    @on-ok="okNext"
+    @on-cancel="cancelNext">
+    <p>下一页为《病虫害发生情况分析》，
+      该古树的《病虫害发生情况分析》尚未填写，</p>
+    <p>如果需要填写，请点击“确定”</p>
+  </Modal>
+  <Modal
+    v-model="showPreviousPageModal"
+    title="提醒"
+    @on-ok="okPrevious"
+    @on-cancel="cancelPrevious">
+    <p>上一页为《树体损伤情况评估》，
+      该古树的《树体损伤情况评估》尚未填写，</p>
+    <p>如果需要填写，请点击“确定”</p>
+  </Modal>
 </div>
 </template>
 
 <script>
 import { base_looseList, damageList, has_absoundList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
-import { AddqxkfDetect, AddStssAnalysis } from "@/api/table";
+import {
+  AddGpAnalysis,
+  AddqxkfDetect,
+  AddStssAnalysis,
+  getGrowthVigorById,
+  getIncline, getNewGrowthVigor,
+  getOneTreeBaseInfo, postTjxmRecord,
+  queryTjxmRecord, updateGrowthVigor, updateIncline, updateTjxmRecord
+} from "@/api/table";
+import {ShowPic} from "@/api/upload";
+import Float_bar from "_c/FloatBar/float_bar";
 
 export default {
   name: "Incline",
+  components: {Float_bar},
   data () {
     return {
+
+      isShow: false,
+      isSubmit: false,
+      showNextPageModal:false,
+      showPreviousPageModal:false,
       tree_code: Number(this.$route.params.tree_code),
       BaseLooseList: base_looseList,
       OptionList: damageList,
       HasAbsoundList: has_absoundList,
 
       showImageUrl: '',
-      visible: false,
+
 
       i1: 0,
       PicUrlList1: [],
@@ -485,26 +589,54 @@ export default {
       PicUrlList7: [],
       i8: 0,
       PicUrlList8: [],
+      v1: false,
+      v2: false,
+      v3: false,
+      v4: false,
+      v5: false,
+      v6: false,
+      v7: false,
+      v8: false,
+
+      TreeInformation:{
+        Base:{
+          family:'',
+          genus:'',
+          zw_name:'',
+          ld_name:''
+        }
+      },
+
+      tjxm_record:{
+        t_id: 0,
+        type: '树体倾斜、空腐情况检测',
+        username: '',
+        status: '',
+        type_yw: 'Incline',
+        time: ''
+      },
 
       Incline: {
+        id: 0,
+        investigate_username: '',
         base_loose: '', // *树基松动结果
-        pic_1: '', // *树基松动照片
+        pic_1: [], // *树基松动照片
         root_rot: '', // *根部腐朽结果
-        pic_2: '', // *根部腐朽照片
+        pic_2: [], // *根部腐朽照片
         root_bare: '', // *根部裸露结果
         bare_length: 0, // *根部裸露总长度
-        pic_3: '', // *根部裸露照片
+        pic_3: [], // *根部裸露照片
         has_absound: 0, // *主干异常音
         trunk_inclined: '', // 主干倾斜结果
-        pic_4: '', // 主干倾斜照片
+        pic_4: [], // 主干倾斜照片
         has_abbranch: '', // 分枝点部位异常结果
-        pic_5: '', // 分枝点部位异常照片
+        pic_5: [], // 分枝点部位异常照片
         lopsided: '', // 偏冠结果
-        pic_6: '', // 偏冠照片
+        pic_6: [], // 偏冠照片
         deadwood: '', // 枯枝结果
-        pic_7: '', // 枯枝照片
+        pic_7: [], // 枯枝照片
         twig: '', // 枝条整理留茬结果
-        pic_8: '', // 枝条整理留茬照片
+        pic_8: [], // 枝条整理留茬照片
         empty_rot_rate: 0, // 主干空腐率
         qxkf_eval: '', // 倾斜空腐情况评价
         update_time: '',
@@ -520,40 +652,235 @@ export default {
         lopsided: [{ required: true, trigger: 'change', message: '请选择' }],
         deadwood: [{ required: true, trigger: 'change', message: '请选择' }],
         twig: [{ required: true, trigger: 'change', message: '请选择' }],
+        investigate_username: [{ required: true, trigger: 'blur', message: '请填写调查人姓名' }],
+        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }]
       }
     }
   },
+  created() {
+    this.fetchTreeBasicData()
+    this.fetchData()
+  },
   methods: {
-    NextPage () {
-      this.$router.push({ path: `/survey/Diseases/${this.tree_code}` })
+
+
+    fetchData(){
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Incline'}).then((record=>{
+        if(record.data.total!==0){
+          this.isShow = false
+          this.isSubmit = true
+          this.tjxm_record = record.data.tjxm_records[0]
+
+          getIncline({'id':this.tjxm_record.t_id}).then((res=>{
+            this.Incline = res.data.tree_Incline
+            this.fetchPic()
+          }))
+        }else {
+          this.isShow =true
+          this.isSubmit = false
+        }
+      }))
     },
-    PreviousPage () {
-      this.$router.push({ path: `/survey/damage/${this.tree_code}` })
+    fetchPic(){
+      this.PicUrlList1=[]
+      this.PicUrlList2=[]
+      this.PicUrlList3=[]
+      this.PicUrlList4=[]
+      this.PicUrlList5=[]
+      this.PicUrlList6=[]
+      this.PicUrlList7=[]
+      this.PicUrlList8=[]
+      if(this.Incline.pic_1.length!==0) {
+        this.Incline.pic_1.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList1.push(resp.data)
+          }))
+        })
+      }
+      if(this.Incline.pic_2.length!==0) {
+        this.Incline.pic_2.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList2.push(resp.data)
+          }))
+        })
+      }
+      if(this.Incline.pic_3.length!==0) {
+        this.Incline.pic_3.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList3.push(resp.data)
+          }))
+        })
+      }
+      if(this.Incline.pic_4.length!==0) {
+        this.Incline.pic_4.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList4.push(resp.data)
+          }))
+        })
+      }
+      if(this.Incline.pic_5.length!==0) {
+        this.Incline.pic_5.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList5.push(resp.data)
+          }))
+        })
+      }
+      if(this.Incline.pic_6.length!==0) {
+        this.Incline.pic_6.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList6.push(resp.data)
+          }))
+        })
+      }
+      if(this.Incline.pic_7.length!==0) {
+        this.Incline.pic_7.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList7.push(resp.data)
+          }))
+        })
+      }
+      if(this.Incline.pic_8.length!==0) {
+        this.Incline.pic_8.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList8.push(resp.data)
+          }))
+        })
+      }
     },
-    Tree () {
-      console.log(11, this.tree_code)
-      console.log(typeof (this.tree_code))
+    fetchTreeBasicData(){
+      getOneTreeBaseInfo(this.tree_code).then((res => {
+        this.TreeInformation.Base = res.data.tree_basic_info.basic
+      }))
     },
-    Submit: function () {
+
+    TiJiao(){
       this.Incline.tree_code = this.tree_code
-      AddqxkfDetect(this.Incline).then(res => {
-        console.log(res)
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    Save: function () {
-      // this.changeLoading()
       this.$refs.Incline_form.validate((valid) => {
         console.log(valid)
         if (valid) {
-          this.Incline.update_time = dateToString(this.date, 'yyyy-MM-dd hh:mm:ss')
-          console.error(this.Incline)
-          this.$Message.success('保存成功')
+          this.Incline.update_time = dateToString(this.Incline.update_time, 'yyyy-MM-dd hh:mm:ss')
+          this.tjxm_record.username = this.Incline.investigate_username
+          AddqxkfDetect(this.Incline).then(res => {
+            getIncline({'tree_code':this.tree_code}).then((resp=>{
+              console.error(resp.data)
+              this.tjxm_record.t_id =resp.data.tree_Incline.id
+              postTjxmRecord(this.tjxm_record).then((record=>{
+                if(record.data.code ===200){
+                  if(this.tjxm_record.status === '已完成'){
+                    this.$Message.success('提交成功')
+                    this.fetchData()
+                  }else {
+                    this.$Message.success('保存成功')
+                    this.fetchData()
+                  }
+                }else {
+                  if(this.tjxm_record.status === '已完成'){
+                    this.$Message.success('提交失败')
+                  }else {
+                    this.$Message.success('保存失败')
+                  }
+                }
+              }))
+            }))
+            console.log('####',res)
+          }).catch(err => {
+            console.error(err)
+          })
         } else {
           this.$Message.error('请填写完整信息')
         }
       })
+    },
+
+    Submit() {
+      this.tjxm_record.status = '已完成'
+      this.TiJiao()
+    },
+    Save() {
+      // this.changeLoading()
+      this.tjxm_record.status = '待提交'
+      this.TiJiao()
+    },
+
+    Update(){
+      this.Incline.tree_code = this.tree_code
+      this.$refs.Incline_form.validate((valid) => {
+        console.log(valid)
+        if (valid) {
+          this.Incline.update_time = dateToString(this.Incline.update_time, 'yyyy-MM-dd hh:mm:ss')
+          this.tjxm_record.username = this.Incline.investigate_username
+          updateIncline(this.Incline.id,this.Incline).then((res=>{
+            if(res.data.code === 200 ){
+              updateTjxmRecord(this.Incline.id,this.tjxm_record).then((record=>{
+                if(res.data.code === 200 ){
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.success('修改提交成功')
+                    this.fetchData()
+                  }else {
+                    this.$Message.success('修改保存成功')
+                    this.fetchData()
+                  }
+                }else {
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.error('修改提交失败')
+                  }else {
+                    this.$Message.error('修改保存失败')
+                  }
+                }
+              }))
+            }
+          }))
+        } else {
+          this.$Message.error('请填写完整信息')
+        }
+      })
+    },
+
+    SubmitUpdate(){
+      this.tjxm_record.status = '已完成'
+      this.Update()
+    },
+
+
+    okNext(){
+      this.showNextPageModal = false
+      this.$router.push({ path: `/survey/Diseases/${this.tree_code}` })
+
+    },
+    cancelNext(){
+      this.showNextPageModal = false
+    },
+    NextPage(){
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Diseases'}).then((res=>{
+        console.log('%%%%',res)
+        if(res.data.total !== 0){
+          // this.$router.push({ path: `/survey/update/Protect/${this.tree_code}` })
+          this.$router.push({ path: `/survey/Diseases/${this.tree_code}` })
+        }else {
+          this.showNextPageModal = true
+          // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
+          // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
+        }
+      }))
+    },
+    okPrevious(){
+      this.showPreviousPageModal = false
+      this.$router.push({ path: `/survey/damage/${this.tree_code}` })
+
+    },
+    cancelPrevious(){
+      this.showPreviousPageModal = false
+    },
+    PreviousPage () {
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'damage'}).then((res=>{
+        console.log('%%%%',res)
+        if(res.data.total !== 0){
+          // this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
+          this.$router.push({ path: `/survey/damage/${this.tree_code}` })
+        }else {
+          this.showPreviousPageModal = true
+        }
+      }))
     },
 
     handleMaxSize (file) {
@@ -562,104 +889,164 @@ export default {
         desc: '文件 ' + file.name + '太大,不能超过 2M.'
       })
     },
-    handleView (imageUrl) {
-      this.showImageUrl = '/api' + imageUrl
-      this.visible = true
-    },
 
-    // 树基松动特征照片
+    handleView_1 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v1 = true
+    },
     handleRemoveList_1 (index) {
       // 删除
+      this.Incline.pic_1.splice(index, 1)
       this.PicUrlList1.splice(index, 1)
     },
     handleSuccessList_1: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList1.push(res.path)
+        this.Incline.pic_1.push(res.path)
         this.i1++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList1.push(resp.data)
+        }))
       }
     },
 
+
     // 根部腐朽特征照片
+    handleView_2 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v2 = true
+    },
     handleRemoveList_2 (index) {
       // 删除
+      this.Incline.pic_2.splice(index, 1)
       this.PicUrlList2.splice(index, 1)
     },
     handleSuccessList_2: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList2.push(res.path)
+        this.Incline.pic_2.push(res.path)
         this.i2++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList2.push(resp.data)
+        }))
       }
     },
 
     // 根部裸露特征照片
+    handleView_3 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v3 = true
+    },
     handleRemoveList_3 (index) {
       // 删除
+      this.Incline.pic_3.splice(index, 1)
       this.PicUrlList3.splice(index, 1)
     },
     handleSuccessList_3: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList3.push(res.path)
+        this.Incline.pic_3.push(res.path)
         this.i3++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList3.push(resp.data)
+        }))
       }
     },
 
     // 主干倾斜特征照片
+    handleView_4 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v4 = true
+    },
     handleRemoveList_4 (index) {
       // 删除
+      this.Incline.pic_4.splice(index, 1)
       this.PicUrlList4.splice(index, 1)
     },
     handleSuccessList_4: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList4.push(res.path)
+        this.Incline.pic_4.push(res.path)
         this.i4++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList4.push(resp.data)
+        }))
       }
     },
 
     // 分枝点部位异常特征照片
+    handleView_5 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v5 = true
+    },
     handleRemoveList_5 (index) {
       // 删除
+      this.Incline.pic_5.splice(index, 1)
       this.PicUrlList5.splice(index, 1)
     },
     handleSuccessList_5: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList5.push(res.path)
+        this.Incline.pic_5.push(res.path)
         this.i5++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList5.push(resp.data)
+        }))
       }
     },
 
     // 偏冠特征照片
+    handleView_6 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v6 = true
+    },
     handleRemoveList_6 (index) {
       // 删除
-      this.PicUrlList6.splice(index, 1)
+      this.Incline.pic_6.splice(index, 1)
+      this.PicUrlList1.splice(index, 1)
     },
     handleSuccessList_6: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList6.push(res.path)
+        this.Incline.pic_6.push(res.path)
         this.i6++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList6.push(resp.data)
+        }))
       }
     },
 
     // 枯枝特征照片
+    handleView_7 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v7 = true
+    },
     handleRemoveList_7 (index) {
       // 删除
+      this.Incline.pic_7.splice(index, 1)
       this.PicUrlList7.splice(index, 1)
     },
     handleSuccessList_7: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList7.push(res.path)
+        this.Incline.pic_7.push(res.path)
         this.i7++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList7.push(resp.data)
+        }))
       }
     },
 
     // 枝条整理留茬特征照片
+    handleView_8 (imageUrl) {
+      this.showImageUrl =  imageUrl
+      this.v8 = true
+    },
     handleRemoveList_8 (index) {
       // 删除
+      this.Incline.pic_8.splice(index, 1)
       this.PicUrlList8.splice(index, 1)
     },
     handleSuccessList_8: function (res, file) {
       if (res.code === 500) {
-        this.PicUrlList8.push(res.path)
+        this.Incline.pic_8.push(res.path)
         this.i8++
+        ShowPic(res.path).then((resp=>{
+          this.PicUrlList8.push(resp.data)
+        }))
       }
     },
   }
@@ -667,10 +1054,46 @@ export default {
 </script>
 
 <style scoped>
+.ivu-radio-wrapper {
+  margin-right: 20px;
+}
+
 .TextStyle >>> textarea.ivu-input {
   font-size: 12px;
 }
-.ivu-radio-wrapper {
-  margin-right: 20px;
+
+.icon1Style >>> .ivu-tooltip-rel {
+  display: inline-block;
+  position: relative;
+  width: inherit;
+  margin-left: 3px;
+  font-size: 18px;
+}
+.iconStyle >>> .ivu-form-item-content {
+  margin-left: 0px !important;
+  font-size: 18px !important
+}
+
+.TextColor >>> .ivu-input[disabled], fieldset[disabled] .ivu-input {
+  color: #999999 !important;
+}
+
+.demo-upload-list {
+  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
+  position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
+}
+.demo-upload-list img {
+  width: 100%;height: 100%;
+}
+.demo-upload-list-cover {
+  display: none;position: absolute;top: 0;bottom: 0;
+  left: 0;right: 0;background: rgba(0, 0, 0, 0.6);
+}
+.demo-upload-list:hover .demo-upload-list-cover {
+  display: block;
+}
+.demo-upload-list-cover i {
+  color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;
 }
 </style>

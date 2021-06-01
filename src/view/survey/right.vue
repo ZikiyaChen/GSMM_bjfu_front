@@ -557,21 +557,22 @@
           </Col>
         </Row>
       </Form>
+      <float_bar>
       <div style="text-align: center">
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
         <router-link :to="{path: `/survey/base_survey`}">
-          <Button type="primary" >返回</Button>
+          <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
       </div>
-
+      </float_bar>
       <Modal
         v-model="showModal"
         title="提醒"
         @on-ok="ok"
         @on-cancel="cancel">
-        <p>请先填写名木古树基本信息表，并提交或保存该表</p>
+        <p>请先填写《名木古树基本信息表》，并提交或保存该表</p>
         <p>如果需要填写，请点击“确定”</p>
       </Modal>
 
@@ -600,11 +601,14 @@ import {
 import {ShowPic} from "@/api/upload";
 
 import {forEach} from "@/libs/tools";
+import Float_bar from "_c/FloatBar/float_bar";
 
 export default {
   name: "right",
+  components: {Float_bar},
   data () {
     return {
+
       showModal: false,
       date: new Date(),
       suggestRemnant: 300,

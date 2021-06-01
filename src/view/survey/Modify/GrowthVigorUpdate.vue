@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <h2 slot="title" style="text-align: center">生长势分析</h2>
+      <h2 slot="title" style="text-align: center">生长势分析---查看修改</h2>
       <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
         <h4>古树基本信息</h4>
         <Row>
@@ -83,15 +83,15 @@
           </Col>
         </Row>
         <div  v-if="GrowthVigor.shoot_type === '常绿树'">
-         <Row>
-           <Col offset="2">
-             <FormItem label="常绿树" prop="shoot">
-               <RadioGroup v-model="GrowthVigor.shoot">
-                 <Radio v-for="item in ShootList2" :label="item.value" :key="item.value"></Radio>
-               </RadioGroup>
-             </FormItem>
-           </Col>
-         </Row>
+          <Row>
+            <Col offset="2">
+              <FormItem label="常绿树" prop="shoot">
+                <RadioGroup v-model="GrowthVigor.shoot">
+                  <Radio v-for="item in ShootList2" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
           <Row>
             <Col offset="2">
               <FormItem label="叶片宿存（常绿树）" prop="blade_persistent">
@@ -101,7 +101,7 @@
               </FormItem>
             </Col>
           </Row>
-       </div>
+        </div>
         <Row>
           <Col offset="2">
             <FormItem prop="normal_blade_rate">
@@ -160,7 +160,7 @@
           </Col>
           <Col span="3">
             <FormItem>
-            <Button type="primary" shape="circle" icon="ios-calculator" @click="JiSuan"></Button>
+              <Button type="primary" shape="circle" icon="ios-calculator" @click="JiSuan"></Button>
             </FormItem>
           </Col>
         </Row>
@@ -213,77 +213,69 @@
         </Row>
       </Form>
       <float_bar>
-      <div style="text-align: center" v-show="isShow">
+      <div style="text-align: center">
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
         <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
+        <Button  @click="Save" type="primary" style="margin-right: 30px">保存修改</Button>
+        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交修改</Button>
         <router-link :to="{path: `/survey/base_survey`}">
           <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
       </div>
-
-        <div style="text-align: center" v-show="isSubmit">
-          <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-          <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-
-          <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
-
-          <router-link :to="{path: `/survey/base_survey`}">
-            <Button type="primary" style="margin-right: 30px">返回</Button>
-          </router-link>
-        </div>
       </float_bar>
-    </Card>
 
+
+    </Card>
     <Modal
       v-model="showNextPageModal"
       title="提醒"
-      @on-ok="okNext"
-      @on-cancel="cancelNext">
+      @on-ok="ok"
+      @on-cancel="cancel">
       <p>下一页为《已采取复壮保护措施情况与分析》，
         该古树的《已采取复壮保护措施情况与分析》尚未填写，</p>
       <p>如果需要填写，请点击“确定”</p>
     </Modal>
     <Modal
-      v-model="showPreviousPageModal"
-      title="提醒"
-      @on-ok="okPrevious"
-      @on-cancel="cancelPrevious">
-      <p>上一页为《生长环境评价分析》，
-        该古树的《生长环境评价分析》尚未填写，</p>
-      <p>如果需要填写，请点击“确定”</p>
+    v-model="showPreviousPageModal"
+    title="提醒"
+    @on-ok="okPrevious"
+    @on-cancel="cancelPrevious">
+    <p>上一页为《生长环境评价分析》，
+      该古树的《生长环境评价分析》尚未填写，</p>
+    <p>如果需要填写，请点击“确定”</p>
     </Modal>
 
   </div>
 </template>
 
 <script>
-import { shoot_typeList, shootList1, shootList2, normal_blade_rateList, blade_persistentList,
-  growth_vigorList } from "@/view/survey/options";
-import { dateToString } from "@/libs/tools";
 import {
-  AddGeAnalysis,
-  AddGpAnalysis, getGrowthVigorById,
+  blade_persistentList, growth_vigorList,
+  normal_blade_rateList,
+  shoot_typeList,
+  shootList1,
+  shootList2
+} from "@/view/survey/options";
+import {checkDecimal} from "@/view/tools-methods/someValidateRule";
+import {
+  AddGpAnalysis,
   getNewGeAnalysis,
   getNewGrowthVigor,
-  getOneTreeBaseInfo, getProtect_By_id,
-  postTjxmRecord, queryTjxmRecord, updateGrowthVigor, updateProtect, updateTjxmRecord
-} from "@/api/table"
+  getOneTjxmRecord,
+  getOneTreeBaseInfo,
+  postTjxmRecord, queryTjxmRecord, updateEnvironment, updateGrowthVigor, updateTjxmRecord
+} from "@/api/table";
+import {dateToString} from "@/libs/tools";
 import {ShowPic} from "@/api/upload";
-import {checkDecimal} from "@/view/tools-methods/someValidateRule";
 import Float_bar from "_c/FloatBar/float_bar";
 
 export default {
-  name: "GrowthVigor",
+  name: "GrowthVigorUpdate",
   components: {Float_bar},
   data () {
     return {
-
-      isShow: false,
-      isSubmit: false,
-      showNextPageModal:false,
       showPreviousPageModal:false,
+      showNextPageModal: false,
       tree_code: Number(this.$route.params.tree_code),
       value: 0,
       PicUrlList: [],
@@ -346,94 +338,23 @@ export default {
   },
   created() {
     this.fetchTreeBasicData()
-    this.fetchData()
+  },
+  mounted() {
+    this.fetchGrowthVigorData()
   },
   methods: {
-    fetchData(){
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'GrowthVigor'}).then((record=>{
-        if(record.data.total!==0){
-          this.isShow = false
-          this.isSubmit = true
-          this.tjxm_record = record.data.tjxm_records[0]
-
-          getGrowthVigorById(this.tjxm_record.t_id).then((res=>{
-            this.GrowthVigor = res.data.growth_vigor
-            this.fetchPic()
-          }))
-        }else {
-          this.isShow =true
-          this.isSubmit = false
-        }
-      }))
-    },
-    fetchPic(){
-      this.PicUrlList=[]
-      if(this.GrowthVigor.pic_path.length!==0) {
-        this.GrowthVigor.pic_path.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
-            this.PicUrlList.push(resp.data)
-          }))
-        })
-      }
-    },
-
-    Update(){
-      this.$refs.GrowthVigor_form.validate((valid) => {
-        console.log(valid)
-        if (valid) {
-          this.GrowthVigor.update_time = dateToString(this.GrowthVigor.update_time, 'yyyy-MM-dd hh:mm:ss')
-          this.tjxm_record.username = this.GrowthVigor.investigate_username
-          this.GrowthVigor.tree_code =this.tree_code
-          if(this.GrowthVigor.shoot_type === ''){
-            this.GrowthVigor.shoot=''
-          }
-          console.error(this.GrowthVigor)
-          updateGrowthVigor(this.GrowthVigor.id,this.GrowthVigor).then((res=>{
-            if(res.data.code === 200 ){
-              updateTjxmRecord(this.GrowthVigor.id,this.tjxm_record).then((record=>{
-                if(res.data.code === 200 ){
-                  if(this.tjxm_record.status === '已完成') {
-                    this.$Message.success('修改提交成功')
-                    this.fetchData()
-                  }else {
-                    this.$Message.success('修改保存成功')
-                    this.fetchData()
-                  }
-                }else {
-                  if(this.tjxm_record.status === '已完成') {
-                    this.$Message.error('修改提交失败')
-                  }else {
-                    this.$Message.error('修改保存失败')
-                  }
-                }
-              }))
-            }
-          }))
-        } else {
-          this.$Message.error('请填写完整信息')
-        }
-      })
-    },
-
-    SubmitUpdate(){
-      this.tjxm_record.status = '已完成'
-      this.Update()
-    },
-
-    okNext(){
+    ok(){
       this.showNextPageModal = false
       this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
-
     },
-    cancelNext(){
+    cancel(){
       this.showNextPageModal = false
     },
     NextPage(){
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Protect'}).then((res=>{
         console.log('%%%%',res)
         if(res.data.total !== 0){
-          // this.$router.push({ path: `/survey/update/Protect/${this.tree_code}` })
-           this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
+          this.$router.push({ path: `/survey/update/Protect/${this.tree_code}` })
         }else {
           this.showNextPageModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
@@ -453,21 +374,51 @@ export default {
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((res=>{
         console.log('%%%%',res)
         if(res.data.total !== 0){
-          // this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
-          this.$router.push({ path: `/survey/environment/${this.tree_code}` })
+          this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
         }else {
           this.showPreviousPageModal = true
         }
       }))
     },
 
+    fetchGrowthVigorData(){
+      getNewGrowthVigor(this.tree_code).then((res=>{
+        this.GrowthVigor = res.data.new_growth_vigor
+        console.log(this.GrowthVigor.id)
+        getOneTjxmRecord(this.GrowthVigor.id,'生长势分析').then((resp=>{
+          console.log('@@@',resp.data)
+          this.tjxm_record = resp.data.record
+          this.GrowthVigor.investigate_username = resp.data.record.username
+          console.log(this.GrowthVigor.investigate_username)
+          this.fetchPicData()
+        }))
+      }))
+
+    },
+    fetchPicData(){
+      if(this.GrowthVigor.pic_path.length!==0) {
+        this.GrowthVigor.pic_path.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList.push(resp.data)
+          }))
+        })
+      }
+    },
     fetchTreeBasicData(){
       getOneTreeBaseInfo(this.tree_code).then((res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
       }))
     },
+    // NextPage () {
+    //   this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
+    // },
 
 
+
+    Tree () {
+      console.log(11, this.tree_code)
+      console.log(typeof (this.tree_code))
+    },
     TiJiao(){
       this.$refs.GrowthVigor_form.validate((valid) => {
         console.log(valid)
@@ -479,29 +430,26 @@ export default {
             this.GrowthVigor.shoot=''
           }
           console.error(this.GrowthVigor)
-          AddGpAnalysis(this.GrowthVigor).then(res => {
-            getNewGrowthVigor(this.tree_code).then((resp=>{
-              this.tjxm_record.t_id =resp.data.new_growth_vigor.id
-              postTjxmRecord(this.tjxm_record).then((record=>{
-                if(record.data.code ===200){
-                  if(this.tjxm_record.status === '已完成'){
-                    this.$Message.success('提交成功')
-                    this.fetchData()
+          updateGrowthVigor(this.GrowthVigor.id,this.GrowthVigor).then((res=>{
+            if(res.data.code === 200 ){
+              updateTjxmRecord(this.GrowthVigor.id,this.tjxm_record).then((record=>{
+                if(res.data.code === 200 ){
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.success('修改提交成功')
                   }else {
-                    this.$Message.success('保存成功')
-                    this.fetchData()
+                    this.$Message.success('修改保存成功')
                   }
                 }else {
-                  if(this.tjxm_record.status === '已完成'){
-                    this.$Message.success('提交失败')
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.error('修改提交失败')
                   }else {
-                    this.$Message.success('保存失败')
+                    this.$Message.error('修改保存失败')
                   }
                 }
               }))
-            }))
-            console.log('####',res)
-          })
+            }
+          }))
+
         } else {
           this.$Message.error('请填写完整信息')
         }
@@ -518,7 +466,7 @@ export default {
     JiSuan () {
       this.GrowthVigor.photosynthetic = (this.GrowthVigor.Fm - this.GrowthVigor.Fo) / this.GrowthVigor.Fm
     },
-
+    // 特征照片
     handleMaxSize (file) {
       this.$Notice.warning({
         title: '图片大小限制',
@@ -544,7 +492,9 @@ export default {
         }))
       }
     },
-  }
+  },
+
+
 }
 </script>
 

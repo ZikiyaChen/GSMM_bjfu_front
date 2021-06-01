@@ -423,18 +423,37 @@
         </Col>
       </Row>
     </Form>
-    <div style="text-align: center">
-      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-      <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+    <float_bar>
+    <div style="text-align: center" v-show="isShow">
       <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+      <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
       <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
       <router-link :to="{path: `/survey/base_survey`}">
         <Button type="primary" style="margin-right: 30px">返回</Button>
       </router-link>
     </div>
+      <div style="text-align: center" v-show="isSubmit">
+        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+        <router-link :to="{path: `/survey/base_survey`}">
+          <Button type="primary" style="margin-right: 30px">返回</Button>
+        </router-link>
+      </div>
+    </float_bar>
 
+    <Modal
+      v-model="showNextPageModal"
+      title="提醒"
+      @on-ok="ok"
+      @on-cancel="cancel">
+      <p>下一页为《生长势分析》，
+        该古树的《生长势分析》尚未填写，</p>
+      <p>如果需要填写，请点击“确定”</p>
+    </Modal>
   </Card>
-  <Button @click="Tree">古树编号</Button>
+
 
 </div>
 </template>
@@ -445,20 +464,24 @@ import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList,
 import { dateToString } from "@/libs/tools";
 import {
   AddBasicProperty,
-  AddGeAnalysis,
+  AddGeAnalysis, getEnvironmentById, getGrowthVigorById,
   getNewGeAnalysis,
   getOneTreeBaseInfo,
   postTjxmRecord, queryClassTypes,
-  queryFamilyTypes, queryGenusTypes
+  queryFamilyTypes, queryGenusTypes, queryTjxmRecord, updateEnvironment, updateGrowthVigor, updateTjxmRecord
 } from "@/api/table";
 import {ShowPic} from "@/api/upload";
+import Float_bar from "_c/FloatBar/float_bar";
 
 export default {
   name: "environment",
+  components: {Float_bar},
   data () {
     return {
+      isShow:false,
+      isSubmit: false,
       loading: false,
-
+      showNextPageModal: false,
       showImageUrl: '',
 
       PicUrlList1: [],
@@ -489,6 +512,7 @@ export default {
       },
 
       environment: {
+        id: 0,
         investigate_username: '',
         elevation: 0, // 海拔
         habitat_type: '', // 生长环境类型
@@ -549,11 +573,11 @@ export default {
       ruleValidate: {
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
         investigate_username: [{ required: true, message: '请填写调查人姓名'}],
-        elevation: [{ required: true, trigger: 'blur', message: '请填写海拔' }],
+        elevation: [{ required: true,  message: '请填写海拔' }],
         habitat_type: [{ required: true, trigger: 'change', message: '请选择生长环境类型' }],
         plain_type: [{ required: true, type: 'array', min: 1, trigger: 'change', message: '请选择平原类型' }],
         aspect: [{ required: true, trigger: 'blur', message: '请填写坡向' }],
-        slope: [{ required: true, trigger: 'blur', message: '请填写坡度' }],
+        slope: [{ required: true, message: '请填写坡度' }],
         slope_position: [{ required: true, trigger: 'blur', message: '请填写坡位' }],
         protect_E: [{ required: true, message: '请填写数据' }],
         protect_W: [{ required: true,  message: '请填写数据' }],
@@ -570,12 +594,69 @@ export default {
   },
   created() {
     this.fetchTreeBasicData()
+    this.fetchData()
   },
   mounted() {
-
     // this.fetchOptions()
   },
   methods: {
+    fetchData(){
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((record=>{
+        if(record.data.total!==0){
+          this.tjxm_record = record.data.tjxm_records[0]
+          this.isShow = false
+          this.isSubmit= true
+          getEnvironmentById(this.tjxm_record.t_id).then((res=>{
+            this.environment= res.data.environment_by_id
+            this.fetchPic()
+          }))
+        }else {
+          this.isShow = true
+          this.isSubmit= false
+        }
+      }))
+    },
+    fetchPic(){
+      this.PicUrlList1=[]
+      this.PicUrlList2=[]
+      if(this.environment.protect_pic.length!==0) {
+        this.environment.protect_pic.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList1.push(resp.data)
+          }))
+        })
+      }
+
+      if(this.environment.pic_path.length!==0) {
+        this.environment.pic_path.forEach((pic_name) => {
+          ShowPic(pic_name).then((resp => {
+            this.PicUrlList2.push(resp.data)
+          }))
+        })
+      }
+    },
+
+    ok(){
+      this.showNextPageModal = false
+      this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
+
+    },
+    cancel(){
+      this.showNextPageModal = false
+    },
+    NextPage(){
+      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'GrowthVigor'}).then((res=>{
+        console.log('%%%%',res)
+        if(res.data.total !== 0){
+          // this.$router.push({ path: `/survey/update/GrowthVigor/${this.tree_code}` })
+          this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
+        }else {
+          this.showNextPageModal = true
+          // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
+          // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
+        }
+      }))
+    },
 
     TiJiao(){
       this.$refs.environment_form.validate((valid) => {
@@ -609,8 +690,10 @@ export default {
                 if(record.data.code ===200){
                   if(this.tjxm_record.status === '已完成'){
                     this.$Message.success('提交成功')
+                    this.fetchData()
                   }else {
                     this.$Message.success('保存成功')
+                    this.fetchData()
                   }
                 }else {
                   if(this.tjxm_record.status === '已完成'){
@@ -629,6 +712,63 @@ export default {
           this.$Message.error('请填写完整信息')
         }
       })
+    },
+
+    Update(){
+      this.$refs.environment_form.validate((valid) => {
+        console.log(valid)
+        if (valid) {
+          this.environment.update_time = dateToString(this.environment.update_time, 'yyyy-MM-dd hh:mm:ss')
+          this.environment.tree_code = this.tree_code
+          this.tjxm_record.username = this.environment.investigate_username
+
+          if( this.environment.habitat_type === '平原' ){
+            this.environment.highland_type=''
+          }else {
+            this.environment.plain_type=[]
+          }
+          if(this.environment.is_buried === 0){
+            this.environment.buried_depth = 0
+          }
+          if(this.environment.evaluation === '良好'){
+            this.environment.envoriment_problem =''
+          }
+          if(this.environment.has_structures === 0){
+            this.environment.structures_affect=''
+            this.environment.structures_type=''
+          }
+
+          console.error('!!!!',this.environment.id)
+          updateEnvironment(this.environment.id,this.environment).then((res=>{
+            if(res.data.code === 200 ){
+              updateTjxmRecord(this.environment.id,this.tjxm_record).then((record=>{
+                if(res.data.code === 200 ){
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.success('修改提交成功')
+                    this.fetchData()
+                  }else {
+                    this.$Message.success('修改保存成功')
+                    this.fetchData()
+                  }
+                }else {
+                  if(this.tjxm_record.status === '已完成') {
+                    this.$Message.error('修改提交失败')
+                  }else {
+                    this.$Message.error('修改保存失败')
+                  }
+                }
+              }))
+            }
+          }))
+        } else {
+          this.$Message.error('请填写完整信息')
+        }
+      })
+    },
+
+    SubmitUpdate(){
+      this.tjxm_record.status = '已完成'
+      this.Update()
     },
 
     Submit() {
@@ -704,9 +844,7 @@ export default {
     fetchTreeBasicData(){
       getOneTreeBaseInfo(this.tree_code).then((res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
-
       }))
-
     },
 
     handleMaxSize (file) {
@@ -779,10 +917,8 @@ export default {
     //   })
     // },
 
-    // 下一页跳转
-    NextPage () {
-      this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
-    },
+
+
   }
 }
 </script>

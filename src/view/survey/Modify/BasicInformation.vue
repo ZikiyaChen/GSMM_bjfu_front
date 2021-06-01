@@ -490,19 +490,20 @@
               </Modal>
             </FormItem>
           </Col>
-          <Button @click="showTree">kan</Button>
+
         </Row>
 
       </Form>
+      <float_bar>
       <div style="text-align: center">
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
+        <Button  @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+        <Button  @click="Save" type="primary" style="margin-right: 30px">保存修改</Button>
         <Button  @click="Submit" type="primary" style="margin-right: 30px">提交修改</Button>
         <router-link :to="{path: `/survey/base_survey`}">
           <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
-        <Button  @click="NextPage()" type="primary" style="margin-right: 30px">下一页</Button>
       </div>
-
+      </float_bar>
 
       <Modal
         v-model="showModal"
@@ -539,9 +540,12 @@ import {
   placing_characterList,
   reasonList, yhfz_statusList
 } from "@/view/survey/right_base_options";
+import Float_bar from "_c/FloatBar/float_bar";
+import {checkLat, checkLon} from "@/view/tools-methods/someValidateRule";
 
 export default {
   name: "BasicInformation",
+  components: {Float_bar},
   data :function () {
     return {
       showModal: false,
@@ -693,8 +697,8 @@ export default {
         'Base.dizhi': [{required:true, message: '请选择'}],
         'Base.level': [{required:true, message: '请选择'}],
         'Dong.username':[{required:true, message: '请填写',trigger:'blur'}],
-        'Position.longitude':[{required:true, message: '请填写',trigger:'blur'}],
-        'Position.latitude':[{required:true, message: '请填写',trigger:'blur'}],
+        'Position.longitude':[{required:true, validator: checkLon, message: '请填写经度(-180~180,小数限7位)',trigger:'blur'}],
+        'Position.latitude':[{required:true, validator: checkLat, message: '请填写纬度(-90~90,小数限7位)',trigger:'blur'}],
         'Base.owner':[{required:true, message: '请选择'}],
         'Base.gh_unit':[{required:true, message: '请填写',trigger:'blur'}],
         'Base.username':[{required:true, message: '请填写',trigger:'blur'}],
@@ -719,19 +723,15 @@ export default {
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((res=>{
         console.log('%%%%',res)
         if(res.data.total !== 0){
-          this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
+          this.$router.push({ path: `/survey/environment/${this.tree_code}` })
         }else {
           this.showModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
           // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
-
         }
       }))
     },
-    showTree(){
-      console.log('1',this.TreeInformation)
-      console.log('2',this.tjxm_record)
-    },
+
     //获取初始的科属种级联选择器中的值进行格式化
     getTreeType(base){
       let typelist=[base.family,base.genus,base.zw_name]
@@ -949,7 +949,7 @@ export default {
 
     fetchData(){
       getOneTreeBaseInfo(this.tree_code).then((res => {
-        console.error(this.tree_code)
+
         console.log('one_tree',res.data)
         this.TreeInformation.Base = res.data.tree_basic_info.basic
         this.TreeInformation.tree_code = this.tree_code

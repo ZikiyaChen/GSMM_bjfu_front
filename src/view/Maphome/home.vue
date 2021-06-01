@@ -6,7 +6,10 @@
 </template>
 
 <script>
-import treeicon from '../../../public/treeicon.png'
+import second from '../../../public/second.png'
+import first from '../../../public/first.png'
+import third from '../../../public/third.png'
+import famous from '../../../public/famous.png'
 import {queryTreeBasicProperty} from "@/api/table";
 import { forEach } from "@/libs/tools";
 import Vue from 'vue'
@@ -17,6 +20,7 @@ export default {
   components:{InfoWindowComponent},
   data () {
     return{
+      treeicon:undefined,
       tree:[],
       treeInfo:{},
       city:'北京市',
@@ -63,13 +67,22 @@ export default {
         })
         if (that.tree && that.tree.length > 0) {
           that.tree.map(item => {
+            if(item.level === '一级'){
+              that.treeicon = first
+            }else if(item.level === '二级'){
+              that.treeicon = second
+            }else  if(item.level === '三级'){
+              that.treeicon = third
+            }else {
+              that.treeicon = famous
+            }
             //创建一个Marker实例
             let marker = new AMap.Marker({
               position: [item.geo_property.longitude, item.geo_property.latitude],
               title: item.zw_name,
               // icon: treeicon
               icon: new AMap.Icon({
-              image: treeicon,
+              image: that.treeicon,
               size: new AMap.Size(128, 128),  //图标大小
               imageSize: new AMap.Size(25,25)
             })

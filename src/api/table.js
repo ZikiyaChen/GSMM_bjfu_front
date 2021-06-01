@@ -188,6 +188,13 @@ export const getNewGeAnalysis = (tree_code) => {
     tree_code: tree_code
   })
 }
+export const getEnvironmentById = (id) => {
+  return axios.request({
+    url: 'get_environment_id/'+id,
+    method: 'get',
+    id: id
+  })
+}
 
 //修改操作基本信息等
 export const updateBasic =(tree_code,data) =>{
@@ -275,4 +282,104 @@ export const deleteOneTree =(tree_code) =>{
   })
 }
 
+//GrowthVigor生长势
+export const getNewGrowthVigor = (tree_code) => {
+  return axios.request({
+    url: 'get_new_growth_vigor/'+tree_code,
+    method: 'get',
+    tree_code: tree_code
+  })
+}
+export const getGrowthVigorById = (id) => {
+  return axios.request({
+    url: 'get_Growth_Vigor_id/'+id,
+    method: 'get',
+    id: id
+  })
+}
 
+export const updateGrowthVigor =(id,data) =>{
+  return axios.request({
+    url: 'update_growth_vigor/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+//复壮保护
+export const getNewProtect = (tree_code) => {
+  return axios.request({
+    url: 'get_new_Protect_fzbh/'+tree_code,
+    method: 'get',
+    tree_code: tree_code
+  })
+}
+export const getProtect_By_id = (id) => {
+  return axios.request({
+    url: 'get_Protect_By_id/'+id,
+    method: 'get',
+    id:id,
+  })
+}
+
+
+export const updateProtect =(id,data) =>{
+  return axios.request({
+    url: 'update_Fzbh/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+//树体损伤damage
+export const getDamage = (params) => {
+  return axios.request({
+    url: 'get_damage',
+    method: 'get',
+    params: params
+  })
+}
+
+export const updateDamage =(id,data) =>{
+  return axios.request({
+    url: 'update_damage/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+
+//*****树体倾斜空腐  tree_Incline
+export const getIncline = (params) => {
+  return axios.request({
+    url: 'get_Incline',
+    method: 'get',
+    params: params
+  })
+}
+
+export const updateIncline =(id,data) =>{
+  return axios.request({
+    url: 'update_Incline/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+//*****病虫害 tree_Bch
+export const getDiseases = (params) => {
+  return axios.request({
+    url: 'get_Bch',
+    method: 'get',
+    params: params
+  })
+}
+
+export const updateDiseases =(id,data) =>{
+  return axios.request({
+    url: 'update_Bch/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
