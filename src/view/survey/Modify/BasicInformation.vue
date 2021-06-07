@@ -88,17 +88,25 @@
         <Divider />
         <h4>树种信息：</h4>
 
+<!--        <Row>-->
+<!--          <Col span="9" offset="1">-->
+<!--            <FormItem label="科属种" prop="Base.treetype">-->
+<!--              <Cascader v-model="TreeInformation.Base.treetype" :data="options" clearable	trigger="hover"-->
+<!--                        @on-change="(value, selectedData) => showLdname(value, selectedData)">-->
+<!--              </Cascader>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--          <Col span="9">-->
+<!--            <FormItem label="拉丁名" prop="Base.ld_name">-->
+<!--              <Input v-model="TreeInformation.Base.ld_name" placeholder="请先选择科属种" ></Input>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
+
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="科属种" prop="Base.treetype">
-              <Cascader v-model="TreeInformation.Base.treetype" :data="options" clearable	trigger="hover"
-                        @on-change="(value, selectedData) => showLdname(value, selectedData)">
-              </Cascader>
-            </FormItem>
-          </Col>
-          <Col span="9">
-            <FormItem label="拉丁名" prop="Base.ld_name">
-              <Input v-model="TreeInformation.Base.ld_name" placeholder="请先选择科属种" ></Input>
+          <Col offset="1" >
+            <FormItem label="科属种、拉丁名" prop="Base.treetype" style="width: 450px">
+              <Cascader v-model="TreeInformation.Base.treetype" :data="options" clearable></Cascader>
             </FormItem>
           </Col>
         </Row>
@@ -530,6 +538,7 @@ import {
 } from "@/api/table";
 import {ShowPic} from "@/api/upload";
 import {dateToString, forEach} from "@/libs/tools";
+import name from "@/view/tools-methods/name.json"
 import {
   brand_rightList, conserve_statusList, g_environmentList, g_vigorList,
   has_brandList, is_rightList,
@@ -550,7 +559,7 @@ export default {
     return {
       showModal: false,
       options:[],
-      tree_code: parseInt(this.$route.params.tree_code),
+      tree_code: this.$route.params.tree_code,
       TreeInformation: {
         tree_code: undefined,
         Base: {
@@ -595,7 +604,7 @@ export default {
           aspect: '', // 坡向
           slope: 0, // 坡度
           slope_position: '', // 坡位
-          tree_code: 1,
+          tree_code: '',
         },
         Dong: {
           id: 0,
@@ -649,7 +658,7 @@ export default {
         status: '',
         type_yw: 'BasicInformation',
         time: '',
-        tree_code: 0,
+        tree_code: '',
       },
 
       date: new Date(),
@@ -710,7 +719,73 @@ export default {
 
     }
   },
+  created() {
+    this.DataTurn(name.contents)
+  },
   methods : {
+
+    //将json数据转成级联选择器种的data形式
+    DataTurn(data){
+      var option=[]
+      var keArr=[]
+      var shuArr=[]
+      var nameArr=[]
+      var shuIndex={}
+      for (let [index, elem] of data.entries()) {
+
+        if(!keArr.includes(elem.ke)){//如果该科第一次被遍历到，那么直接将科属种全部加入
+          keArr.push(elem.ke)
+          shuArr.push(elem.shu)
+
+          option.push({
+            value: elem.ke,
+            label: elem.ke,
+            children: [{
+              value: elem.shu,
+              label: elem.shu,
+              children: [{
+                value: elem.name,
+                label: elem.name,
+                children: [{ value:elem.lading, label: elem.lading}]
+              }]
+            }]
+          })
+
+          shuIndex[elem.shu]=option[option.length-1].children.length -1
+
+        }else {//该科不是第一次被遍历到, 即已被加入
+          let i=keArr.indexOf(elem.ke);// 找到该科第一次被加入时的索引位置
+
+
+          if(!shuArr.includes(elem.shu)){//该科的属没有被加入,把该属及种加入
+            shuArr.push(elem.shu)
+            option[i].children.push({
+              value: elem.shu,
+              label: elem.shu,
+              children:[{
+                value: elem.name,
+                label: elem.name,
+                children: [{ value: elem.lading, label: elem.lading }]
+              }]
+            })
+
+            shuIndex[elem.shu]=option[i].children.length -1
+
+          }else {//如果该属被加入了。
+            option[i].children[shuIndex[elem.shu]].children.push({
+              value: elem.name,
+              label: elem.name,
+              children: [{ value: elem.lading, label: elem.lading}]
+            })
+
+          }
+
+        }
+      }
+      this.options=option
+
+
+    },
     ok(){
       this.showModal = false
       this.$router.push({ path: `/survey/environment/${this.tree_code}` })
@@ -734,7 +809,7 @@ export default {
 
     //获取初始的科属种级联选择器中的值进行格式化
     getTreeType(base){
-      let typelist=[base.family,base.genus,base.zw_name]
+      let typelist=[base.family,base.genus,base.zw_name,base.ld_name]
       this.TreeInformation.Base.treetype = typelist
     },
 
@@ -748,60 +823,60 @@ export default {
     //     this.LDnameList=[]
     //   }
     // },
-    showLdname (value,selectedData) {
-      console.log('11',value)
-      console.log('xx',selectedData)
-      // console.log('22',this.TreeInformation.Base.treetype)
-      queryClassTypes({'zw_name':value[2]}).then((res=>{
-        this.TreeInformation.Base.ld_name = res.data.class_types[0].ld_name
-      }))
-    },
+    // showLdname (value,selectedData) {
+    //   console.log('11',value)
+    //   console.log('xx',selectedData)
+    //   // console.log('22',this.TreeInformation.Base.treetype)
+    //   queryClassTypes({'zw_name':value[2]}).then((res=>{
+    //     this.TreeInformation.Base.ld_name = res.data.class_types[0].ld_name
+    //   }))
+    // },
 
 
-    // 科属种的级联选择器的数据
-    fetchOptions(){
-      queryFamilyTypes().then((family=>{
-        var family = family.data.species_types
-
-        for(let i in family) {
-          console.log('2',family[i])
-          this.options.push({
-              value: family[i].fname,
-              label: family[i].fname,
-              children: []
-            }
-          )
-
-          queryGenusTypes({'fid': family[i].fid}).then((genus_res=>{
-            var Genus=genus_res.data.genus_types
-            console.log('i:',i, genus_res)
-            for(let j in Genus){
-              this.options[i].children.push({
-                value: Genus[j].genus,
-                label: Genus[j].genus,
-                children: []
-              })
-
-              queryClassTypes({'gid':Genus[j].gid}).then((class_res=>{
-                var Class=class_res.data.class_types
-                for(let k in Class){
-                  this.options[i].children[j].children.push({
-                    value: Class[k].zw_name,
-                    label: Class[k].zw_name
-                  })
-                }
-              }))
-            }
-
-          }))
-        }
-
-
-
-
-        console.log('options',this.options)
-      }))
-    },
+    // // 科属种的级联选择器的数据
+    // fetchOptions(){
+    //   queryFamilyTypes().then((family=>{
+    //     var family = family.data.species_types
+    //
+    //     for(let i in family) {
+    //       console.log('2',family[i])
+    //       this.options.push({
+    //           value: family[i].fname,
+    //           label: family[i].fname,
+    //           children: []
+    //         }
+    //       )
+    //
+    //       queryGenusTypes({'fid': family[i].fid}).then((genus_res=>{
+    //         var Genus=genus_res.data.genus_types
+    //         console.log('i:',i, genus_res)
+    //         for(let j in Genus){
+    //           this.options[i].children.push({
+    //             value: Genus[j].genus,
+    //             label: Genus[j].genus,
+    //             children: []
+    //           })
+    //
+    //           queryClassTypes({'gid':Genus[j].gid}).then((class_res=>{
+    //             var Class=class_res.data.class_types
+    //             for(let k in Class){
+    //               this.options[i].children[j].children.push({
+    //                 value: Class[k].zw_name,
+    //                 label: Class[k].zw_name
+    //               })
+    //             }
+    //           }))
+    //         }
+    //
+    //       }))
+    //     }
+    //
+    //
+    //
+    //
+    //     console.log('options',this.options)
+    //   }))
+    // },
 
     //更新省市区街道信息
     regionChange (data) {
@@ -849,6 +924,7 @@ export default {
           this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
           this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
           this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
+          this.TreeInformation.Base.ld_name = this.TreeInformation.Base.treetype[3]
           this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
           this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
           this.tjxm_record.username = this.TreeInformation.Dong.username
@@ -901,6 +977,7 @@ export default {
             this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
             this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
             this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
+            this.TreeInformation.Base.ld_name = this.TreeInformation.Base.treetype[3]
             this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
             this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
             this.tjxm_record.username = this.TreeInformation.Dong.username
@@ -960,6 +1037,7 @@ export default {
         this.tjxm_record = res.data.tree_basic_info.record
         console.log('record',this.tjxm_record)
         this.picTurnUrl()
+        this.getTreeType(this.TreeInformation.Base)
       }))
 
     },
@@ -1056,7 +1134,7 @@ export default {
   mounted:function (){
     this.fetchData()
 
-    this.fetchOptions()
+    // this.fetchOptions()
 
     // setTimeout(()=>{
     //   this.getTreeType(this.TreeInformation.Base)

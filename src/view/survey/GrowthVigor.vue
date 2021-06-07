@@ -284,7 +284,7 @@ export default {
       isSubmit: false,
       showNextPageModal:false,
       showPreviousPageModal:false,
-      tree_code: Number(this.$route.params.tree_code),
+      tree_code: this.$route.params.tree_code,
       value: 0,
       PicUrlList: [],
       showImageUrl: '',

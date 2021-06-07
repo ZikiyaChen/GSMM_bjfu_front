@@ -11,7 +11,7 @@ import {deleteTjxmRecord, queryTjxmRecord} from "@/api/table";
 export default {
   name: "tjxm_record_extend_table",
   props: {
-    selected_tree_code: Number
+    selected_tree_code: String
   },
   data: function (){
     return{
@@ -135,6 +135,10 @@ export default {
                   type: 'error',
                   size: 'small'
                 },
+                directives: [{
+                  name: 'role',
+                  value: ['管理员']
+                }],
                 style: {
                   marginRight: '2px',
                   display:( params.row.type_yw === 'BasicInformation'|| params.row.status ==='未完成')?"none":"inline-block",
@@ -228,6 +232,7 @@ export default {
 
 
     fetchTjxmRecord(){
+      console.log('###',this.selected_tree_code,typeof (this.selected_tree_code))
       queryTjxmRecord({'tree_code':this.selected_tree_code}).then((res=>{
         console.log('tjxm',res.data)
         this.data = res.data.tjxm_records

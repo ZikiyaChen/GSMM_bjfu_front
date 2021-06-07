@@ -383,3 +383,25 @@ export const updateDiseases =(id,data) =>{
     data: data
   })
 }
+
+export const getClassTableData = () =>{
+  return axios.request({
+    url: 'class_table',
+    method: 'get'
+  })
+}
+export const getClassTable = () =>{
+  return axios.request({
+    url: 'class_table_data',
+    method: 'get'
+  })
+}
+
+
+export const queryTreeBasic = (params) =>{
+  return axios.request({
+    url: 'query_trees_basic',
+    method: 'get',
+    params: params
+  })
+}

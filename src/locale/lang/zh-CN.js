@@ -1,5 +1,6 @@
 export default {
   home: '首页',
+  homeTest: '首页测试',
   login: '登录',
   survey: '名木古树调查建档',
   base_survey_page: '名木古树信息',
@@ -20,6 +21,12 @@ export default {
   ProtectUpdate:'已采取复壮保护措施情况与分析-查看修改',
 
   tree_class_page: '名木古树树种管理',
+
+  yh_manage: '养护管理',
+  admin_daily_manage: '日常养护管理',
+  admin_xiujian: '修剪',
+  measures_manage: '养护项目处理方法管理',
+
 
   components: '组件',
   count_to_page: '数字渐变',

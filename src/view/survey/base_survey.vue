@@ -12,8 +12,24 @@
         </Select>
       </FormItem>
       <FormItem label="科:" :label-width="80">
-        <Select style="width:100px" v-model="query.family" clearable>
-          <Option v-for="item in FamilyList" :value="item.fname" :key="item.fname">{{ item.fname }}</Option>
+        <Select style="width:120px" v-model="query.family" clearable>
+          <Option v-for="item in KeList" :value="item.fname" :key="item.fname">{{ item.fname }}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="属:" :label-width="80">
+        <Select style="width:120px" v-model="query.genus" clearable>
+          <Option v-for="item in ShuList" :value="item.gname" :key="item.gname">{{ item.gname }}</Option>
+        </Select>
+      </FormItem>
+
+      <FormItem label="种:" :label-width="80">
+        <Select style="width:120px" v-model="query.zw_name" clearable>
+          <Option v-for="item in NameList" :value="item.name" :key="item.name">{{ item.name }}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="权属:" :label-width="80">
+        <Select style="width:120px" v-model="query.owner" clearable>
+          <Option v-for="item in OwnerList" :value="item.value" :key="item.value">{{ item.value }}</Option>
         </Select>
       </FormItem>
       <FormItem >
@@ -41,7 +57,7 @@
 
     <RightDeleteTree
       :show="showDeleteModal"
-      :tree_code="this.seleceted_tree_code"
+      :tree_code="this.selected_tree_code"
       title="提醒"
       @onOK="ok"
       @onCancel="cancel">
@@ -56,23 +72,32 @@ import {queryUsers} from "@/api/user";
 import {getToken} from "@/libs/util";
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
 import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
+import name from "@/view/tools-methods/name.json"
+import {ownerList} from "@/view/survey/right_base_options";
+
 export default {
   name: "base_survey",
   components:{RightDeleteTree, tjxm_record_extend_table},
   data () {
     return {
-      seleceted_tree_code: undefined,
+      selected_tree_code: undefined,
       showDeleteModal: false,
       query: {
         level: undefined,
         tree_code: undefined,
-        family: undefined
+        family: undefined,
+        genus: undefined,
+        zw_name: undefined,
+        owner: undefined
       },
-      FamilyList: [],
+      KeList: [],
+      ShuList: [],
+      NameList: [],
+      OwnerList: ownerList,
       total: 0,
       pages: {
         _page: 1,
-        _per_page: 5
+        _per_page: 10
       }, // 分页
       trees_basic_property:{
         tree_code: undefined,
@@ -235,6 +260,10 @@ export default {
                   type: 'error',
                   size: 'small'
                 },
+                directives: [{
+                  name: 'role',
+                  value: ['管理员']
+                }],
                 style: {
                   marginRight: '2px'
                 },
@@ -306,11 +335,13 @@ export default {
     fetchData: function () {
       // 数据表发生变化请求数据
 
-      let args={}
+
+      let args = {}
       if(this.query.tree_code) {
         args = {...this.query, ...this.pages}
       }else {
-        args= {'level':this.query.level,'family':this.query.family,...this.pages}
+        args= {'level':this.query.level,'family':this.query.family,'genus':this.query.genus,'zw_name':this.query.zw_name,
+          'owner':this.query.owner,...this.pages}
       }
       return queryTreeBasicProperty(args).then((resp) => {
         this.tableData = resp.data.trees_basic_property
@@ -326,15 +357,41 @@ export default {
       this.pages._page = page
       this.fetchData()
     },
+
+    JsonChangeToOptions(){
+      let options=name.contents
+      let keArr=[]
+      let shuArr=[]
+      let nameArr=[]
+      for(let [index, elem] of options.entries()){
+       if(!keArr.includes(elem.ke)){
+         keArr.push(elem.ke)
+         this.KeList.push({ fname: elem.ke})
+       }
+       if(!shuArr.includes(elem.shu)){
+         shuArr.push(elem.shu)
+         this.ShuList.push({ gname: elem.shu})
+       }
+       if(!nameArr.includes(elem.name)){
+         nameArr.push(elem.name)
+         this.NameList.push({ name: elem.name})
+       }
+     }
+      console.log('###KeList',this.KeList)
+      console.log('###ShuList',this.ShuList)
+      console.log('###NameList',this.NameList)
+    }
   },
   created() {
     queryTreeBasicProperty({ ...this.pages, ...this.query }).then((resp) => {
       this.tableData = resp.data.trees_basic_property
       this.total = resp.data.total
     })
-    queryFamilyTypes().then((res) => {
-      this.FamilyList = res.data.species_types
-    })
+    // queryFamilyTypes().then((res) => {
+    //   this.FamilyList = res.data.species_types
+    // })
+    this.JsonChangeToOptions()
+
     console.log('userindex',getToken())// token===admin
   }
 

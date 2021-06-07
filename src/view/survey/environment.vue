@@ -556,7 +556,7 @@ export default {
         update_time: '',
         tree_code: ''
       },
-      tree_code: Number(this.$route.params.tree_code),
+      tree_code: this.$route.params.tree_code,
 
       HabitatTypeList: habitat_typeList,
       PlainList: plainList,

@@ -19,7 +19,7 @@ export default {
     },
     onCancel: Function,
     onOK: Function,
-    tree_code: Number
+    tree_code: String
   },
   data(){
     return{

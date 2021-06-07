@@ -575,7 +575,7 @@ export default {
       showPreviousPageModal: false,
       isShow: false,
       isSubmit: false,
-      tree_code: Number(this.$route.params.tree_code),
+      tree_code: this.$route.params.tree_code,
       DamageList: damageList,
 
       showImageUrl: '',

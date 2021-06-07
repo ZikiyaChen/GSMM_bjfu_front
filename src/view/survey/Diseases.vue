@@ -474,7 +474,7 @@ export default {
       isShow: false,
       isSubmit: false,
 
-      tree_code: Number(this.$route.params.tree_code),
+      tree_code: this.$route.params.tree_code,
       OptionList: damageList,
 
       showImageUrl: '',

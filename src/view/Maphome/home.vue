@@ -1,8 +1,25 @@
 <template>
     <div style="height: 100%">
-      <div id="container" class="container"></div>
-      <InfoWindowComponent ref="infowindow" :treeInfo="treeInfo"></InfoWindowComponent>
+      <div id="container" class="container">
+
+        <Form class="select" inline :model="query" >
+          <FormItem label="古树等级:" :label-width="80" style="background-color: white">
+            <Select style="width:100px" v-model="query.level" clearable>
+              <Option v-for="item in levelList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+
+          </FormItem>
+          <FormItem><Alert style="padding-right: 12px;padding-left: 12px">共有：{{total}}棵</Alert></FormItem>
+
+          <Button type="primary" @click="onSearch">查询</Button>
+
+        </Form>
+        <InfoWindowComponent ref="infowindow" :treeInfo="treeInfo"></InfoWindowComponent>
+      </div>
+
+
     </div>
+
 </template>
 
 <script>
@@ -20,6 +37,7 @@ export default {
   components:{InfoWindowComponent},
   data () {
     return{
+      tree_markers: [],
       treeicon:undefined,
       tree:[],
       treeInfo:{},
@@ -27,9 +45,37 @@ export default {
       map_district: null,
       polygons: [],
       map: null,
+      pages: {
+        _page: 1,
+        _per_page: 50
+      }, // 分页
+      total: 0,
+      query:{
+        level: undefined
+      },
+
+      levelList: [
+        {
+          value: '一级',
+          label: '一级'
+        },
+        {
+          value: '二级',
+          label: '二级'
+        },
+        {
+          value: '三级',
+          label: '三级'
+        },
+        {
+          value: '名木',
+          label: '名木'
+        }
+      ]
     }
   },
   created() {
+
 
       // queryTreeBasicProperty().then(res=>{
       //   if(res.data.code === 200){
@@ -44,58 +90,127 @@ export default {
     setTimeout(()=>{
       this.loadmap(); // 加载地图和相关
       // this.CityCover(this.city)
+      this.initMarkers()
       this.drawBackGround()
 
     },500)
 
   },
   methods: {
-    loadmap () {
-        let that=this
-        console.log('11',this.tree)
-        this.map = new AMap.Map('container', { // eslint-disable-line no-unused-vars
-          resizeEnable: true,
-          zoom: 9,
-        });
-        AMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.OverView','AMap.DistrictSearch'], function () {
-          var toolBar = new AMap.ToolBar()
-          var scale = new AMap.Scale()
-          const overView = new AMap.OverView()
-          map.addControl(toolBar);
-          map.addControl(scale)
-          map.addControl(overView)
-        })
-        if (that.tree && that.tree.length > 0) {
-          that.tree.map(item => {
-            if(item.level === '一级'){
-              that.treeicon = first
-            }else if(item.level === '二级'){
-              that.treeicon = second
-            }else  if(item.level === '三级'){
-              that.treeicon = third
-            }else {
-              that.treeicon = famous
-            }
-            //创建一个Marker实例
-            let marker = new AMap.Marker({
-              position: [item.geo_property.longitude, item.geo_property.latitude],
-              title: item.zw_name,
-              // icon: treeicon
-              icon: new AMap.Icon({
+
+    onSearch(){
+      this.getTree()
+      setTimeout(()=>{
+        this.initMarkers()
+      },500)
+
+    },
+    // loadmap () {
+    //     let that=this
+    //     console.log('11',this.tree)
+    //     this.map = new AMap.Map('container', { // eslint-disable-line no-unused-vars
+    //       resizeEnable: true,
+    //       zoom: 9,
+    //     });
+    //     AMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.OverView','AMap.DistrictSearch'], function () {
+    //       var toolBar = new AMap.ToolBar()
+    //       var scale = new AMap.Scale()
+    //       const overView = new AMap.OverView()
+    //       map.addControl(toolBar);
+    //       map.addControl(scale)
+    //       map.addControl(overView)
+    //     })
+    //     if (that.tree && that.tree.length > 0) {
+    //       that.tree.map(item => {
+    //         if(item.level === '一级'){
+    //           that.treeicon = first
+    //         }else if(item.level === '二级'){
+    //           that.treeicon = second
+    //         }else  if(item.level === '三级'){
+    //           that.treeicon = third
+    //         }else {
+    //           that.treeicon = famous
+    //         }
+    //         //创建一个Marker实例
+    //         let marker = new AMap.Marker({
+    //           position: [item.geo_property.longitude, item.geo_property.latitude],
+    //           title: item.zw_name,
+    //           // icon: treeicon
+    //           icon: new AMap.Icon({
+    //           image: that.treeicon,
+    //           size: new AMap.Size(128, 128),  //图标大小
+    //           imageSize: new AMap.Size(25,25)
+    //         })
+    //       });
+    //         // console.log(marker)
+    //         //将创建的点标记添加到已有的地图实例中
+    //         that.map.add(marker);
+    //         marker.on('click', (e) => {
+    //           console.log('e',e)
+    //           that.markerWindow(e, that.map, item)
+    //         })
+    //       })
+    //     }
+    //
+    // },
+
+    initMarkers(){
+      let that=this
+      console.log('####',that.map)
+      that.map.remove(that.tree_markers)
+      that.tree_markers= []
+      if (that.tree && that.tree.length > 0) {
+        that.tree.map(item => {
+          if(item.level === '一级'){
+            that.treeicon = first
+          }else if(item.level === '二级'){
+            that.treeicon = second
+          }else  if(item.level === '三级'){
+            that.treeicon = third
+          }else {
+            that.treeicon = famous
+          }
+          //创建一个Marker实例
+          let marker = new AMap.Marker({
+            position: [item.geo_property.longitude, item.geo_property.latitude],
+            title: item.zw_name,
+            // icon: treeicon
+            icon: new AMap.Icon({
               image: that.treeicon,
               size: new AMap.Size(128, 128),  //图标大小
               imageSize: new AMap.Size(25,25)
             })
           });
-            // console.log(marker)
-            //将创建的点标记添加到已有的地图实例中
-            that.map.add(marker);
-            marker.on('click', (e) => {
-              console.log('e',e)
-              that.markerWindow(e, that.map, item)
-            })
+          // console.log(marker)
+          //将创建的点标记添加到已有的地图实例中
+          that.tree_markers.push(marker)
+          that.map.add(marker);
+          marker.on('click', (e) => {
+            console.log('e',e)
+            that.markerWindow(e, that.map, item)
           })
-        }
+        })
+      }
+    },
+
+    loadmap () {
+
+      console.log('11',this.tree)
+      this.map = new AMap.Map('container', { // eslint-disable-line no-unused-vars
+        resizeEnable: true,
+        zoom: 9,
+      });
+      AMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.OverView','AMap.DistrictSearch'], function () {
+        var toolBar = new AMap.ToolBar()
+        var scale = new AMap.Scale()
+        const overView = new AMap.OverView()
+        map.addControl(toolBar);
+        map.addControl(scale)
+        map.addControl(overView)
+
+
+      })
+
 
     },
 
@@ -145,10 +260,11 @@ export default {
       })
       infoWidow.open(map,e.lnglat)
     },
-    getTree(){
-      queryTreeBasicProperty().then(res=>{
+    getTree(){// 不知道为什么不加pages，后面两条得不到
+      queryTreeBasicProperty({...this.query,...this.pages}).then(res=>{
         if(res.data.code === 200){
           this.tree = res.data.trees_basic_property
+          this.total = res.data.total
           console.log(this.tree)
         }
       })
@@ -165,5 +281,15 @@ export default {
   width: 100%;
   height: 100%;
   /*overflow: hidden;*/
+}
+
+.select{
+  position: absolute;
+  top:3vh;
+  left:3vh;
+  overflow: auto;
+  z-index: 999;
+  height: 200px;
+
 }
 </style>

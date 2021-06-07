@@ -1,5 +1,5 @@
 <template>
-  <div  style="width: 200px;height: 180px">
+  <div  style="width: 260px;height: 180px">
     <div>
       <h3 style="text-align: center">古树信息</h3>
 
@@ -8,8 +8,8 @@
           <h4>古树编号：{{this.treeInfo.tree_code}}</h4>
           <h4>古树等级：{{this.treeInfo.level}}</h4>
           <h4>树种：{{this.treeInfo.zw_name}}</h4>
-          <h4>经度：{{this.treeInfo.geo_property.longitude}}</h4>
-          <h4>纬度：{{this.treeInfo.geo_property.latitude}}</h4>
+<!--          <h4>经度：{{this.treeInfo.geo_property.longitude}}</h4>-->
+<!--          <h4>纬度：{{this.treeInfo.geo_property.latitude}}</h4>-->
           <h4>管护单位：{{this.treeInfo.gh_unit}}</h4>
         </Col>
         <Col span="10" offset="2">

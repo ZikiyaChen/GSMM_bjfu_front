@@ -89,6 +89,15 @@ export default [
         },
         component: () => import('@/view/Maphome/home')
       }
+      // {
+      //   path: '/homeTest',
+      //   name: 'homeTest',
+      //   meta: {
+      //     icon: 'md-home',
+      //     title: '首页测试'
+      //   },
+      //   component: () => import('@/view/Maphome/homeTest')
+      // }
     ]
   },
 
@@ -130,15 +139,15 @@ export default [
         component: () => import('@/view/survey/right.vue')
       },
 
-      {
-        path: 'tree_class',
-        name: 'tree_class_page',
-        meta: {
-          icon: 'ios-document',
-          title: '名木古树树种管理'
-        },
-        component: () => import('@/view/survey/TreeClass/TreeClass')
-      },
+      // {
+      //   path: 'tree_class',
+      //   name: 'tree_class_page',
+      //   meta: {
+      //     icon: 'ios-document',
+      //     title: '名木古树树种管理'
+      //   },
+      //   component: () => import('@/view/survey/TreeClass/TreeClass')
+      // },
       {
         path: 'environment/:tree_code',
         name: 'environment',
@@ -235,6 +244,46 @@ export default [
       },
     ]
   },
+  {
+    path: '/yh_manage',
+    name: 'yh_manage',
+    meta: {
+      title: '养护管理',
+      icon: 'ios-folder-open'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'daily_manage',
+        name: 'admin_daily_manage',
+        meta: {
+          icon: 'ios-document',
+          title: '日常养护管理'
+        },
+        component: () => import('@/view/YangHuManage/AdminYhManage/admin_daliy_manage')
+      },
+      {
+        path: 'xiujian',
+        name: 'admin_xiujian',
+        meta: {
+          icon: 'ios-document',
+          title: '修剪'
+        },
+        component: () => import('@/view/YangHuManage/AdminYhManage/admin_xiujian')
+      },
+      {
+        path: 'yh_measures',
+        name: 'measures_manage',
+        meta: {
+          icon: 'ios-document',
+          title: '养护项目方法管理'
+        },
+        component: () => import('@/view/YangHuManage/Yh_options/index')
+      },
+    ]
+
+  },
+
   {
     name: 'users',
     path: '/users',
