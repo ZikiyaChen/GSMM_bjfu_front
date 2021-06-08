@@ -156,7 +156,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row v-if="Incline.root_bare === '无'">
+      <Row v-if="Incline.root_bare !== '无'">
         <Col offset="2">
           <FormItem prop="bare_length">
             <span slot="label" style="font-size: 13px">根部裸露总长度</span>

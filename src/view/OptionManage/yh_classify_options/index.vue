@@ -4,8 +4,7 @@
 
 <script>
 export default {
-name: "admin_daliy_manage"
-
+name: "index"
 }
 </script>
 

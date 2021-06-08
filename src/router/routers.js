@@ -283,6 +283,35 @@ export default [
     ]
 
   },
+  {
+    name: 'system',
+    path: '/system',
+    component: Main,
+    meta: {
+      title: '系统管理',
+      icon: "md-flower"
+    },
+    children: [
+      {
+        name: 'yh_options',
+        path: 'yh_options',
+        meta: {
+          title: '养护选项管理',
+          icon: "md-arrow-dropright-circle"
+        },
+        component: () => import('@/view/OptionManage/yh_classify_options/index')
+      },
+      {
+        path: 'other',
+        name: 'other',
+        meta: {
+          icon: 'ios-document',
+          title: '其它信息管理'
+        },
+        component: () => import('@/view/OptionManage/other/index')
+      }
+    ]
+  },
 
   {
     name: 'users',
@@ -303,11 +332,11 @@ export default [
         component: () => import('@/view/Userinfo/index')
       },
       {
-        path: 'userinfo', // xzl
+        path: 'userinfo',
         name: 'userinfo',
         meta: {
-          hideInMenu: true,
-          title: '用户个人信息'
+          icon: 'md-people',
+          title: '个人信息'
         },
         component: () => import('@/view/Userinfo/userinfo')
       }

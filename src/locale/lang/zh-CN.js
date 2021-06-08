@@ -11,9 +11,14 @@ export default {
   damage: '树体损伤情况评估',
   incline: '树体倾斜、空腐情况检测',
   diseases: '病虫害发生情况分析',
-  userinfo: '用户个人信息',
+  userinfo: '个人信息',
   usermanager: '用户管理',
   users: '用户中心',
+
+  system: '系统管理',
+  yh_options: '养护项目选项管理',
+  other: '其它信息管理',
+
 
   BaseInfo: '名木古树基本信息',
   environmentUpdate: '生长环境评估分析查看修改',

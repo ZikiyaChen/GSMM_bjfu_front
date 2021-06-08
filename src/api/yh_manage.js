@@ -63,3 +63,37 @@ export const deleteYhMethod = (id) => {
     id: id
   })
 }
+
+
+//新加的养护具体项目和处理方法的增删改查***********************
+export const queryYhOptions = (params) => {
+  return axios.request({
+    url: 'yh_classify',
+    method: 'get',
+    params: params
+  })
+}
+
+export const AddYhOptions = (data) => {
+  return axios.request({
+    url: 'insert_yh_classify',
+    method: 'post',
+    data: data
+  })
+}
+
+export const updateYhOptions = (id,data) => {
+  return axios.request({
+    url: 'update_yh_classify/'+id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+export const deleteYhOptions = (id) => {
+  return axios.request({
+    url: 'delete_yh_classify/'+id,
+    method: 'delete',
+    id: id
+  })
+}
