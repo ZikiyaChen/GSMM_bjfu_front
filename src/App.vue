@@ -7,8 +7,26 @@
 
 <script>
 export default {
-  name: 'App'
-
+  name: 'App',
+  // 设置依赖注入
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
+  data () {
+    return {
+      isRouterAlive: true
+    }
+  },
+  methods: {
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(() => {
+        this.isRouterAlive = true
+      })
+    }
+  }
 }
 </script>
 
