@@ -28,12 +28,17 @@
       </template>
 
       <template slot-scope="{ row, index }" slot="action">
-        <div v-if="editIndex === index">
-          <Button @click="handleChange(row)" to="yh_options">保存</Button>
-          <Button @click="editIndex = -1">取消</Button>
-        </div>
-        <div v-else>
+        <div>
           <Button @click="handleEdit(row, index)">操作</Button>
+          <Modal
+            v-model="editModal"
+            title="请修改信息"
+            @on-ok="handleChange"
+            @on-cancel="handleCancel">
+            <Input v-model="editType" style="margin:5px"/>
+            <Input v-model="editProject" style="margin:5px"/>
+            <Input v-model="editMethod" style="margin:5px"/>
+          </Modal>
           <Button @click="handleDelete(row)" type="error">删除</Button>
         </div>
       </template>
@@ -83,6 +88,8 @@ export default {
       inputProject: '', // 第二列输入框
       inputMethod: '', // 第三列输入框
 
+      editRowId: -1,
+      editModal: false,
       editIndex: -1, // 当前聚焦的输入框行数
       editType: '', // 第一列输入框 yh_type
       editProject: '', // 第二列输入框 project
@@ -125,12 +132,12 @@ export default {
       })
     },
 
-    handleChange (row) {
+    handleChange () {
       let data = {}
       data['yh_type'] = this.editType
       data['project'] = this.editProject
       data['method'] = this.editMethod
-      updateYhOptions(row.id, data).then((result) => {
+      updateYhOptions(this.editRowId, data).then((result) => {
         if (result.data.code === 200) {
           alert('信息修改成功')
           this.editIndex = -1
@@ -156,7 +163,8 @@ export default {
       this.editType = row.yh_type;
       this.editProject = row.project;
       this.editMethod = row.method;
-      this.editIndex = index;
+      this.editModal = true;
+      this.editRowId = row.id
     },
 
     // 将添加输入框清空
