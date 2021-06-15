@@ -1,5 +1,5 @@
 import axios from "@/libs/api.request";
-//养护项目 措施
+// 养护项目 措施
 export const queryMeasures = (params) => {
   return axios.request({
     url: 'yh_measures',
@@ -16,9 +16,9 @@ export const AddMeasures = (data) => {
   })
 }
 
-export const updateYhMeasure = (id,data) => {
+export const updateYhMeasure = (id, data) => {
   return axios.request({
-    url: 'update_yh_Measure/'+id,
+    url: 'update_yh_Measure/' + id,
     method: 'put',
     id: id,
     data: data
@@ -26,12 +26,12 @@ export const updateYhMeasure = (id,data) => {
 }
 export const deleteYhMeasure = (id) => {
   return axios.request({
-    url: 'delete_yh_measure/'+id,
+    url: 'delete_yh_measure/' + id,
     method: 'delete',
     id: id
   })
 }
-//养护项目 处理方法
+// 养护项目 处理方法
 export const queryMethods = (params) => {
   return axios.request({
     url: 'yh_methods',
@@ -48,9 +48,9 @@ export const AddMethods = (data) => {
   })
 }
 
-export const updateYhMethod = (id,data) => {
+export const updateYhMethod = (id, data) => {
   return axios.request({
-    url: 'update_yh_methods/'+id,
+    url: 'update_yh_methods/' + id,
     method: 'put',
     id: id,
     data: data
@@ -58,14 +58,13 @@ export const updateYhMethod = (id,data) => {
 }
 export const deleteYhMethod = (id) => {
   return axios.request({
-    url: 'delete_yh_method/'+id,
+    url: 'delete_yh_method/' + id,
     method: 'delete',
     id: id
   })
 }
 
-
-//新加的养护具体项目和处理方法的增删改查***********************
+// 新加的养护具体项目和处理方法的增删改查***********************
 export const queryYhOptions = (params) => {
   return axios.request({
     url: 'yh_classify',
@@ -82,9 +81,9 @@ export const AddYhOptions = (data) => {
   })
 }
 
-export const updateYhOptions = (id,data) => {
+export const updateYhOptions = (id, data) => {
   return axios.request({
-    url: 'update_yh_classify/'+id,
+    url: 'update_yh_classify/' + id,
     method: 'put',
     id: id,
     data: data
@@ -92,7 +91,7 @@ export const updateYhOptions = (id,data) => {
 }
 export const deleteYhOptions = (id) => {
   return axios.request({
-    url: 'delete_yh_classify/'+id,
+    url: 'delete_yh_classify/' + id,
     method: 'delete',
     id: id
   })

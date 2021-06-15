@@ -5,7 +5,8 @@ import App from './App'
 import router from './router'
 import store from './store'
 // import iView from 'iview'
-import iView from 'view-design'
+import ViewUI from 'view-design'
+import 'view-design/dist/styles/iview.css'
 import i18n from '@/locale'
 import config from '@/config'
 import importDirective from '@/directive'
@@ -23,7 +24,7 @@ import VueAMap from "vue-amap";
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
 Vue.use(vRegion)
 Vue.use(VueAMap)
-Vue.use(iView, {
+Vue.use(ViewUI, {
   i18n: (key, value) => i18n.t(key, value)
 })
 Vue.use(TreeTable)
@@ -69,5 +70,5 @@ new Vue({
   router,
   i18n,
   store,
-  render: h => h(App)
+  render: h => h(App),
 })
