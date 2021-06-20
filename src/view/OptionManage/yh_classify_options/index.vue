@@ -29,7 +29,7 @@
 
       <template slot-scope="{ row, index }" slot="action">
         <div>
-          <Button @click="handleEdit(row, index)">操作</Button>
+          <Button @click="handleEdit(row, index)" size="small">修改</Button>
           <Modal
             v-model="editModal"
             title="请修改信息"
@@ -39,7 +39,7 @@
             <Input v-model="editProject" style="margin:5px"/>
             <Input v-model="editMethod" style="margin:5px"/>
           </Modal>
-          <Button @click="handleDelete(row)" type="error">删除</Button>
+          <Button @click="handleDelete(row)" type="error" size="small">删除</Button>
         </div>
       </template>
     </Table>

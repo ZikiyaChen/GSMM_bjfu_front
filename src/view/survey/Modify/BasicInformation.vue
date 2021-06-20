@@ -1,6 +1,23 @@
 <template>
   <div>
     <Card>
+      <div class="timeLine" style="overflow: hidden;">
+
+        <div class="ul_box">
+          <ul class="my_timeline" ref="mytimeline" style="margin-left: 10px;">
+            <li class="my_timeline_item" v-for="(item,index) in timeLineList" :key="index" @click="Show(item)">
+              <!--圈圈节点-->
+              <div class="my_timeline_node" :style = " {backgroundColor: item.bgcolor, width: item.size + 'px', height: item.size + 'px'}" @click="changeActive(index)" :class="{active: index == timeIndex}"></div>
+              <!--线-->
+              <div class="my_timeline_item_line" v-show="item.type!=='Diseases'"></div>
+              <!--标注-->
+              <div class="my_timeline_item_content" :style="{color: item.color, fontSize: item.fontsize + 'px'}">
+                {{item.timestamp}}
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
       <h2 slot="title" style="text-align: center">名木古树每木调查表--修改</h2>
       <Form :label-width="120" label-position="right" ref="Tree_form" :model="TreeInformation" :rules="ruleValidate" inline>
         <h4>基本信息：</h4>
@@ -551,12 +568,16 @@ import {
 } from "@/view/survey/right_base_options";
 import Float_bar from "_c/FloatBar/float_bar";
 import {checkLat, checkLon} from "@/view/tools-methods/someValidateRule";
+import {PathToList} from "@/view/survey/options";
 
 export default {
   name: "BasicInformation",
   components: {Float_bar},
   data :function () {
     return {
+      timeIndex: 0,
+      timeLineList: PathToList,
+
       showModal: false,
       options:[],
       tree_code: this.$route.params.tree_code,
@@ -721,8 +742,28 @@ export default {
   },
   created() {
     this.DataTurn(name.contents)
+
   },
   methods : {
+    InitIndex(){
+      this.timeLineList.forEach((item,index)=>{
+        //执行代码
+        if(item.type === this.tjxm_record.type_yw){
+          console.log('index',index)
+          this.timeIndex = index
+        }
+      })
+    },
+
+    Show(item){
+      console.log('^^^',item)
+
+      // /survey/update/BasicInformation/110131B03
+      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+    },
+    changeActive(index) {
+      this.timeIndex = index;
+    },
 
     //将json数据转成级联选择器种的data形式
     DataTurn(data){
@@ -1133,6 +1174,7 @@ export default {
   // },
   mounted:function (){
     this.fetchData()
+    this.InitIndex()
 
     // this.fetchOptions()
 
@@ -1199,5 +1241,38 @@ export default {
 }
 .regionStyle >>> div.rg-select div.rg-select__el div.rg-select__content  {
   font-size: 12px;
+}
+
+.ul_box {
+  width: 1340px;
+  height: 60px;
+  display: inline-block;
+  float: left;
+  margin-top: 2px;
+  overflow: hidden;
+}
+/*节点间距*/
+.my_timeline_item {
+  display: inline-block;
+  width: 170px;
+}
+.my_timeline_node {
+  box-sizing: border-box;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.my_timeline_node.active {
+  background-color: #fff !important;
+  border: 5px solid #f68720;
+}
+.my_timeline_item_line {
+  width: 100%;
+  height: 10px;
+  margin: -10px 0 0 15px;
+  border-top: 2px solid #E4E7ED;
+  border-left: none;
+}
+.my_timeline_item_content {
+  margin: 10px 0 0 -10px;
 }
 </style>

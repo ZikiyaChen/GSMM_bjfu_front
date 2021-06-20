@@ -270,16 +270,7 @@ export default [
           title: '修剪'
         },
         component: () => import('@/view/YangHuManage/AdminYhManage/admin_xiujian')
-      },
-      {
-        path: 'yh_measures',
-        name: 'measures_manage',
-        meta: {
-          icon: 'ios-document',
-          title: '养护项目方法管理'
-        },
-        component: () => import('@/view/YangHuManage/Yh_options/index')
-      },
+      }
     ]
 
   },

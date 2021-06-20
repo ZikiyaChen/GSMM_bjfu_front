@@ -1,6 +1,26 @@
 <template>
 <div>
   <Card>
+    <div class="timeLine" style="overflow: hidden;">
+
+      <div class="ul_box">
+        <ul class="my_timeline" ref="mytimeline" style="margin-left: 10px;">
+          <li class="my_timeline_item" v-for="(item,index) in timeLineList" :key="index" @click="Show(item)">
+            <!--圈圈节点-->
+            <div class="my_timeline_node" :style = " {backgroundColor: item.bgcolor, width: item.size + 'px', height: item.size + 'px'}" @click="changeActive(index)" :class="{active: index == timeIndex}"></div>
+            <!--线-->
+            <div class="my_timeline_item_line" v-show="item.type!=='Diseases'"></div>
+            <!--标注-->
+            <div class="my_timeline_item_content" :style="{color: item.color, fontSize: item.fontsize + 'px'}">
+              {{item.timestamp}}
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+
+
     <h2 slot="title" style="text-align: center">生长环境评价分析</h2>
     <Form :label-width="100" label-position="right" :model="TreeInformation" inline >
     <h4>古树基本信息</h4>
@@ -460,7 +480,7 @@
 
 <script>
 import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList, soil_textureList, organic_contentList,
-  is_buriedList, other_plantsList, evaluationList, has_structuresList } from "@/view/survey/options";
+  is_buriedList, other_plantsList, evaluationList, has_structuresList ,PathToList} from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
   AddBasicProperty,
@@ -478,6 +498,9 @@ export default {
   components: {Float_bar},
   data () {
     return {
+      timeIndex: 0,
+      timeLineList: PathToList,
+
       isShow:false,
       isSubmit: false,
       loading: false,
@@ -595,11 +618,32 @@ export default {
   created() {
     this.fetchTreeBasicData()
     this.fetchData()
+    this.InitIndex()
   },
   mounted() {
     // this.fetchOptions()
   },
   methods: {
+    InitIndex(){
+      this.timeLineList.forEach((item,index)=>{
+        //执行代码
+        if(item.type === this.tjxm_record.type_yw){
+          console.log('index',index)
+          this.timeIndex = index
+        }
+      })
+    },
+
+    Show(item){
+      console.log('^^^',item)
+
+      // /survey/update/BasicInformation/110131B03
+      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+    },
+    changeActive(index) {
+      this.timeIndex = index;
+    },
+
     fetchData(){
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((record=>{
         if(record.data.total!==0){
@@ -966,6 +1010,39 @@ export default {
 }
 .demo-upload-list-cover i {
   color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;
+}
+
+.ul_box {
+  width: 1340px;
+  height: 60px;
+  display: inline-block;
+  float: left;
+  margin-top: 2px;
+  overflow: hidden;
+}
+/*节点间距*/
+.my_timeline_item {
+  display: inline-block;
+  width: 170px;
+}
+.my_timeline_node {
+  box-sizing: border-box;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.my_timeline_node.active {
+  background-color: #fff !important;
+  border: 5px solid #f68720;
+}
+.my_timeline_item_line {
+  width: 100%;
+  height: 10px;
+  margin: -10px 0 0 15px;
+  border-top: 2px solid #E4E7ED;
+  border-left: none;
+}
+.my_timeline_item_content {
+  margin: 10px 0 0 -10px;
 }
 
 </style>

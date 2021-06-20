@@ -559,3 +559,69 @@ export const has_absoundList = [
     label: '无'
   }
 ]
+
+export const PathToList =  [
+  {
+    timestamp: '《名木古树基本信息表》',
+    color: '#999',
+    fontsize: 10,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    path_to: '/survey/update/BasicInformation/',
+    type: 'BasicInformation'
+  },
+  {
+    timestamp: '《生长环境评估分析》',
+    color: '#999',
+    fontsize: 10,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    type: 'environment',
+    path_to: '/survey/environment/'
+
+  },
+  {
+    timestamp: '《生长势分析》',
+    color: '#999',
+    fontsize: 10,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    type: 'GrowthVigor',
+    path_to: '/survey/GrowthVigor/'
+  },
+  {
+    timestamp: '《已采取复壮保护措施分析》',
+    color: '#999',
+    fontsize: 9,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    type: 'Protect',
+    path_to: '/survey/Protect/'
+  },
+  {
+    timestamp: '《树体损伤情况评估》',
+    color: '#999',
+    fontsize: 10,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    type: 'damage',
+    path_to: '/survey/damage/'
+  },
+  {
+    timestamp: '《树体倾斜、空腐情况检测》',
+    color: '#999',
+    fontsize: 10,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    type: 'Incline',
+    path_to: '/survey/Incline/'
+  },
+  {
+    timestamp: '《病虫害发生情况分析》',
+    color: '#999',
+    fontsize: 10,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    type: 'Diseases',
+    path_to: '/survey/Diseases/'
+  }]

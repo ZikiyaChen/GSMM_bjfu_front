@@ -68,8 +68,9 @@
 
 <script>
 import {deleteOneTree, queryFamilyTypes, queryTreeBasicProperty} from '@/api/table'
+import {getUserInfo} from "@/api/user";
 import {queryUsers} from "@/api/user";
-import {getToken} from "@/libs/util";
+import {getToken, showByAccess} from "@/libs/util";
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
 import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
 import name from "@/view/tools-methods/name.json"
@@ -393,6 +394,10 @@ export default {
     this.JsonChangeToOptions()
 
     console.log('userindex',getToken())// token===admin
+    getUserInfo(getToken()).then((res=>{
+      console.log('####',res)
+    }))
+
   }
 
 }
