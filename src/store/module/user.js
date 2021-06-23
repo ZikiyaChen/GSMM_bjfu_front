@@ -7,7 +7,7 @@ import {
   hasRead,
   removeReaded,
   restoreTrash,
-  getUnreadCount,currentUser
+  getUnreadCount
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
 
@@ -15,6 +15,7 @@ export default {
   state: {
     username: '',
     userId: '',
+    userInfo: {},
     avatarImgPath: '',
     token: getToken(),
     access: [],
@@ -34,6 +35,11 @@ export default {
     },
     setUsername (state, name) {
       state.username = name
+    },
+    setUserInfo (state, resData) {
+      state.userInfo = resData
+      state.userId = resData.id
+      state.username = resData.username
     },
     setAccess (state, access) {
       state.access = access
@@ -70,6 +76,9 @@ export default {
   getters: {
     access: state => {
       return state.access
+    },
+    userInfo: state => {
+      return state.userInfo
     },
     messageUnreadCount: state => state.messageUnreadList.length,
     messageReadedCount: state => state.messageReadedList.length,
@@ -118,16 +127,36 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          console.log(state.token)
-          getUserInfo(state.token).then(res => {
+          console.log('#',state.token)
+          getUserInfo().then(res => {
           // getUserInfo().then(res => {
             console.log('getUserinfo',res)
+            // localStorage.setItem('loginxinix', res.data)
+            // localStorage.getItem('loginxinix')
             const data = res.data
 
             commit('setAvatar', 'https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png')
             commit('setUsername', data.current_user.username)
             commit('setUserId', data.current_user.id)
-            commit('setAccess', data.current_user.role_names)
+            commit('setUserInfo', data.current_user)
+            // let roles = []
+            // if(data.current_user.role_names.includes('组长') && data.current_user.is_yh === true){
+            // roles= data.current_user.role_names.filter(item => item !== '养护人员'); // 过滤掉值不为3,返回新数组
+            //   console.log('%%%%',roles)
+            //   commit('setAccess', roles)
+            // }else {
+            //   commit('setAccess', data.current_user.role_names)
+            // }
+
+            if(data.current_user.role_names.includes('养护组长')){
+              commit('setAccess', ['养护组长'])
+            }else if(data.current_user.role_names.includes('调查组长')){
+              commit('setAccess', ['调查组长'])
+            }else {
+              commit('setAccess', data.current_user.role_names)
+            }
+
+            // commit('setAccess', data.current_user.role_names)
             commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {

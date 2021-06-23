@@ -525,7 +525,7 @@
         </Col>
       </Row>
     </Form>
-    <float_bar>
+    <float_bar v-role="['管理员','调查组长','调查人员']">
       <div style="text-align: center" v-show="isShow">
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
         <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
@@ -536,7 +536,7 @@
         </router-link>
       </div>
 
-      <div style="text-align: center" v-show="isSubmit">
+      <div style="text-align: center" v-show="isSubmit" >
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
         <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
 

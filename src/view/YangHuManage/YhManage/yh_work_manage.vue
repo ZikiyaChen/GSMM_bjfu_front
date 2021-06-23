@@ -4,7 +4,7 @@
 
 <script>
 export default {
-name: "admin_daliy_manage"
+name: "yh_work_manage"
 
 }
 </script>

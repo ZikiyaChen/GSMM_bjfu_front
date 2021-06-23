@@ -29,18 +29,25 @@
           </FormItem>
         </Col>
 
-        <Col span="12" >
-          <!--<span >身份:</span>-->
-          <FormItem label="身份:" prop="role_names">
-            <CheckboxGroup v-model="user.role_names">
-              <Checkbox v-for="role in roles" :label="role" :key="'key_'+role">
-                <span>{{ role }}</span>
-              </Checkbox>
-            </CheckboxGroup>
+        <Col span="11" >
+          <FormItem prop="unit" label="单位:">
+            <Input type="text" v-model="user.unit" placeholder="单位">
+            </Input>
           </FormItem>
         </Col>
       </Row>
 
+      <Row :gutter="16">
+        <Col>
+        <FormItem label="身份:" prop="role_names">
+          <CheckboxGroup v-model="user.role_names">
+            <Checkbox v-for="role in roles" :label="role" :key="'key_'+role">
+              <span>{{ role }}</span>
+            </Checkbox>
+          </CheckboxGroup>
+        </FormItem>
+        </Col>
+      </Row>
       <Row :gutter="16">
         <Col span="10" >
           <FormItem label="性别:"  prop="sex">
@@ -70,13 +77,13 @@ export default {
         name: '',
         tele: '',
         sex: '',
-        start_time: '',
-        end_time: '',
+        unit: '',
         role_names: []
       },
       loading: true,
       users: [],
-      roles: ['管理员', '养护管理员'],
+      // roles: ['管理员', '养护人员', '调查人员'],
+      roles: ['管理员'], //调查人员和养护人员身份由是否加入表中来确认
       sexList: [
         {
           label: '男',
@@ -91,6 +98,9 @@ export default {
         username: [{required: true, message: 'the username can not be empty', trigger: 'blur'}],
         name: [{required: true, message: 'the name can not be empty', trigger: 'blur'}],
         sex: [{required: true, message: 'the sex can not be empty', trigger: 'change'}],
+        unit: [{required: true, message: 'the unit can not be empty', trigger: 'blur'}],
+        // role_names: [ { required: true, type: 'array', min: 1, message: '至少选择一个身份', trigger: 'change' },
+        //   { type: 'array', max: 3, message: '最多选择三个身份', trigger: 'change' }],
         tele: [{ required: true, message: 'the telephone number can not be empty', trigger: 'blur' },
           {
             validator (rule, value, callback) {

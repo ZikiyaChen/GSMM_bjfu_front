@@ -36,7 +36,7 @@
         <Button type="primary" @click=" onSearch">查询</Button>
       </FormItem>
       <FormItem>
-      <router-link :to="{path: `/survey/right`}">
+      <router-link :to="{path: `/survey/right`}" v-role="['管理员','调查组长','调查人员']" >
         <Button type="success" style="margin-right: 30px">新增古树</Button>
       </router-link>
       </FormItem>
@@ -68,7 +68,6 @@
 
 <script>
 import {deleteOneTree, queryFamilyTypes, queryTreeBasicProperty} from '@/api/table'
-import {getUserInfo} from "@/api/user";
 import {queryUsers} from "@/api/user";
 import {getToken, showByAccess} from "@/libs/util";
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
@@ -393,10 +392,8 @@ export default {
     // })
     this.JsonChangeToOptions()
 
-    console.log('userindex',getToken())// token===admin
-    getUserInfo(getToken()).then((res=>{
-      console.log('####',res)
-    }))
+
+
 
   }
 

@@ -18,6 +18,15 @@
           <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
           <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
+
+          <span style="margin-right: 30px;font-size: medium" >
+              {{this.userInfo.userInfo.name}}, 您好!
+            </span>
+
+<!--          <span style="margin-right: 30px;font-size: medium" >-->
+<!--              {{this.name}},  您好!-->
+<!--            </span>-->
+
         </header-bar>
       </Header>
       <Content class="main-content-con">
@@ -37,6 +46,7 @@
   </Layout>
 </template>
 <script>
+
 import SideMenu from './components/side-menu'
 import HeaderBar from './components/header-bar'
 import TagsNav from './components/tags-nav'
@@ -51,6 +61,8 @@ import routers from '@/router/routers'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
 import './main.less'
+import {getUserInfo} from "@/api/user";
+import UserMixin from '@/mixin/UserMixin'
 export default {
   name: 'Main',
   components: {
@@ -63,12 +75,14 @@ export default {
     User,
     ABackTop
   },
+  mixins: [UserMixin],
   data () {
     return {
       collapsed: false,
       minLogo,
       maxLogo,
-      isFullscreen: false
+      isFullscreen: false,
+      name: undefined,
     }
   },
   computed: {
@@ -149,6 +163,11 @@ export default {
     },
     handleClick (item) {
       this.turnToPage(item)
+    },
+    getName(){
+      getUserInfo().then((res=>{
+        this.name = res.data.current_user.name
+      }))
     }
   },
   watch: {
@@ -163,10 +182,14 @@ export default {
       this.$refs.sideMenu.updateOpenName(newRoute.name)
     }
   },
+  created() {
+    this.getName()
+  },
   mounted () {
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
+
     this.setTagNavList()
     this.setHomeRoute(routers)
     const { name, params, query, meta } = this.$route

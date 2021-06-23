@@ -437,7 +437,7 @@
           </Row>
         </div>
       </Form>
-      <float_bar>
+      <float_bar  v-role="['管理员','调查组长','调查人员']">
       <div style="text-align: center" v-show="isShow">
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>

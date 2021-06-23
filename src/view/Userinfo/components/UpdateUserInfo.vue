@@ -7,27 +7,38 @@
     @on-ok="handleSubmit"
     @on-cancel="handleCancel"
     @on-visible-change="onShowChange">
-    <Form :model="user" ref="user_form" :rules="ruleValidate" >
+    <Form :model="user" ref="user_form" :rules="ruleValidate" :label-width="80">
       <Row :gutter="16">
-        <Col span="12">
-          <FormItem prop="username">
+        <Col span="11">
+          <FormItem prop="username" label="用户名：">
             <Input type="text" v-model="user.username" placeholder="用户名" disabled>
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
             </Input>
           </FormItem>
         </Col>
-        <Col span="12">
-          <FormItem prop="name">
+        <Col span="11">
+          <FormItem prop="name" label="姓名：">
             <Input type="text" v-model="user.name" placeholder="名字">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
             </Input>
           </FormItem>
         </Col>
       </Row>
-
+      <Row :gutter="16">
+        <Col span="11">
+          <FormItem prop="tele" label="电话：">
+            <Input type="text" v-model="user.tele" placeholder="电话">
+            </Input>
+          </FormItem>
+        </Col>
+        <Col span="11">
+          <FormItem prop="unit" label="单位：">
+            <Input type="text" v-model="user.unit" placeholder="单位">
+            </Input>
+          </FormItem>
+        </Col>
+      </Row>
       <Row >
         <Col span="10" >
-          <FormItem label="性别:" :label-width="50" prop="sex">
+          <FormItem label="性别："  prop="sex">
             <RadioGroup  v-model="user.sex">
               <Radio v-for="item in sexList " :label="item" :key="'key_'+item">{{ item }}</Radio>
             </RadioGroup>
@@ -37,7 +48,7 @@
           <!--<span >身份:</span>-->
           <FormItem label="身份:" prop="role_names">
             <CheckboxGroup v-model="user.role_names">
-              <Checkbox v-for="role in roles" :label="role" :key="'key_'+role">
+              <Checkbox v-for="role in roles" :label="role" :key="'key_'+role" :disabled="is_not_show">
                 <span>{{ role }}</span>
               </Checkbox>
             </CheckboxGroup>
@@ -47,16 +58,7 @@
 
 
 
-
-
-      <Row :gutter="16">
-        <Col span="12">
-          <FormItem prop="phone">
-            <Input type="text" v-model="user.tele" placeholder="电话">
-              <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-          </FormItem>
-        </Col>
+      <Row>
         <Button @click="changepass_visible=true">重置密码</Button>
         <UpdatePassword :show="changepass_visible"@onOk="changepassword"@onCancel="()=>{this.changepass_visible=false}"></UpdatePassword>
       </Row>
@@ -82,6 +84,7 @@ export default {
   },
   data: function () {
     return {
+      is_not_show: true,
       loading: true,
       changepass_visible: false,
       user: {
@@ -90,23 +93,17 @@ export default {
         name: undefined,
         tele: undefined,
         sex: '',
-        start_time: '',
-        end_time: '',
+        unit: '',
         role_names: []
       },
-      roles: ['管理员', '养护管理员'],
+      roles: ['管理员'],
       sexList: ['男', '女'],
       ruleValidate: {
         username: [{ required: true, message: 'the username can not be empty', trigger: 'blur' }],
         name: [{ required: true, message: 'the name can not be empty', trigger: 'blur' }],
         sex: [{ required: true, message: 'the sex can not be empty', trigger: 'change' }],
-        role_names: [{
-          required: true,
-          type: 'array',
-          min: 1,
-          message: 'choose at least one role name',
-          trigger: 'change'
-        }],
+        unit: [{ required: true, message: 'the unit can not be empty', trigger: 'blur' }],
+
         tele: [{ required: true, message: 'the phone can not be empty', trigger: 'blur' },
           {
             validator (rule, value, callback) {
@@ -164,6 +161,11 @@ export default {
         // 显示的时候拉数据
         GetUserByUsername(this.username).then((resp) => {
           updateWithinField(this.user, resp.data.user)
+          if(resp.data.user.role_names.length===0 || resp.data.user.role_names.includes('管理员')){
+            this.is_not_show = false
+          }else {
+            this.is_not_show = true
+          }
         })
       }
 

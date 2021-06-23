@@ -134,7 +134,8 @@ export default [
         name: 'right_page',
         meta: {
           icon: 'md-clipboard',
-          title: '名木古树调查填表'
+          title: '名木古树调查填表',
+          hideInMenu: true
         },
         component: () => import('@/view/survey/right.vue')
       },
@@ -244,43 +245,94 @@ export default [
       },
     ]
   },
+
+
   {
     path: '/yh_manage',
-    name: 'yh_manage',
+    name: 'admin_yh_manage',
     meta: {
       title: '养护管理',
-      icon: 'ios-folder-open'
+      icon: 'ios-folder-open',
+      access: ['管理员']
     },
     component: Main,
     children: [
       {
-        path: 'daily_manage',
-        name: 'admin_daily_manage',
+        path: 'yh_work_manage',
+        name: 'admin_yh_work_manage',
         meta: {
           icon: 'ios-document',
-          title: '日常养护管理'
+          title: '养护任务管理'
         },
-        component: () => import('@/view/YangHuManage/AdminYhManage/admin_daliy_manage')
-      },
-      {
-        path: 'xiujian',
-        name: 'admin_xiujian',
-        meta: {
-          icon: 'ios-document',
-          title: '修剪'
-        },
-        component: () => import('@/view/YangHuManage/AdminYhManage/admin_xiujian')
+        component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
       }
     ]
 
   },
+
+
+  {
+    path: '/yh_manage',
+    name: 'yh_group_leader_yh_manage',
+    meta: {
+      title: '养护管理',
+      icon: 'ios-folder-open',
+      access: ['养护组长']
+    },
+    component: Main,
+    children: [
+      {
+        path: 'yh_work_manage',
+        name: 'yh_group_leader_yh_work_manage',
+        meta: {
+          icon: 'ios-document',
+          title: '养护任务管理'
+        },
+        component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
+      },
+      {
+        path: 'yh_own_work',
+        name: 'yh_group_leader_yh_own_work',
+        meta: {
+          icon: 'ios-document',
+          title: '个人养护记录',
+          access: ['养护组长']
+        },
+        component: () => import('@/view/YangHuManage/YhManage/yh_own_record')
+      }
+    ]
+  },
+
+  {
+    path: '/yh_manage',
+    name: 'yh_yh_manage',
+    meta: {
+      title: '养护管理',
+      icon: 'ios-folder-open',
+      access: ['养护人员']
+    },
+    component: Main,
+    children: [
+      {
+        path: 'yh_own_work',
+        name: 'yh_own_work',
+        meta: {
+          icon: 'ios-document',
+          title: '个人养护记录'
+        },
+        component: () => import('@/view/YangHuManage/YhManage/yh_own_record')
+      }
+    ]
+  },
+
   {
     name: 'system',
     path: '/system',
     component: Main,
     meta: {
       title: '系统管理',
-      icon: "md-flower"
+      icon: "md-flower",
+      access: ['管理员']
     },
     children: [
       {
@@ -305,12 +357,13 @@ export default [
   },
 
   {
-    name: 'users',
+    name: 'admin_users',
     path: '/users',
     component: Main,
     meta: {
       title: '用户中心',
-      icon: 'md-people'
+      icon: 'md-people',
+      access: ['管理员']
     },
     children: [
       {
@@ -318,16 +371,84 @@ export default [
         path: 'managers',
         meta: {
           title: '用户管理',
-          icon: 'md-people'
+          icon: 'md-people',
+
+
         },
         component: () => import('@/view/Userinfo/index')
       },
       {
-        path: 'userinfo',
-        name: 'userinfo',
+        path: 'yhuser',
+        name: 'admin_yhuser',
         meta: {
           icon: 'md-people',
-          title: '个人信息'
+          title: '养护人员管理',
+
+        },
+        component: () => import('@/view/Userinfo/YhUserManage')
+      },
+      // {
+      //   path: 'userinfo',
+      //   name: 'admin_userinfo',
+      //   meta: {
+      //     icon: 'md-people',
+      //     title: '个人信息'
+      //   },
+      //   component: () => import('@/view/Userinfo/userinfo')
+      // }
+    ]
+  },
+
+  {
+    name: 'zuzhang_users',
+    path: '/users',
+    component: Main,
+    meta: {
+      title: '用户中心',
+      icon: 'md-people',
+      access: ['养护组长']
+    },
+    children: [
+      {
+        path: 'yhuser',
+        name: 'zuzhang_yhuser',
+        meta: {
+          icon: 'md-people',
+          title: '养护人员管理'
+        },
+        component: () => import('@/view/Userinfo/YhUserManage')
+      },
+      // {
+      //   path: 'userinfo',
+      //   name: 'zuzhang_userinfo',
+      //   meta: {
+      //     icon: 'md-people',
+      //     title: '个人信息'
+      //   },
+      //   component: () => import('@/view/Userinfo/userinfo')
+      // }
+    ]
+  },
+
+  {
+    name: 'yh_users',
+    path: '/users',
+    component: Main,
+    meta: {
+      title: '用户中心',
+      icon: 'md-people',
+      // access: ['养护人员','调查人员']
+      hideInBread: true,
+      hideInMenu: true
+    },
+    children: [
+      {
+        path: 'userinfo/:username',
+        name: 'yh_userinfo',
+        meta: {
+          icon: 'md-people',
+          title: '个人信息',
+
         },
         component: () => import('@/view/Userinfo/userinfo')
       }

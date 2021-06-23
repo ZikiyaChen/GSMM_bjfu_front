@@ -12,8 +12,8 @@ export const login = ({ username, password }) => {
     method: 'post'
   })
 }
-
-export const getUserInfo = (token) => {
+// 可获取当前用户信息
+export const getUserInfo = () => {
   const data ={
     t: getToken()
   }
@@ -27,9 +27,9 @@ export const getUserInfo = (token) => {
 }
 
 // // 当前用户
-// export const currentUser = (params) => {
+// export const currentUser = () => {
 //   return axios.request({
-//     url: 'current_user',
+//     url: 'get_current_user',
 //     method: 'get'
 //   })
 // }
@@ -125,3 +125,51 @@ export const changePassword = (username, params) => {
     params: params
   })
 }
+
+
+export const updateUser = (id,data) =>{
+  return axios.request({
+    url: 'update_user/'+id,
+    method: 'put',
+    data: data
+  })
+}
+
+// 养护人员列表
+export const queryGroupUsers = (params) =>{
+  return axios.request({
+    url: 'group_users',
+    params: params
+  })
+}
+
+export const addGroupUsers = (data) =>{
+  return axios.request({
+    url: 'add_group_user',
+    method: 'post',
+    data: data
+  })
+}
+
+export const deleteGroupUser = (id) =>{
+  return axios.request({
+    url: 'delete_group_user/'+id,
+    method: 'delete'
+  })
+}
+
+export const updateGroupUser = (id,data) =>{
+  return axios.request({
+    url: 'update_group_user/'+id,
+    method: 'put',
+    data: data
+  })
+}
+// 组名信息
+export const queryGroups = (params) =>{
+  return axios.request({
+    url: 'groups',
+    params: params
+  })
+}
+

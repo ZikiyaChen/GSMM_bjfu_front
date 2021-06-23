@@ -97,6 +97,10 @@ export default {
                   type: 'error',
                   size: 'small'
                 },
+                directives: [{
+                  name: 'role',
+                  value: ['管理员','调查人员','调查组长']
+                }],
                 style: {
                   marginRight: '2px',
                   display:( params.row.status === '未完成' )?"none":"inline-block",
@@ -117,6 +121,10 @@ export default {
                   type: 'primary',
                   size: 'small'
                 },
+                directives: [{
+                  name: 'role',
+                  value: ['管理员','调查人员','调查组长']
+                }],
                 style: {
                   marginRight: '2px',
                   display:( params.row.status === '已完成' || params.row.status ==='待提交')?"none":"inline-block",

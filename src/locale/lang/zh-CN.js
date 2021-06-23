@@ -13,7 +13,19 @@ export default {
   diseases: '病虫害发生情况分析',
   userinfo: '个人信息',
   usermanager: '用户管理',
-  users: '用户中心',
+
+  admin_users: '用户中心',
+  zuzhang_users: '用户中心',
+  yh_users: '用户中心',
+
+  admin_yhuser: '养护人员管理',
+  zuzhang_yhuser: '养护人员管理',
+
+  admin_userinfo: '个人信息',
+  zuzhang_userinfo: '个人信息',
+  yh_userinfo: '个人信息',
+
+
 
   system: '系统管理',
   yh_options: '养护项目选项管理',
@@ -26,10 +38,17 @@ export default {
   ProtectUpdate:'已采取复壮保护措施情况与分析-查看修改',
 
   tree_class_page: '名木古树树种管理',
+  // 管理员---看所有的记录
+  admin_yh_manage: '养护管理',
+  admin_yh_work_manage: '养护任务管理',
 
-  yh_manage: '养护管理',
-  admin_daily_manage: '日常养护管理',
-  admin_xiujian: '修剪',
+  //养护组长---只看本组内的，和自己的记录
+  yh_group_leader_yh_manage: '养护管理',
+  yh_group_leader_yh_work_manage: '养护任务管理',
+  yh_group_leader_yh_own_work: '个人养护记录',
+  //普通养护人员----只看自己的
+  yh_yh_manage: '养护管理',
+  yh_own_work: '个人养护记录',
   measures_manage: '养护项目处理方法管理',
 
 

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import {AddUser, queryUsers} from "@/api/user";
+import {AddUser, queryUsers, updateUser} from "@/api/user";
 import AddUserModal from "@/view/Userinfo/components/AddUserModal";
 import {getToken} from "@/libs/util";
 import UpdateUserInfo from "@/view/Userinfo/components/UpdateUserInfo";
@@ -57,7 +57,7 @@ export default {
       data: [], // 数据
       pages: {
         _page: 1,
-        _per_page: 5
+        _per_page: 10
       }, // 分页
 
       columns: [
@@ -74,6 +74,10 @@ export default {
           key: 'sex'
         },
         {
+          title: '单位',
+          key: 'unit'
+        },
+        {
           title: '身份',
           minWidth: 80,
           render: function (h, params) {
@@ -87,6 +91,7 @@ export default {
           title: '电话',
           key: 'tele'
         },
+
 
         {
           title: '操作',
@@ -104,9 +109,7 @@ export default {
                 on: {
                   click: () => {
                     this.selected_username = params.row.username
-                    console.log('qq',this.selected_username)
                     this.showUserUpdateModal = true
-
                   }
                 }
               }, '修改')
@@ -150,7 +153,24 @@ export default {
     onAddModalCancel () {
       this.showAddUserModal = false
     },
-    onUpdateUserModalOK () {
+    onUpdateUserModalOK (user) {
+      updateUser(user.id, user).then((res=>{
+        if(res.data.code === 200){
+          this.$Message.success({
+            content: '修改成功',
+            duration: 5,
+            closable: true
+          })
+          this.fetchData()
+        }else {
+          this.$Message.error({
+            content: '修改失败',
+            duration: 5,
+            closable: true
+          })
+        }
+      }))
+
       this.showUserUpdateModal = false
     },
     onUpdateUserModalCancel () {
