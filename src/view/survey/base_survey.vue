@@ -4,7 +4,7 @@
     <h2 slot="title">名木古树信息</h2>
     <Form :label-width="80" :model="query" inline>
       <FormItem label="古树编号:" :label-width="80">
-        <Input v-model="query.tree_code" style="width: 150px" clearable></Input>
+        <Input v-model="query.tree_code_like" style="width: 150px" clearable></Input>
       </FormItem>
       <FormItem label="古树等级:" :label-width="80">
         <Select style="width:100px" v-model="query.level" clearable>
@@ -84,7 +84,7 @@ export default {
       showDeleteModal: false,
       query: {
         level: undefined,
-        tree_code: undefined,
+        tree_code_like: undefined,
         family: undefined,
         genus: undefined,
         zw_name: undefined,
@@ -335,14 +335,8 @@ export default {
     fetchData: function () {
       // 数据表发生变化请求数据
 
+      let args = {...this.query, ...this.pages}
 
-      let args = {}
-      if(this.query.tree_code) {
-        args = {...this.query, ...this.pages}
-      }else {
-        args= {'level':this.query.level,'family':this.query.family,'genus':this.query.genus,'zw_name':this.query.zw_name,
-          'owner':this.query.owner,...this.pages}
-      }
       return queryTreeBasicProperty(args).then((resp) => {
         this.tableData = resp.data.trees_basic_property
         this.total = resp.data.total
