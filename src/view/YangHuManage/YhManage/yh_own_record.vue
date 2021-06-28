@@ -1,5 +1,12 @@
 <template>
+  <Form>
+    <FormItem>
+  <Input style="width: 0">
+    <p slot="prepend">110131</p>
+  </Input>
 
+    </FormItem>
+  </Form>
 </template>
 
 <script>

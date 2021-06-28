@@ -97,3 +97,21 @@ export const deleteYhOptions = (id) => {
   })
 }
 
+// yh_record
+
+export const queryYhRecords = (params) => {
+  return axios.request({
+    url: 'yh_records',
+    method: 'get',
+    params: params
+  })
+}
+
+// yh_allot 任务分配的工单
+export const queryYhAllots = (params) => {
+  return axios.request({
+    url: 'yh_allots',
+    method: 'get',
+    params: params
+  })
+}

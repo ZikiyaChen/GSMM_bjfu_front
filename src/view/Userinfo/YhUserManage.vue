@@ -242,6 +242,7 @@ export default {
             duration: 5,
             closable: true
           })
+          this.fetchData()
         }else if(res.data.msg === 'this group leader has been existed'){
             this.$Message.error({
               content: '修改失败！该组组长已存在，注意每组组长只能有一个！',
@@ -256,7 +257,7 @@ export default {
           })
         }
       }))
-      this.fetchData()
+
       this.showUpdateGroupUserModal = false
     },
     onUpdateModalCancel(){
