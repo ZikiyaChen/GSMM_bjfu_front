@@ -1,5 +1,5 @@
 import axios from '@/libs/api.request'
-import {getToken} from "@/libs/util";
+import { getToken } from "@/libs/util";
 
 export const login = ({ username, password }) => {
   const data = {
@@ -14,7 +14,7 @@ export const login = ({ username, password }) => {
 }
 // 可获取当前用户信息
 export const getUserInfo = () => {
-  const data ={
+  const data = {
     t: getToken()
   }
   return axios.request({
@@ -110,40 +110,39 @@ export const AddUser = (data) => {
     data: data
   })
 }
-export const GetUserByUsername = (username) =>{
+export const GetUserByUsername = (username) => {
   return axios.request({
-    url: 'getUserByUsername/'+username,
+    url: 'getUserByUsername/' + username,
     method: 'get',
     username: username
   })
 }
-export const changePassword = (username, params) => {
+export const changePassword = (username, data) => {
   return axios.request({
-    url: 'user/'+ username +'/password',
+    url: 'user/' + username + '/password',
     method: 'put',
     username: username,
-    params: params
+    data: data
   })
 }
 
-
-export const updateUser = (id,data) =>{
+export const updateUser = (id, data) => {
   return axios.request({
-    url: 'update_user/'+id,
+    url: 'update_user/' + id,
     method: 'put',
     data: data
   })
 }
 
 // 养护人员列表
-export const queryGroupUsers = (params) =>{
+export const queryGroupUsers = (params) => {
   return axios.request({
     url: 'group_users',
     params: params
   })
 }
 
-export const addGroupUsers = (data) =>{
+export const addGroupUsers = (data) => {
   return axios.request({
     url: 'add_group_user',
     method: 'post',
@@ -151,25 +150,24 @@ export const addGroupUsers = (data) =>{
   })
 }
 
-export const deleteGroupUser = (id) =>{
+export const deleteGroupUser = (id) => {
   return axios.request({
-    url: 'delete_group_user/'+id,
+    url: 'delete_group_user/' + id,
     method: 'delete'
   })
 }
 
-export const updateGroupUser = (id,data) =>{
+export const updateGroupUser = (id, data) => {
   return axios.request({
-    url: 'update_group_user/'+id,
+    url: 'update_group_user/' + id,
     method: 'put',
     data: data
   })
 }
 // 组名信息
-export const queryGroups = (params) =>{
+export const queryGroups = (params) => {
   return axios.request({
     url: 'groups',
     params: params
   })
 }
-
