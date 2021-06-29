@@ -32,6 +32,7 @@ export default {
       userInfo: {}
     }
   },
+
   methods: {
     getNewData (newData) {
       this.userInfo = newData
@@ -65,7 +66,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

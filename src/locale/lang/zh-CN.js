@@ -40,11 +40,13 @@ export default {
   tree_class_page: '名木古树树种管理',
   // 管理员---看所有的记录
   admin_yh_manage: '养护管理',
-  admin_yh_work_manage: '养护任务管理',
+  admin_yh_work_manage: '养护任务结果管理',
+  admin_yh_allot_manage: '养护任务分配管理',
 
   //养护组长---只看本组内的，和自己的记录
   yh_group_leader_yh_manage: '养护管理',
-  yh_group_leader_yh_work_manage: '养护任务管理',
+  yh_group_leader_yh_work_manage: '养护任务结果管理',
+  yh_group_leader_yh_allot_manage: '养护任务分配管理',
   yh_group_leader_yh_own_work: '个人养护记录',
   //普通养护人员----只看自己的
   yh_yh_manage: '养护管理',

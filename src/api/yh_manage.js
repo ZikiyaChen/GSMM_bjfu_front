@@ -97,9 +97,28 @@ export const deleteYhOptions = (id) => {
   })
 }
 
+
 export const getCurrentWeather = () => {
   return axios.request({
     url: 'https://tianqiapi.com/api?version=v6&appid=91325957&appsecret=D2VFoOra',
     method: 'get'
+
+// yh_record
+
+export const queryYhRecords = (params) => {
+  return axios.request({
+    url: 'yh_records',
+    method: 'get',
+    params: params
+  })
+}
+
+// yh_allot 任务分配的工单
+export const queryYhAllots = (params) => {
+  return axios.request({
+    url: 'yh_allots',
+    method: 'get',
+    params: params
+
   })
 }
