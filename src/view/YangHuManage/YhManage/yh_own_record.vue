@@ -1,28 +1,22 @@
 <template>
-  <Form>
-    <FormItem>
-  <Input style="width: 0">
-    <p slot="prepend">110131</p>
-  </Input>
 
-    </FormItem>
-  </Form>
+  <div></div>
+
 </template>
 
 <script>
 
 export default {
   name: "yh_own_record",
-  data(){
-     return {
+  data () {
+    return {
 
-     }
+    }
   },
-created() {
+  created () {
 
-},
-  methods:{
-
+  },
+  methods: {
 
   }
 }

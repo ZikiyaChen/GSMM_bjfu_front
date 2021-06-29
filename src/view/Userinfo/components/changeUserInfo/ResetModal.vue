@@ -17,6 +17,7 @@
 
 <script>
 import { changePassword } from "@/api/user";
+
 export default {
   name: "ResetModal",
   props: {
@@ -31,6 +32,7 @@ export default {
         callback()
       }
     }
+
     const validateConfirmPassword = (rule, value, callback) => {
       if (!value) {
         callback(new Error("请再次输入密码！"))
@@ -40,6 +42,7 @@ export default {
         callback()
       }
     }
+
     return {
       userName: this.$route.params.username,
       passwordInfo: {
@@ -63,6 +66,7 @@ export default {
     }
   },
   methods: {
+
     handleConfirmClick () {
       this.$refs.resetForm.validate(valid => {
         if (valid) {
@@ -75,6 +79,7 @@ export default {
               this.$Message.error('密码修改失败！');
             }
           })
+
           this.$emit('hideModal', false) // 传值给父组件，将对话框设置为隐藏
         } else {
           this.$Message.error('密码修改失败');
@@ -89,7 +94,10 @@ export default {
     }
   }
 }
+
+
 </script>
 
 <style scoped>
+
 </style>

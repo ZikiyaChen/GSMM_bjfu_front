@@ -56,11 +56,9 @@
         </Col>
       </Row>
 
-
-
       <Row>
         <Button @click="changepass_visible=true">重置密码</Button>
-        <UpdatePassword :show="changepass_visible"@onOk="changepassword"@onCancel="()=>{this.changepass_visible=false}"></UpdatePassword>
+        <UpdatePassword :show="changepass_visible" @onOk="changepassword" @onCancel="()=>{this.changepass_visible=false}"></UpdatePassword>
       </Row>
     </Form>
   </Modal>
@@ -68,14 +66,14 @@
 
 <script>
 import UpdatePassword from "@/view/Userinfo/components/UpdatePassword";
-import { GetUserByUsername ,changePassword} from "@/api/user";
+import { GetUserByUsername, changePassword } from "@/api/user";
 import { updateWithinField } from "@/libs/tools";
-import {getToken} from "@/libs/util";
-
+// eslint-disable-next-line no-unused-vars
+import { getToken } from "@/libs/util";
 
 export default {
   name: "UpdateUserInfo",
-  components: { UpdatePassword},
+  components: { UpdatePassword },
   props: {
     show: Boolean,
     onCancel: Function,
@@ -110,6 +108,7 @@ export default {
               if (!value) {
                 return callback(new Error('the phone can not be empty'))
               } else if (!/^[1][34578][0-9]{9}$/.test(value)) {
+                // eslint-disable-next-line standard/no-callback-literal
                 callback('手机号格式不正确')
               } else {
                 callback()
@@ -129,10 +128,10 @@ export default {
         end_time: dateToString(this.user.end_time, 'yyyy-MM-dd hh:mm:ss')
       })
     }, */
-    changeLoading: function() {
-      setTimeout(()=>{
+    changeLoading: function () {
+      setTimeout(() => {
         this.loading = false;
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.loading = true
         })
       }, 500)
@@ -142,7 +141,6 @@ export default {
     },
     handleCancel: function () {
       this.$emit('onCancel')
-
     },
     handleSubmit () {
       this.$refs.user_form.validate((valid) => {
@@ -161,18 +159,17 @@ export default {
         // 显示的时候拉数据
         GetUserByUsername(this.username).then((resp) => {
           updateWithinField(this.user, resp.data.user)
-          if(resp.data.user.role_names.length===0 || resp.data.user.role_names.includes('管理员')){
+          if (resp.data.user.role_names.length === 0 || resp.data.user.role_names.includes('管理员')) {
             this.is_not_show = false
-          }else {
+          } else {
             this.is_not_show = true
           }
         })
       }
-
     },
     changepassword: function (passwd) {
-      changePassword(this.username, { 'password': passwd }).then((resp)=>{
-        if (resp.data.code === 200 ){
+      changePassword(this.username, { 'password': passwd }).then((resp) => {
+        if (resp.data.code === 200) {
           this.$Message.success('修改成功！')
         }
       })

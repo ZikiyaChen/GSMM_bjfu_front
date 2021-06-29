@@ -1,12 +1,15 @@
 <template>
 <div>
   <Card>
+  <Button type="info" @click="show=!show">养护管理</Button>
+    <work-options :show="show"  @cancel="handleCancel"></work-options>
     <Table stripe :columns="columns" :data="data" border></Table>
   </Card>
 </div>
 </template>
 
 <script>
+import WorkOptions from "@/view/YangHuManage/YhManage/componnets/WorkOptions";
 import {queryYhRecords} from "@/api/yh_manage";
 import {getUserInfo} from "@/api/user";
 import UserMixin from "@/mixin/UserMixin";
@@ -14,9 +17,13 @@ import UserMixin from "@/mixin/UserMixin";
 
 export default {
    name: "yh_work_manage",
-  mixins: [UserMixin],
+   mixins: [UserMixin],
+   components: {
+    WorkOptions
+  },
   data(){
      return{
+     show: false,
        data: [],
        current_user:{},
        query:{
@@ -165,7 +172,10 @@ export default {
      //   }))
      // }))
      // }
-
+    handleCancel () {
+        this.show = !this.show
+    },
+    
     fetchData(){
 
         if(this.userInfo.userInfo['role_names'].includes('养护组长')){

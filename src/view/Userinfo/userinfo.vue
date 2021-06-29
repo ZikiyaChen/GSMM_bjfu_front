@@ -15,9 +15,11 @@
 </template>
 
 <script>
+
 import EditUserInfo from "@/view/Userinfo/components/changeUserInfo/EditUserInfo";
 import ResetModal from "@/view/Userinfo/components/changeUserInfo/ResetModal";
 import { updateUser } from "@/api/user";
+
 export default {
   name: "userinfo",
   components: {
@@ -30,6 +32,7 @@ export default {
       userInfo: {}
     }
   },
+
   methods: {
     getNewData (newData) {
       this.userInfo = newData
@@ -49,6 +52,7 @@ export default {
             unit: this.userInfo.unit,
             role_names: this.userInfo.identities
           }
+
           updateUser(this.userInfo.id, data).then(message => {
             if (message.data.code === 200) {
               this.$Message.success("信息修改成功！")

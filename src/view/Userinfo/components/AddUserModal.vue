@@ -83,7 +83,7 @@ export default {
       loading: true,
       users: [],
       // roles: ['管理员', '养护人员', '调查人员'],
-      roles: ['管理员'], //调查人员和养护人员身份由是否加入表中来确认
+      roles: ['管理员'], // 调查人员和养护人员身份由是否加入表中来确认
       sexList: [
         {
           label: '男',
@@ -95,10 +95,10 @@ export default {
         }
       ],
       ruleValidate: {
-        username: [{required: true, message: 'the username can not be empty', trigger: 'blur'}],
-        name: [{required: true, message: 'the name can not be empty', trigger: 'blur'}],
-        sex: [{required: true, message: 'the sex can not be empty', trigger: 'change'}],
-        unit: [{required: true, message: 'the unit can not be empty', trigger: 'blur'}],
+        username: [{ required: true, message: 'the username can not be empty', trigger: 'blur' }],
+        name: [{ required: true, message: 'the name can not be empty', trigger: 'blur' }],
+        sex: [{ required: true, message: 'the sex can not be empty', trigger: 'change' }],
+        unit: [{ required: true, message: 'the unit can not be empty', trigger: 'blur' }],
         // role_names: [ { required: true, type: 'array', min: 1, message: '至少选择一个身份', trigger: 'change' },
         //   { type: 'array', max: 3, message: '最多选择三个身份', trigger: 'change' }],
         tele: [{ required: true, message: 'the telephone number can not be empty', trigger: 'blur' },
@@ -107,6 +107,7 @@ export default {
               if (!value) {
                 return callback(new Error('the phone can not be empty'))
               } else if (!/^[1][34578][0-9]{9}$/.test(value)) {
+                // eslint-disable-next-line standard/no-callback-literal
                 callback('手机号格式不正确')
               } else {
                 callback()
@@ -118,10 +119,10 @@ export default {
     }
   },
   methods: {
-    changeLoading: function() {
-      setTimeout(()=>{
+    changeLoading: function () {
+      setTimeout(() => {
         this.loading = false;
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.loading = true
         })
       }, 500)
@@ -129,7 +130,7 @@ export default {
     handleSubmit () {
       this.$refs.user_form.validate((valid) => {
         this.changeLoading()
-        console.log('valid',valid)
+        console.log('valid', valid)
         if (valid) {
           this.$emit('onOK', { ...this.user }, valid)
         } else {

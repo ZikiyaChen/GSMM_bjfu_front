@@ -53,6 +53,7 @@
 
 <script>
 import { GetUserByUsername } from "@/api/user";
+
 export default {
   name: "EditUserInfo",
   props: {
@@ -68,6 +69,7 @@ export default {
         callback()
       }
     }
+
     return {
       username: this.$route.params.username,
       userInfo: {
@@ -99,10 +101,12 @@ export default {
     }
   },
   methods: {
+
   },
   beforeMount () {
     GetUserByUsername(this.username).then(message => {
       let userInfo = message.data.user
+
       this.userInfo.id = userInfo.id
       this.userInfo.userName = userInfo.username
       this.userInfo.name = userInfo.name
@@ -119,4 +123,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

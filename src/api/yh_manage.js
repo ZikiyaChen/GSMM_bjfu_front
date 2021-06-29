@@ -97,6 +97,12 @@ export const deleteYhOptions = (id) => {
   })
 }
 
+
+export const getCurrentWeather = () => {
+  return axios.request({
+    url: 'https://tianqiapi.com/api?version=v6&appid=91325957&appsecret=D2VFoOra',
+    method: 'get'
+
 // yh_record
 
 export const queryYhRecords = (params) => {
@@ -113,5 +119,6 @@ export const queryYhAllots = (params) => {
     url: 'yh_allots',
     method: 'get',
     params: params
+
   })
 }
