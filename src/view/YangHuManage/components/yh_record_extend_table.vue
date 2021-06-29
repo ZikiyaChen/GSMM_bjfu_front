@@ -90,7 +90,7 @@ name: "yh_record_extend_table",
 
                  style: {
                    marginRight: '2px',
-                   display:( params.row.status === '待养护' )?"none":"inline-block",
+                   display:( params.row.state === '待养护' )?"none":"inline-block",
                  },
                  on: {
                    click: () => {

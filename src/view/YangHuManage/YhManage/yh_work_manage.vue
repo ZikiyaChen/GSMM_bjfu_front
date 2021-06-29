@@ -112,19 +112,37 @@ export default {
              return h('div', [
                h('Button', {
                  props: {
-                   type: 'primary',
+                   type: 'success',
                    size: 'small'
                  },
 
                  style: {
-                   marginRight: '2px'
+                   marginRight: '2px',
+                   display:( params.row.state !== '待养护' )?"none":"inline-block",
                  },
                  on: {
                    click: () => {
 
                    }
                  }
-               }, '填写')
+               }, '填写'),
+
+               h('Button', {
+                 props: {
+                   type: 'primary',
+                   size: 'small'
+                 },
+
+                 style: {
+                   marginRight: '2px',
+                   display:( params.row.state === '待养护' )?"none":"inline-block",
+                 },
+                 on: {
+                   click: () => {
+
+                   }
+                 }
+               }, '查看')
 
 
              ])
