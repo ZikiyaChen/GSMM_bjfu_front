@@ -1,4 +1,5 @@
 <template>
+  <div></div>
 
 </template>
 
@@ -6,16 +7,15 @@
 
 export default {
   name: "yh_own_record",
-  data(){
-     return {
+  data () {
+    return {
 
-     }
+    }
   },
-created() {
+  created () {
 
-},
-  methods:{
-
+  },
+  methods: {
 
   }
 }
