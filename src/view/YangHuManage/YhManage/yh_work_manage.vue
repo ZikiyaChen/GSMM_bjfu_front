@@ -1,27 +1,30 @@
 <template>
   <div>
-    <Button type="info" @click="show=!show">养护管理</Button>
-    <work-options :show="show"  @cancel="handleCancel"></work-options>
+    <Button type="info" @click="changeShowDaily">养护管理</Button>
+    <daily-maintenance :show="showDaily" @dailyCancel="handleDailyCancel"></daily-maintenance>
   </div>
 
 </template>
 
 <script>
-import WorkOptions from "@/view/YangHuManage/YhManage/componnets/WorkOptions";
+import DailyMaintenance from "@/view/YangHuManage/YhManage/componnets/DailyMaintenance";
 
 export default {
   name: "yh_work_manage",
   components: {
-    WorkOptions
+    DailyMaintenance
   },
   data () {
     return {
-      show: false
+      showDaily: false
     }
   },
   methods: {
-    handleCancel () {
-      this.show = !this.show
+    changeShowDaily () {
+      this.showDaily = !this.showDaily
+    },
+    handleDailyCancel () {
+      this.changeShowDaily()
     }
   }
 }
