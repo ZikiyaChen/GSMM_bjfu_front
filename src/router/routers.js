@@ -1,6 +1,5 @@
 import Main from '@/components/main'
 
-
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
  * meta: {
@@ -246,7 +245,6 @@ export default [
     ]
   },
 
-
   {
     path: '/yh_manage',
     name: 'admin_yh_manage',
@@ -262,14 +260,23 @@ export default [
         name: 'admin_yh_work_manage',
         meta: {
           icon: 'ios-document',
-          title: '养护任务管理'
+          title: '养护任务结果管理',
+          notCache: true
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
-      }
+      },
+      {
+        path: 'yh_allot_manage',
+        name: 'admin_yh_allot_manage',
+        meta: {
+          icon: 'ios-document',
+          title: '养护任务分配管理'
+        },
+        component: () => import('@/view/YangHuManage/YhManage/yh_allot_manage')
+      },
     ]
 
   },
-
 
   {
     path: '/yh_manage',
@@ -283,20 +290,30 @@ export default [
     children: [
       {
         path: 'yh_work_manage',
-        name: 'yh_group_leader_yh_work_manage',
+        // name: 'yh_group_leader_yh_work_manage',
+        name: 'admin_yh_work_manage',
         meta: {
           icon: 'ios-document',
-          title: '养护任务管理'
+          title: '养护任务结果管理'
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
+      },
+      {
+        path: 'yh_allot_manage',
+        // name: 'yh_group_leader_yh_allot_manage',
+        name: 'admin_yh_allot_manage',
+        meta: {
+          icon: 'ios-document',
+          title: '养护任务分配管理'
+        },
+        component: () => import('@/view/YangHuManage/YhManage/yh_allot_manage')
       },
       {
         path: 'yh_own_work',
         name: 'yh_group_leader_yh_own_work',
         meta: {
           icon: 'ios-document',
-          title: '个人养护记录',
-          access: ['养护组长']
+          title: '个人养护记录'
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_own_record')
       }
@@ -373,7 +390,6 @@ export default [
           title: '用户管理',
           icon: 'md-people',
 
-
         },
         component: () => import('@/view/Userinfo/index')
       },
@@ -411,7 +427,8 @@ export default [
     children: [
       {
         path: 'yhuser',
-        name: 'zuzhang_yhuser',
+        // name: 'zuzhang_yhuser',
+        name: 'admin_yhuser',
         meta: {
           icon: 'md-people',
           title: '养护人员管理'

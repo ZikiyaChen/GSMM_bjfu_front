@@ -25,32 +25,30 @@ export default {
   zuzhang_userinfo: '个人信息',
   yh_userinfo: '个人信息',
 
-
-
   system: '系统管理',
   yh_options: '养护项目选项管理',
   other: '其它信息管理',
 
-
   BaseInfo: '名木古树基本信息',
   environmentUpdate: '生长环境评估分析查看修改',
-  GrowthVigorUpdate:'生长势分析查看修改',
-  ProtectUpdate:'已采取复壮保护措施情况与分析-查看修改',
+  GrowthVigorUpdate: '生长势分析查看修改',
+  ProtectUpdate: '已采取复壮保护措施情况与分析-查看修改',
 
   tree_class_page: '名木古树树种管理',
   // 管理员---看所有的记录
   admin_yh_manage: '养护管理',
-  admin_yh_work_manage: '养护任务管理',
+  admin_yh_work_manage: '养护任务结果管理',
+  admin_yh_allot_manage: '养护任务分配管理',
 
-  //养护组长---只看本组内的，和自己的记录
+  // 养护组长---只看本组内的，和自己的记录
   yh_group_leader_yh_manage: '养护管理',
-  yh_group_leader_yh_work_manage: '养护任务管理',
+  yh_group_leader_yh_work_manage: '养护任务结果管理',
+  yh_group_leader_yh_allot_manage: '养护任务分配管理',
   yh_group_leader_yh_own_work: '个人养护记录',
-  //普通养护人员----只看自己的
+  // 普通养护人员----只看自己的
   yh_yh_manage: '养护管理',
   yh_own_work: '个人养护记录',
   measures_manage: '养护项目处理方法管理',
-
 
   components: '组件',
   count_to_page: '数字渐变',
