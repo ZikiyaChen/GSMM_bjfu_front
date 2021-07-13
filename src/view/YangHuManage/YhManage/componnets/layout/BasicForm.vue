@@ -2,7 +2,6 @@
   <Modal
     width="44"
     :value="show"
-    title="日常养护管理"
     @on-ok="handleConfirm"
     @on-cancel="handleCancel">
     <Form :model="maintenanceInfo" :label-width="80">
@@ -13,16 +12,26 @@
         </Col>
       </Row>
 
-      <FormItem label="天气">
-        <Input readonly v-model="weatherInfo"></Input>
+      <FormItem label="天气" prop="weatherInfo">
+        <Input readonly v-model="maintenanceInfo.weatherInfo"></Input>
       </FormItem>
 
       <FormItem label="日期" prop="date">
-        <Input v-model="maintenanceInfo.date"></Input>
+        <Row>
+          <Col span="24">
+            <DatePicker
+              ref="datePicker"
+              :value="maintenanceInfo.date"
+              format="yyyy年MM月dd日"
+              type="date"
+              placeholder="请输入日期">
+            </DatePicker>
+          </Col>
+        </Row>
       </FormItem>
 
       <FormItem label="登记人" prop="registerName">
-        <Input v-model="maintenanceInfo.registerName"></Input>
+        <Input ref="registerInput" v-model="maintenanceInfo.registerName"></Input>
       </FormItem>
       <!--
           性质或类型的插槽
@@ -32,17 +41,19 @@
       <FormItem label="古树树号" prop="treeNumber">
         <Row>
           <Col span="4">
-            <Input v-model="treeNumber.prefix" style="text-align: center" disabled></Input>
+            <Input v-model="maintenanceInfo.treeNumber.prefix" style="text-align: center" disabled></Input>
           </Col>
           <Col span="20">
             <Select
-              v-model="treeNumber.model"
+              v-model="maintenanceInfo.treeNumber.treeNumber"
               multiple
               filterable
               @on-change="treeNumberOptionChange"
               :remote-method="treeNumberRemoteMethod"
-              :loading="treeNumber.loading">
-              <Option v-for="(option, index) in treeNumber.options" :value="option.value" :key="index">
+              :loading="maintenanceInfo.treeNumber.loading">
+              <Option v-for="(option, index) in maintenanceInfo.treeNumber.options"
+                      :value="option.value"
+                      :key="index">
                 {{ option.label }}
               </Option>
             </Select>
@@ -50,11 +61,13 @@
         </Row>
       </FormItem>
 
-      <FormItem label="树种">
-        <Input readonly v-model="treeSpeciesInfo"></Input>
+      <FormItem label="树种" prop="treeSpecies">
+        <Input readonly v-model="maintenanceInfo.treeSpeciesInfo"></Input>
       </FormItem>
 
-      <FormItem label="生长地点">
+      <slot name="other1"></slot>
+
+      <FormItem label="生长地点" prop="location">
         <Input v-model="maintenanceInfo.location"></Input>
       </FormItem>
 
@@ -63,7 +76,7 @@
       -->
       <slot name="other"></slot>
 
-      <FormItem label="备注">
+      <FormItem label="备注" prop="note">
         <Input v-model="maintenanceInfo.note"></Input>
       </FormItem>
     </Form>
@@ -77,47 +90,86 @@ import { queryTreeBasicProperty } from "@/api/table";
 export default {
   name: 'BasicForm',
   props: {
-    show: Boolean
+    show: Boolean,
+    judge: Object
   },
   data () {
+    // const validateTreeNumber = (rule, value, callback) => {
+    //   if (typeof (value) !== 'undefined') {
+    //     if (typeof (this.formJudge) === 'undefined') {
+    //       callback();
+    //     } else if (!this.formJudge.judge) {
+    //       callback(new Error('请先选择' + this.formJudge.quality));
+    //     } else {
+    //       callback();
+    //     }
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    //
+    // const validateNote = (rule, value, callback) => {
+    //   if (value !== '') {
+    //     if (typeof (this.formJudge) === 'undefined') {
+    //       callback();
+    //     } else if (!this.formJudge.judge) {
+    //       callback(new Error('请先选择' + this.formJudge.quality));
+    //     } else {
+    //       callback();
+    //     }
+    //   } else {
+    //     callback();
+    //   }
+    // }
+
     return {
-      weatherInfo: '',
+      formJudge: this.judge,
       treesBasicProperty: [],
-
-      treeNumber: {
-        model: '',
-        loading: false,
-        list: [],
-        options: [],
-        prefix: '110131'
-      },
-
-      treeSpeciesInfo: '',
-
       maintenanceInfo: {
+        weatherInfo: '',
         date: '',
         registerName: '',
         location: '',
-        note: ''
-      }
+        note: '',
+        treeSpeciesInfo: '',
+        treeNumber: {
+          model: '',
+          loading: false,
+          list: [],
+          options: [],
+          prefix: '110131'
+        },
+      },
+      // ruleMaintenanceInfo: {
+      //   treeNumber: [
+      //     { validator: validateTreeNumber, trigger: 'blur' }
+      //   ],
+      //   location: [
+      //     { validator: validateNote, trigger: 'blur' }
+      //   ],
+      //   note: [
+      //     { validator: validateAge, trigger: 'blur' }
+      //   ]
+      // }
     }
   },
+
   methods: {
     treeNumberRemoteMethod (query) {
       if (query !== '') {
-        this.treeNumber.loading = true
+        this.maintenanceInfo.treeNumber.loading = true
         setTimeout(() => {
-          this.treeNumber.loading = false
-          const list = this.treeNumber.list.map(item => {
+          this.maintenanceInfo.treeNumber.loading = false
+          const list = this.maintenanceInfo.treeNumber.list.map(item => {
             return {
               value: item,
               label: item
             }
           })
-          this.treeNumber.options = list.filter(item => item.label.indexOf(query) > -1)
+          this.maintenanceInfo.treeNumber.options = list.filter(item => item.label.indexOf(query) > -1)
         }, 200)
       } else {
-        this.treeNumber.options = []
+        this.maintenanceInfo.treeNumber.options = []
       }
     },
 
@@ -130,7 +182,7 @@ export default {
           }
         }
       }
-      this.treeSpeciesInfo = treeSpeciesArray.join(', ')
+      this.maintenanceInfo.treeSpeciesInfo = treeSpeciesArray.join(', ')
     },
 
     handleConfirm () {
@@ -138,7 +190,8 @@ export default {
     },
     handleCancel () {
       this.$emit('basicCancel')
-    }
+    },
+
   },
   beforeMount () {
     const initializeWeatherInfo = () => {
@@ -150,28 +203,35 @@ export default {
         let windSpeed = message.data.win_speed
         let airQuality = message.data.air_level
         let alarmType = message.data.alarm.alarm_type === '' ? '无预警' : message.data.alarm.alarm_type
-        this.weatherInfo = `当前城市：${cityName}，天气情况：${weather}，温度：${temperature}，湿度：${humidity}，风力：${windSpeed}，空气质量：${airQuality}，预警：${alarmType}`
+        this.maintenanceInfo.weatherInfo = `当前城市：${cityName}，天气情况：${weather}，温度：${temperature}，湿度：${humidity}，风力：${windSpeed}，空气质量：${airQuality}，预警：${alarmType}`
       })
     }
     initializeWeatherInfo()
 
     const initializeDateInfo = () => {
       let dateInfo = new Date()
-      this.maintenanceInfo.date = `${dateInfo.getFullYear()}年${dateInfo.getMonth() + 1}月${dateInfo.getDate()}日`
+      this.maintenanceInfo.date = `${dateInfo.getFullYear()}-${dateInfo.getMonth() + 1}-${dateInfo.getDate()}`
     }
     initializeDateInfo()
 
     const initializeTreeNumberList = () => {
       queryTreeBasicProperty().then(message => {
         this.treesBasicProperty = message.data.trees_basic_property
-        this.treeNumber.list = this.treesBasicProperty.map((item) => {
+        this.maintenanceInfo.treeNumber.list = this.treesBasicProperty.map((item) => {
           return item.tree_code.substr(6)
         })
       })
     }
     initializeTreeNumberList()
+  },
+  mounted () {
+    window.onresize = () => {
+      this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
+    }
+  },
+  updated () {
+    this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
   }
-
 }
 </script>
 

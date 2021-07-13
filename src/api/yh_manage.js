@@ -119,6 +119,21 @@ export const queryYhAllots = (params) => {
     url: 'yh_allots',
     method: 'get',
     params: params
+  })
+}
 
+// 获取c列中的养护项目名称
+export const getMaintenanceProjects = (maintenanceType) => {
+  return axios.request({
+    url: 'query_projects_quchong?yh_type=' + maintenanceType,
+    method: 'get',
+  })
+}
+
+// 获取病虫害名称
+export const getPestName = () => {
+  return axios.request({
+    url: 'bch_names',
+    method: 'get'
   })
 }

@@ -22,40 +22,39 @@ export default {
   name: "AddMeasureModal",
   props: {
     show: {
-      type:Boolean,
-      default:false
+      type: Boolean,
+      default: false
     },
     yh_type: String,
     onCancel: Function,
     onOK: Function,
   },
-  data(){
-    return{
+  data () {
+    return {
       loading: true,
       AddYhMeasure: {},
-      yh_measure:{
+      yh_measure: {
         yh_type: '',
         measure: '',
         fz_type: ''
       },
-      ruleValidate:{
+      ruleValidate: {
         measure: [{ required: true, trigger: 'blur', message: '请填写需要添加的养护项目名称' }],
       }
     }
   },
-  methods:{
-    changeLoading: function() {
-      setTimeout(()=>{
+  methods: {
+    changeLoading: function () {
+      setTimeout(() => {
         this.loading = false;
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.loading = true
         })
       }, 2000)
     },
-    handleOK(){
-
+    handleOK () {
       this.$refs.yh_measure_form.validate((valid) => {
-        if(valid){
+        if (valid) {
           this.AddYhMeasure = {
             yh_type: this.yh_type,
             measure: this.yh_measure.measure,
@@ -64,14 +63,13 @@ export default {
           console.log('****', this.AddYhMeasure)
           this.changeLoading()
           this.$emit('onOK', this.AddYhMeasure)
-          this.yh_measure.measure=''
-
-        }else {
+          this.yh_measure.measure = ''
+        } else {
           this.$Message.error('请填写完整信息')
         }
       })
     },
-    handleCancel(){
+    handleCancel () {
       this.$emit('onCancel')
     }
   }

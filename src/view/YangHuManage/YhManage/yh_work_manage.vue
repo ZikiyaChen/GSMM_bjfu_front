@@ -1,24 +1,21 @@
 <template>
-<div>
-  <Card>
-  <Button type="info" @click="show=!show">养护管理</Button>
-    <work-options :show="show"  @cancel="handleCancel"></work-options>
-    <Table stripe :columns="columns" :data="data" border></Table>
-  </Card>
-</div>
+  <div>
+    <Card>
+      <Button type="info" @click="show=!show">养护管理</Button>
+      <Table stripe :columns="columns" :data="data" border></Table>
+    </Card>
+  </div>
 </template>
 
 <script>
-import WorkOptions from "@/view/YangHuManage/YhManage/componnets/WorkOptions";
-import { queryYhRecords } from "@/api/yh_manage";
-import UserMixin from "@/mixin/UserMixin";
 
+import { queryYhRecords } from "@/api/yh_manage";
+
+import UserMixin from "@/mixin/UserMixin";
 export default {
   name: "yh_work_manage",
   mixins: [UserMixin],
-  components: {
-    WorkOptions
-  },
+
   data () {
     return {
       show: false,
@@ -27,9 +24,7 @@ export default {
       query: {
         group_name: undefined
       },
-
       columns: [
-
         {
           title: '古树编号',
           align: 'center',
@@ -65,7 +60,6 @@ export default {
             return h('span', params.row.projects)
           }
         },
-
         {
           title: '养护人姓名',
           align: "center",
@@ -108,7 +102,6 @@ export default {
             return h('span', params.row.state)
           }
         },
-
         {
           title: '操作',
           align: 'center',
@@ -119,35 +112,29 @@ export default {
                   type: 'success',
                   size: 'small'
                 },
-
                 style: {
                   marginRight: '2px',
                   display: (params.row.state !== '待养护') ? "none" : "inline-block",
                 },
                 on: {
                   click: () => {
-
                   }
                 }
               }, '填写'),
-
               h('Button', {
                 props: {
                   type: 'primary',
                   size: 'small'
                 },
-
                 style: {
                   marginRight: '2px',
                   display: (params.row.state === '待养护') ? "none" : "inline-block",
                 },
                 on: {
                   click: () => {
-
                   }
                 }
               }, '查看')
-
             ])
           }
         }
@@ -188,10 +175,8 @@ export default {
   mounted () {
     // this.fetchData()
   }
-
 }
 </script>
 
 <style scoped>
-
 </style>
