@@ -32,8 +32,11 @@
 
         <Row>
           <Col span="9"  offset="1">
-            <FormItem label="管护人" prop="Base.username">
-              <Input v-model="TreeInformation.Base.username" placeholder="请输入管护人姓名" style="width: 200px"></Input>
+            <FormItem label="管护人" prop="Base.gh_username">
+              <Select v-model="TreeInformation.Base.gh_username" placeholder="名字" filterable
+                      @on-query-change="onUserSelectQueryChange" clearable style="width: 150px" >
+                <Option v-for="item in ghUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+              </Select>
             </FormItem>
           </Col>
 
@@ -419,8 +422,7 @@
           <Col span="9" offset="1">
             <FormItem label="古树历史描述" prop="Dong.history">
               <Input v-model="TreeInformation.Dong.history" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."
-                     :maxlength="300" @input="suggestInput" style="width: 500px" class="TextStyle"/>
-              <span class="tips">{{suggestRemnant}}/300</span>
+                     maxlength="300" show-word-limit style="width: 500px" class="TextStyle"/>
             </FormItem>
           </Col>
         </Row>
@@ -610,16 +612,17 @@ import {ShowPic} from "@/api/upload";
 import name from "@/view/tools-methods/name.json"
 import {forEach} from "@/libs/tools";
 import Float_bar from "_c/FloatBar/float_bar";
+import {queryUsers} from "@/api/user";
 
 export default {
   name: "right",
   components: {Float_bar},
   data () {
     return {
-
+      ghUsers: [],
       showModal: false,
       date: new Date(),
-      suggestRemnant: 300,
+
       IsSignedList: is_signedList,
       LevelList: levelList,
       // FamilyList: familyList,
@@ -677,7 +680,7 @@ export default {
           character_code: 0, // 特征代码
           jd_record: '', // 树种鉴定记载
           gh_unit: '', // 管护单位
-          username: '', // 管护人
+          gh_username: '', // 管护人
           is_signed: 0, // 是否签订管护责任书
           tree_code: '1',
         },
@@ -775,7 +778,7 @@ export default {
         'Position.latitude':[{required:true, message: '请填写',trigger:'blur'}],
         'Base.owner':[{required:true, message: '请选择'}],
         'Base.gh_unit':[{required:true, message: '请填写',trigger:'blur'}],
-        'Base.username':[{required:true, message: '请填写',trigger:'blur'}],
+        'Base.gh_username':[{required:true, message: '请填写',trigger:'blur'}],
         'Dong.real_age':[{required:true, message: '请填写'}],
         'Dong.height':[{required:true, message: '请填写',trigger:'blur'}],
         'Dong.bust':[{required:true, message: '请填写',trigger:'blur'}],
@@ -784,17 +787,24 @@ export default {
 
     }
   },
-  // mounted () {
-  //   this.fetchOptions()
-  // },
+  mounted () {
+    queryUsers({'is_admin': false}).then(res=>{
+      this.ghUsers = res.data.users
+    })
+  },
   created() {
-    // queryFamilyTypes().then(( res => {
-    //   this.FamilyList = res.data.species_types
-    //   console.log(11,this.FamilyList)
-    // }))
+
     this.DataTurn(name.contents)
   },
   methods: {
+    onUserSelectQueryChange (value) {
+      let args={}
+      // ############非管理员才会出现在下拉框中
+      args = { name_like: value, is_admin: false }
+      queryUsers(args).then((resp) => {
+        this.ghUsers = resp.data.users
+      })
+    },
     ok(){
       this.showModal=false
     },
@@ -1099,10 +1109,6 @@ export default {
         resizeEnable: true
       })
       console.log(this.map)
-    },
-    suggestInput () {
-      const txtVal = this.TreeInformation.Dong.history.length
-      this.suggestRemnant = 300 - txtVal
     },
     regionChange (data) {
       console.log(data)
