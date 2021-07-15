@@ -119,7 +119,6 @@ export const GetUserByUsername = (username) => {
 }
 
 export const changePassword = (username, data) => {
-
   return axios.request({
     url: 'user/' + username + '/password',
     method: 'put',

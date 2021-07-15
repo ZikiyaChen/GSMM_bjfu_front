@@ -9,16 +9,15 @@
 </template>
 
 <script>
-import {getUserInfo} from "@/api/user";
-import {queryYhAllots} from "@/api/yh_manage";
+import { getUserInfo } from "@/api/user";
+import { queryYhAllots } from "@/api/yh_manage";
 import yh_record_extend_table from "@/view/YangHuManage/components/yh_record_extend_table";
-
 
 export default {
   name: "yh_allot_manage",
-  data(){
-    return{
-      query:{
+  data () {
+    return {
+      query: {
         group_name: undefined
       },
       selected_allot_order: undefined,
@@ -28,7 +27,7 @@ export default {
       }, // 分页
       data: [],
       total: 0,
-      current_user:{},
+      current_user: {},
 
       columns: [
         {
@@ -126,31 +125,30 @@ export default {
                 }
               }, '修改')
 
-
             ])
           }
         }
       ]
     }
   },
-  methods:{
-    fetchData(){
-      getUserInfo().then((res=>{
+  methods: {
+    fetchData () {
+      getUserInfo().then(res => {
         this.current_user = res.data.current_user
 
-        if(this.current_user['role_names'].includes('养护组长')){
+        if (this.current_user['role_names'].includes('养护组长')) {
           this.query.group_name = this.current_user.group_info['group_name']
         }
 
         let args = { ...this.query, ...this.pages }
-        queryYhAllots(args).then((resp=>{
+        queryYhAllots(args).then(resp => {
           this.data = resp.data.yh_allots
           this.total = resp.data.total
-        }))
-      }))
+        })
+      })
     }
   },
-  mounted() {
+  mounted () {
     this.fetchData()
   }
 

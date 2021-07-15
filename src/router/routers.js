@@ -1,6 +1,5 @@
 import Main from '@/components/main'
 
-
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
  * meta: {
@@ -246,7 +245,6 @@ export default [
     ]
   },
 
-
   {
     path: '/yh_manage',
     name: 'admin_yh_manage',
@@ -279,7 +277,6 @@ export default [
     ]
 
   },
-
 
   {
     path: '/yh_manage',
@@ -392,7 +389,6 @@ export default [
         meta: {
           title: '用户管理',
           icon: 'md-people',
-
 
         },
         component: () => import('@/view/Userinfo/index')

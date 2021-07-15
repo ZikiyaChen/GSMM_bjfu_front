@@ -139,11 +139,11 @@ export default {
       data['method'] = this.editMethod
       updateYhOptions(this.editRowId, data).then((result) => {
         if (result.data.code === 200) {
-          alert('信息修改成功')
+          this.$Message.success('信息修改成功')
           this.editIndex = -1
           this.reload()
         } else {
-          alert('信息修改失败')
+          this.$Message.error('信息修改失败')
         }
       })
     },
@@ -151,10 +151,10 @@ export default {
     handleDelete (row) {
       deleteYhOptions(row.id).then((result) => {
         if (result.data.code === 200) {
-          alert('信息删除成功')
+          this.$Message.success('信息删除成功')
           this.reload()
         } else {
-          alert('信息删除失败')
+          this.$Message.error('信息删除失败')
         }
       })
     },
@@ -183,11 +183,11 @@ export default {
       AddYhOptions(yhClassify).then(
         (result) => {
           if (result.data.code === 200) {
-            alert('信息添加成功')
+            this.$Message.success('信息添加成功')
             this.reload()
             this.inputDataClean()
           } else {
-            alert('信息添加失败')
+            this.$Message.error('信息添加失败')
           }
         }
       )
