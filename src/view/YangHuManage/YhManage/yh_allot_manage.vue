@@ -107,23 +107,60 @@ export default {
         {
           title: '操作',
           align: 'center',
+          width: 200,
           render: (h, params) => {
             return h('div', [
               h('Button', {
                 props: {
-                  type: 'primary',
+                  type: 'info',
                   size: 'small'
                 },
 
                 style: {
-                  marginRight: '2px'
+                  marginRight: '2px',
+                  // 只有当该工单没有人完成时，才可以修改
+                  display: (params.row.finished_num !== 0) ? "none" : "inline-block",
                 },
                 on: {
                   click: () => {
 
                   }
                 }
-              }, '修改')
+              }, '修改'),
+              h('Button', {
+                props: {
+                  type: 'error',
+                  size: 'small'
+                },
+
+                style: {
+                  marginRight: '2px',
+                  // 在工单中增加一棵树的任务
+                  // 只有当该工单没有人完成时，才可以修改
+                  display: (params.row.finished_num !== 0) ? "none" : "inline-block",
+                },
+                on: {
+                  click: () => {
+
+                  }
+                }
+              }, '删除'),
+              h('Button', {
+                props: {
+                  type: 'success',
+                  size: 'small'
+                },
+
+                style: {
+                  marginRight: '2px',
+                  // 在工单中增加一棵树的任务
+                },
+                on: {
+                  click: () => {
+
+                  }
+                }
+              }, '添加树')
 
             ])
           }

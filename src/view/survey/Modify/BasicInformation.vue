@@ -49,8 +49,12 @@
 
         <Row>
           <Col span="9"  offset="1">
-            <FormItem label="管护人" prop="Base.username">
-              <Input v-model="TreeInformation.Base.username" placeholder="请输入管护人姓名" style="width: 200px"></Input>
+            <FormItem label="管护人" prop="Base.gh_username">
+              <Select v-model="TreeInformation.Base.gh_username" placeholder="名字" filterable
+                      @on-query-change="onUserSelectQueryChange" clearable style="width: 150px" >
+                <Option v-for="item in ghUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+              </Select>
+<!--              <Input v-model="TreeInformation.Base.gh_username" placeholder="请输入管护人姓名" style="width: 200px"></Input>-->
             </FormItem>
           </Col>
           <Col span="9">
@@ -373,8 +377,8 @@
           <Col span="9" offset="1">
             <FormItem label="古树历史描述" prop="Dong.history">
               <Input v-model="TreeInformation.Dong.history" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."
-                     :maxlength="300" @input="suggestInput" style="width: 500px" />
-              <span class="tips">{{suggestRemnant}}/300</span>
+                     maxlength="300" show-word-limit style="width: 500px" />
+
             </FormItem>
           </Col>
         </Row>
@@ -569,6 +573,7 @@ import {
 import Float_bar from "_c/FloatBar/float_bar";
 import {checkLat, checkLon} from "@/view/tools-methods/someValidateRule";
 import {PathToList} from "@/view/survey/options";
+import {queryUsers} from "@/api/user";
 
 export default {
   name: "BasicInformation",
@@ -580,6 +585,7 @@ export default {
 
       showModal: false,
       options:[],
+      ghUsers: [],
       tree_code: this.$route.params.tree_code,
       TreeInformation: {
         tree_code: undefined,
@@ -608,7 +614,7 @@ export default {
           character_code: 0, // 特征代码
           jd_record: '', // 树种鉴定记载
           gh_unit: '', // 管护单位
-          username: '', // 管护人
+          gh_username: '', // 管护人
           is_signed: 0, // 是否签订管护责任书
           tree_code: '1',
         },
@@ -683,7 +689,6 @@ export default {
       },
 
       date: new Date(),
-      suggestRemnant: 300,
       IsSignedList: is_signedList,
       LevelList: levelList,
 
@@ -731,7 +736,7 @@ export default {
         'Position.latitude':[{required:true, validator: checkLat, message: '请填写纬度(-90~90,小数限7位)',trigger:'blur'}],
         'Base.owner':[{required:true, message: '请选择'}],
         'Base.gh_unit':[{required:true, message: '请填写',trigger:'blur'}],
-        'Base.username':[{required:true, message: '请填写',trigger:'blur'}],
+        'Base.gh_username':[{required:true, message: '请选择',trigger:'blur'}],
         'Dong.real_age':[{required:true, message: '请填写'}],
         'Dong.height':[{required:true, message: '请填写',trigger:'blur'}],
         'Dong.bust':[{required:true, message: '请填写',trigger:'blur'}],
@@ -745,6 +750,14 @@ export default {
 
   },
   methods : {
+    onUserSelectQueryChange (value) {
+      let args={}
+      // ############非管理员才会出现在下拉框中
+      args = { name_like: value, is_admin: false }
+      queryUsers(args).then((resp) => {
+        this.ghUsers = resp.data.users
+      })
+    },
     InitIndex(){
       this.timeLineList.forEach((item,index)=>{
         //执行代码
@@ -945,13 +958,6 @@ export default {
       console.error(this.tree_code)
     },
 
-
-    //文本框字数输入控制
-    suggestInput () {
-      const txtVal = this.TreeInformation.Dong.history.length
-      this.suggestRemnant = 300 - txtVal
-    },
-
     handleMaxSize (file) {
       this.$Notice.warning({
         title: '图片大小限制',
@@ -1079,6 +1085,8 @@ export default {
         console.log('record',this.tjxm_record)
         this.picTurnUrl()
         this.getTreeType(this.TreeInformation.Base)
+        // 初始化管护人列表 ghUsers
+        this.ghUsers.push(this.TreeInformation.Base.gh_user)
       }))
 
     },
@@ -1169,9 +1177,7 @@ export default {
       }
     },
   },
-  // created() {
-  //   this.fetchData()
-  // },
+
   mounted:function (){
     this.fetchData()
     this.InitIndex()
@@ -1183,27 +1189,7 @@ export default {
     //
     // },400)
     console.log('******',this.TreeInformation.Base.treetype)
-    // getOneTreeBaseInfo(this.tree_code).then((res => {
-    //   console.error(this.tree_code)
-    //   console.log('one_tree',res.data)
-    //   this.TreeInformation.Base = res.data.tree_basic_info.basic
-    //   this.TreeInformation.tree_code = this.tree_code
-    //   console.log('----',this.TreeInformation.Base)
-    //
-    //   this.TreeInformation.Position = res.data.tree_basic_info.geo
-    //   this.TreeInformation.Pic = res.data.tree_basic_info.pic
-    //   this.TreeInformation.Brand = res.data.tree_basic_info.brand
-    //   this.TreeInformation.Dong = res.data.tree_basic_info.dynamic
-    //   // this.TreeInformation.Dong.history_pic.forEach((pic_name)=>{
-    //   //   console.log('pic_name',pic_name)
-    //   //   if(pic_name!== ''){
-    //   //     ShowPic(pic_name).then((resp=>{
-    //   //       console.log('pic',resp)
-    //   //       this.historyPicUrlList.push(resp.data)
-    //   //     }))}
-    //   // })
-    //
-    // }))
+
   },
 
   // watch: {

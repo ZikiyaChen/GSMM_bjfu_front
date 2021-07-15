@@ -214,7 +214,7 @@ export default {
           title: '管护人',
           align: 'center',
           render: function (h, params) {
-            return h('span', params.row.username)
+            return h('span', params.row.gh_user.name)
           }
         },
         {

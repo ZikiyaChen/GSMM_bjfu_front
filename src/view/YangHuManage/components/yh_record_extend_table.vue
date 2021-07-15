@@ -95,7 +95,24 @@ export default {
 
                   }
                 }
-              }, '查看')
+              }, '查看'),
+              h('Button', {
+                props: {
+                  type: 'error',
+                  size: 'small'
+                },
+
+                style: {
+                  marginRight: '2px',
+                  // 可以将工单中尚未完成，即在待养护状态下的树 移除掉 ，即删除对应的yh_record
+                  display: (params.row.state !== '待养护') ? "none" : "inline-block",
+                },
+                on: {
+                  click: () => {
+
+                  }
+                }
+              }, '移除')
             ])
           }
         }

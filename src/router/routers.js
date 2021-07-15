@@ -310,7 +310,8 @@ export default [
       },
       {
         path: 'yh_own_work',
-        name: 'yh_group_leader_yh_own_work',
+        name: 'yh_own_work',
+        // name: 'yh_group_leader_yh_own_work',
         meta: {
           icon: 'ios-document',
           title: '个人养护记录'
