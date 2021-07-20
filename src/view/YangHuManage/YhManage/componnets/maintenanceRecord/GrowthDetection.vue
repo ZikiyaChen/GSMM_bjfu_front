@@ -1,6 +1,6 @@
 <template>
   <basic-form
-    :show="showGrowthDetection"
+    :show="true"
     @basicCancel="handleBasicCancel">
     <p style="text-align: center;font-size: 16px;font-weight: bolder;margin-bottom: 15px"
        slot="header">
@@ -20,15 +20,12 @@
 </template>
 
 <script>
-import BasicForm from "@/view/YangHuManage/YhManage/componnets/layout/BasicForm";
+import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
 
 export default {
   name: '',
   components: {
     BasicForm
-  },
-  props: {
-    showGrowthDetection: Boolean
   },
   data () {
     return {
@@ -40,7 +37,7 @@ export default {
   },
   methods: {
     handleBasicCancel () {
-      this.$emit('growthDetectionCancel')
+      this.$emit('cancelOrConfirm')
     }
   },
   beforeMount () {

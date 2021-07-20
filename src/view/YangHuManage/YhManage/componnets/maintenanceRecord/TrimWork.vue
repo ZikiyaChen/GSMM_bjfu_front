@@ -1,7 +1,8 @@
 <template>
   <div>
     <basic-form
-      :show="showTrimWork"
+      :show="true"
+      @basicConfirm="handleBasicConfirm"
       @basicCancel="handleBasicCancel">
       <p style="text-align: center;font-size: 16px;font-weight: bolder;margin-bottom: 15px"
          slot="header">
@@ -9,7 +10,11 @@
       <FormItem label="修剪原因" slot="other">
         <Row>
           <Col span="24">
-            <Select v-model="reason.modal" filterable multiple>
+            <Select
+              v-model="reason.modal"
+              filterable
+              multiple
+              @on-change="handleReasonChange">
               <Option v-for="item in reason.projects" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -22,6 +27,7 @@
                     placeholder="请选择或输入方向"
                     filterable
                     allow-create
+                    @on-change="handleDirectionChange"
                     @on-create="handleExplainCreate">
               <Option v-for="item in explain.direction" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
@@ -30,13 +36,13 @@
             <Input
               style="padding-right:5px"
               v-model="explain.length"
-              placeholder="长度(单位m)"></Input>
+              placeholder="长度(m)"></Input>
           </Col>
           <Col span="5">
             <Input
               style="padding-right:5px"
               v-model="explain.diameter"
-              placeholder="直径(单位cm)"></Input>
+              placeholder="直径(cm)"></Input>
           </Col>
           <Col span="5">
             <Input
@@ -48,10 +54,11 @@
       </FormItem>
       <FormItem label="保护方法" slot="other">
         <Select
-                v-model="protection.modal"
-                placeholder="请选择保护方法"
-                filterable
-                multiple>
+          v-model="protection.modal"
+          placeholder="请选择保护方法"
+          filterable
+          multiple
+          @on-change="handleProtectionChange">
           <Option v-for="item in protection.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
@@ -60,13 +67,11 @@
 </template>
 
 <script>
-import BasicForm from "@/view/YangHuManage/YhManage/componnets/layout/BasicForm";
+import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
 import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+
 export default {
   name: 'TrimWork',
-  props: {
-    showTrimWork: Boolean
-  },
   components: {
     BasicForm
   },
@@ -74,30 +79,55 @@ export default {
     return {
       reason: {
         modal: '',
-        projects: []
+        projects: [],
+        projectsStr: ''
       },
       explain: {
         modal: '',
         direction: [],
+        directionStr: '',
         length: '',
         diameter: '',
         quantity: ''
       },
       protection: {
         modal: '',
-        methods: []
+        methods: [],
+        methodsStr: ''
       }
     }
   },
   methods: {
     handleBasicCancel () {
-      this.$emit('trimCancel')
+      this.$emit('cancelOrConfirm', 'cancel', null)
     },
     handleExplainCreate (value) {
       this.explain.direction.push({
         value: value,
         label: value
       })
+      this.explain.directionStr = value
+    },
+    handleReasonChange (option) {
+      this.reason.projectsStr = option.join(',')
+    },
+    handleDirectionChange (option) {
+      this.explain.directionStr = option
+    },
+    handleProtectionChange (option) {
+      this.protection.methodsStr = option.join(',')
+    },
+    handleBasicConfirm (data) {
+      const temp = {
+        project: this.reason.projectsStr,
+        orientation: this.explain.directionStr,
+        diameter: this.explain.diameter,
+        length: this.explain.length,
+        num: this.explain.quantity,
+        method: this.protection.methodsStr
+      }
+      const result = Object.assign({}, temp, data)
+      this.$emit('cancelOrConfirm', 'confirm', result)
     }
   },
   beforeMount () {

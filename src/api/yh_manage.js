@@ -137,3 +137,11 @@ export const getPestName = () => {
     method: 'get'
   })
 }
+
+export const insertRecordByTypeSelf = (type, data) => {
+  return axios.request({
+    url: '/insert_record_by_type_zizhu/' + type,
+    method: 'post',
+    data: data
+  })
+}
