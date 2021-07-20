@@ -29,6 +29,7 @@
       title="提示"
       footer-hide
       class-name="vertical-center-modal"
+      :closable="false"
       :mask-closable="false">
       <Row>
         <Col span="10" offset="7">

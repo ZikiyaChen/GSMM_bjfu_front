@@ -30,13 +30,6 @@ export default {
   data () {
     let that = this
     return {
-      showDailyMaintenance: false,
-      showTrimWork: false,
-      showTreeProtection: false,
-      showPestControl: false,
-      showTreeInspection: false,
-      showGrowthDetection: false,
-
       showTreeYhHistory: false,
       data: [],
       selected_tree_code: undefined,
