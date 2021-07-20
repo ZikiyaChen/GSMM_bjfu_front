@@ -1,11 +1,12 @@
 <template>
   <div>
     <basic-form
-      :show="showTreeProtection"
+      :show="show"
+      @basicConfirm="handleBasicConfirm"
       @basicCancel="handleBasicCancel">
       <p style="text-align: center;font-size: 16px;font-weight: bolder;margin-bottom: 15px"
          slot="header">
-        树体保护措施</p>
+        生长环境保护与改善</p>
       <FormItem label="措施性质" slot="qualityOrType">
         <Row>
           <Col span="24">
@@ -15,19 +16,25 @@
           </Col>
         </Row>
       </FormItem>
-      <FormItem label="保护措施项目名称" slot="other">
+
+      <FormItem label="生境保护与改善项目名称" slot="other">
         <Row>
           <Col span="24">
-            <Select v-model="protectionMeasure.model" multiple>
-              <Option v-for="item in protectionMeasure.projects" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="projectName.model"
+                    multiple
+                    @on-change="handleProjectNameChange">
+              <Option v-for="item in projectName.projects" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
         </Row>
       </FormItem>
+
       <FormItem label="处理方法" slot="other">
         <Row>
           <Col span="24">
-            <Select v-model="handleMethod.model" multiple>
+            <Select v-model="handleMethod.model"
+                    multiple
+                    @on-change="handleMethodChange">
               <Option v-for="item in handleMethod.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -38,45 +45,54 @@
 </template>
 
 <script>
-import BasicForm from "@/view/YangHuManage/YhManage/componnets/layout/BasicForm";
-import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
+import { getMaintenanceProjects, insertRecordByTypeSelf, queryYhOptions } from "@/api/yh_manage";
 
 export default {
-  name: 'TreeProtection',
-  props: {
-    showTreeProtection: Boolean
-  },
-  components: {
-    BasicForm
-  },
+  name: 'EnvironmentProtection',
+  components: { BasicForm },
   data () {
     return {
-      // protectionJudge: {
-      //   judge: false,
-      //   quality: '措施性质'
-      // },
+      show: true,
       measureQuality: {
         modal: '',
         content: ['日常维护', '单项工程'],
-        selected: false
+        contentStr: ''
       },
-      protectionMeasure: {
-        model: '',
-        projects: []
+      projectName: {
+        modal: '',
+        projects: [],
+        projectsStr: ''
       },
       handleMethod: {
-        model: '',
-        methods: []
+        modal: '',
+        methods: [],
+        methodsStr: ''
       }
     }
   },
   methods: {
     handleBasicCancel () {
-      this.$emit('treeProtectionCancel')
+      this.$emit('cancelOrConfirm', 'cancel', null)
     },
-    // MeasureQualitySelected () {
-    //   this.protectionJudge.judge = true
-    // },
+    handleMeasureQualityChange (value) {
+      this.measureQuality.contentStr = value
+    },
+    handleProjectNameChange (option) {
+      this.projectName.projectsStr = option.join(',')
+    },
+    handleMethodChange (option) {
+      this.handleMethod.methodsStr = option.join(',')
+    },
+    handleBasicConfirm (data) {
+      const temp = {
+        property: this.measureQuality.contentStr,
+        project: this.projectName.projectsStr,
+        method: this.handleMethod.methodsStr
+      }
+      let result = Object.assign({}, temp, data)
+      this.$emit('cancelOrConfirm', 'confirm', result)
+    }
   },
   beforeMount () {
     const initializeMeasureQuality = () => {
@@ -89,23 +105,23 @@ export default {
     }
     initializeMeasureQuality()
 
-    const initializeProtectionMeasureProjects = () => {
-      getMaintenanceProjects('树体保护措施').then(message => {
+    const initializeProjectName = () => {
+      getMaintenanceProjects('生长环境保护与改善').then(message => {
         for (let item of message.data.projects) {
-          this.protectionMeasure.projects.push({
+          this.projectName.projects.push({
             label: item.project,
             value: item.project
           })
         }
       })
     }
-    initializeProtectionMeasureProjects()
+    initializeProjectName()
 
     const initializeHandleMethod = () => {
       queryYhOptions().then(message => {
         let classify = message.data.yh_classify
         for (let item of classify) {
-          if (item.yh_type === '树体保护措施') {
+          if (item.yh_type === '生长环境保护与改善') {
             this.handleMethod.methods.push({
               label: item.method,
               value: item.method
@@ -116,8 +132,8 @@ export default {
     }
     initializeHandleMethod()
   }
-}
 
+}
 </script>
 
 <style scoped>
