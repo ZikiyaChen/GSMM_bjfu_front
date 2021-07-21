@@ -1,48 +1,48 @@
 <template>
-<div>
-  <Card>
-    <h1>养护人员列表</h1>
-    <br>
-    <Form :label-width="80" :model="query" inline>
-      <FormItem label="用户名字：" prop="name" >
-        <Input style="width: 180px" v-model="query.name_like" placeholder="请输入用户名字"  clearable>
-        </Input>
-      </FormItem>
-      <FormItem label="组名："  prop="group_name"  v-role="['管理员']">
-        <Select v-model="query.group_name"  style="width: 100px" clearable >
-          <Option v-for="item in groups" :value="item.group_name" :key="item.group_name">{{ item.group_name }}</Option>
-        </Select>
-      </FormItem>
-      <FormItem >
-        <Button type="primary" @click=" onSearch">查询</Button>
-      </FormItem>
-      <FormItem >
-        <Button type="primary" @click="showAddYhUserModal=true">新增</Button>
-      </FormItem>
-    </Form>
-    <Table stripe :columns="columns" :data="data" border></Table>
-    <div style="margin: 10px;overflow: hidden">
-      <div style="float: right;">
-        <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+  <div>
+    <Card>
+      <h1>养护人员列表</h1>
+      <br>
+      <Form :label-width="80" :model="query" inline>
+        <FormItem label="用户名字：" prop="name" >
+          <Input style="width: 180px" v-model="query.name_like" placeholder="请输入用户名字"  clearable>
+          </Input>
+        </FormItem>
+        <FormItem label="组名："  prop="group_name"  v-role="['管理员']">
+          <Select v-model="query.group_name"  style="width: 100px" clearable >
+            <Option v-for="item in groups" :value="item.group_name" :key="item.group_name">{{ item.group_name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem >
+          <Button type="primary" @click=" onSearch">查询</Button>
+        </FormItem>
+        <FormItem >
+          <Button type="primary" @click="showAddYhUserModal=true">新增</Button>
+        </FormItem>
+      </Form>
+      <Table stripe :columns="columns" :data="data" border></Table>
+      <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+          <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+        </div>
       </div>
-    </div>
 
-    <AddYhGroupUser
-      :show="showAddYhUserModal"
-      :group_type = "selected_group_type"
-      @onOK="onAddModalOK"
-      @onCancel="onAddModalCancel"
-    ></AddYhGroupUser>
+      <AddYhGroupUser
+        :show="showAddYhUserModal"
+        :group_type = "selected_group_type"
+        @onOK="onAddModalOK"
+        @onCancel="onAddModalCancel"
+      ></AddYhGroupUser>
 
-    <UpdateGroupUser
-      :show="showUpdateGroupUserModal"
-      :id= "selected_update_id"
-      :group_type="selected_group_type"
-      @onOK="onUpdateModalOK"
-      @onCancel="onUpdateModalCancel"
-    ></UpdateGroupUser>
-  </Card>
-</div>
+      <UpdateGroupUser
+        :show="showUpdateGroupUserModal"
+        :id= "selected_update_id"
+        :group_type="selected_group_type"
+        @onOK="onUpdateModalOK"
+        @onCancel="onUpdateModalCancel"
+      ></UpdateGroupUser>
+    </Card>
+  </div>
 </template>
 
 <script>
@@ -61,8 +61,7 @@ export default {
       selected_update_id: 0,
 
       query: {
-        name_like: undefined,
-        group_name: undefined
+        name_like: undefined
       },
       pages: {
         _page: 1,
@@ -117,13 +116,13 @@ export default {
           render: function (h, params) {
             if (params.row.is_group_leader) {
               return h('Icon', { props: {
-                type: 'md-checkmark-circle'
-              },
-              style: {
-                color: '#19be6b',
-                fontSize: '30px',
-                textAlign: 'center'
-              }
+                  type: 'md-checkmark-circle'
+                },
+                style: {
+                  color: '#19be6b',
+                  fontSize: '30px',
+                  textAlign: 'center'
+                }
               })
             } else {
               return h('span')
@@ -276,9 +275,9 @@ export default {
       getUserInfo().then(res => {
         this.current_user = res.data.current_user
 
-        if (this.current_user['role_names'].includes('养护组长')) {
-          this.query.group_name = this.current_user.group_info['group_name']
-        }
+        // if (this.current_user['role_names'].includes('养护组长')) {
+        //   this.query.group_name = this.current_user.group_info['group_name']
+        // }
 
         let args = { ...this.query, ...this.pages }
         queryGroupUsers(args).then(resp => {
