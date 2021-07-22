@@ -5,6 +5,11 @@
       @click="handleTaskAssignmentClick">
       任务分配
     </Button>
+    <Button
+      type="success"
+      @click="Ceshi">
+      ceshi
+    </Button>
     <Modal
       v-model="taskModal"
       title="任务分配"
@@ -107,6 +112,17 @@ export default {
     }
   },
   methods: {
+    Ceshi () {
+      let data = {
+        trees: ['110131A01', '110131A02'],
+        create_by: 'wangwu',
+        predict_time: '2021-07-29',
+        yh_type: '日常养护管理'
+      }
+      insertMaintenanceAllot(data).then(res => {
+        console.log(res)
+      })
+    },
     handleTaskAssignmentClick () {
       this.taskModal = true
     },
@@ -126,9 +142,9 @@ export default {
       console.log(yh_username)
       let result = {
         trees: this.treesCode,
-        yh＿type: this.taskInfo.maintenanceType.currentType,
-        predict＿time: this.taskInfo.maintenanceDate,
-        yh＿username: yh_username,
+        yh_username: yh_username,
+        yh_type: this.taskInfo.maintenanceType.currentType,
+        predict_time: this.taskInfo.maintenanceDate,
         create_by: this.leaderName
       }
       console.log(result)
