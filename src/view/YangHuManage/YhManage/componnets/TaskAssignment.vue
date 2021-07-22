@@ -57,6 +57,7 @@
             <Col span="24">
               <DatePicker
                 ref="datePicker"
+                @on-change="handleDateChange"
                 :value="taskInfo.maintenanceDate"
                 format="yyyy年MM月dd日"
                 type="date"
@@ -126,9 +127,9 @@ export default {
       console.log(yh_username)
       let result = {
         trees: this.treesCode,
-        yh＿type: this.taskInfo.maintenanceType.currentType,
-        predict＿time: this.taskInfo.maintenanceDate,
-        yh＿username: yh_username,
+        yh_username: yh_username,
+        yh_type: this.taskInfo.maintenanceType.currentType,
+        predict_time: this.taskInfo.maintenanceDate,
         create_by: this.leaderName
       }
       insertMaintenanceAllot(result).then(message => {
@@ -169,6 +170,9 @@ export default {
     },
     maintenancePeopleSelect (option) {
       this.taskInfo.maintenancePeople.currentName = option.value
+    },
+    handleDateChange (date) {
+      this.taskInfo.maintenanceDate = date
     }
   },
   beforeMount () {

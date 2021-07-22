@@ -23,6 +23,7 @@
             <Col span="24">
               <DatePicker
                 ref="datePicker"
+                @on-change="handleDateChange"
                 :value="maintenanceInfo.date"
                 format="yyyy年MM月dd日"
                 type="date"
@@ -191,6 +192,9 @@ export default {
     handleCancel () {
       this.$emit('basicCancel')
     },
+    handleDateChange (date) {
+      this.maintenanceInfo.date = date
+    }
   },
   beforeMount () {
     const initializeWeatherInfo = () => {
