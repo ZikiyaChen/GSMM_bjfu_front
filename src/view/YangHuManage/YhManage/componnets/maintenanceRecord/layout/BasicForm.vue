@@ -162,10 +162,10 @@ export default {
       }
     },
 
-    treeNumberOptionChange (option) {
+    treeNumberOptionChange (options) {
       let treeSpeciesArray = []
       this.treesCode.length = 0
-      for (let item of option) {
+      for (let item of options) {
         for (let property of this.treesBasicProperty) {
           if (property.tree_code.indexOf(item) > -1) {
             treeSpeciesArray.push(property.zw_name)

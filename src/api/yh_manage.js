@@ -145,3 +145,11 @@ export const insertRecordByTypeSelf = (type, data) => {
     data: data
   })
 }
+
+export const insertMaintenanceAllot = (data) => {
+  return axios.request({
+    url: '/insert_yh_allot',
+    method: 'post',
+    data: data
+  })
+}

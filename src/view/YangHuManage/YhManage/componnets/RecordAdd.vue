@@ -148,7 +148,7 @@ export default {
       if (!this.saveFlag) {
         this.componentName = ''
       }
-      this.result.state = '已提交'
+      this.result.state = '已完成'
       insertRecordByTypeSelf(this.projectName, this.result).then(message => {
         if (message.status === 200) {
           this.$Message.success('提交成功')
