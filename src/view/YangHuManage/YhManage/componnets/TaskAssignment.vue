@@ -131,11 +131,15 @@ export default {
         yh＿username: yh_username,
         create_by: this.leaderName
       }
-      console.log(result)
       insertMaintenanceAllot(result).then(message => {
-        console.log(message)
+        if (message.status === 200) {
+          this.$Message.success('提交成功')
+        } else {
+          this.$Message.error('提交失败')
+        }
       }).catch(error => {
         console.log(error)
+        this.$Message.warning('请勿同一时间提交相同记录')
       })
     },
     treeNumberOptionChange (options) {
