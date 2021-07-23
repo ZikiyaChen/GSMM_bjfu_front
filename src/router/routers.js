@@ -251,7 +251,7 @@ export default [
     meta: {
       title: '养护管理',
       icon: 'ios-folder-open',
-      access: ['管理员','养护组长','养护人员']
+      access: ['超级管理员', '养护组长', '养护人员']
     },
     component: Main,
     children: [
@@ -261,7 +261,7 @@ export default [
         meta: {
           icon: 'ios-document',
           title: '养护任务结果管理',
-          access: ['管理员','养护组长']
+          access: ['超级管理员', '养护组长']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
       },
@@ -271,7 +271,7 @@ export default [
         meta: {
           icon: 'ios-document',
           title: '养护任务分配管理',
-          access: ['管理员','养护组长']
+          access: ['超级管理员', '养护组长']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_allot_manage')
       },
@@ -281,14 +281,13 @@ export default [
         meta: {
           icon: 'ios-document',
           title: '个人养护记录',
-          access: ['养护人员','养护组长']
+          access: ['养护人员', '养护组长']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_own_record')
       }
     ]
 
   },
-
 
   {
     name: 'system',
@@ -297,7 +296,7 @@ export default [
     meta: {
       title: '系统管理',
       icon: "md-flower",
-      access: ['管理员']
+      access: ['超级管理员']
     },
     children: [
       {
@@ -328,7 +327,7 @@ export default [
     meta: {
       title: '用户中心',
       icon: 'md-people',
-      access: ['管理员','养护组长']
+      access: ['超级管理员', '养护组长']
     },
     children: [
       {
@@ -337,7 +336,7 @@ export default [
         meta: {
           title: '用户管理',
           icon: 'md-people',
-          access: ['管理员']
+          access: ['超级管理员']
         },
         component: () => import('@/view/Userinfo/index')
       },
@@ -347,7 +346,7 @@ export default [
         meta: {
           icon: 'md-people',
           title: '养护人员管理',
-          access: ['管理员','养护组长']
+          access: ['超级管理员', '养护组长']
         },
         component: () => import('@/view/Userinfo/YhUserManage')
       },
@@ -359,14 +358,47 @@ export default [
           title: '个人信息',
           hideInBread: true,
           hideInMenu: true,
-          access: ['管理员','养护组长','养护人员']
+          access: ['超级管理员', '养护组长', '养护人员']
         },
         component: () => import('@/view/Userinfo/userinfo')
       }
     ]
   },
 
-
+  {
+    name: 'usersCenter',
+    path: '/userCenter',
+    component: Main,
+    meta: {
+      title: '用户中心-调整',
+      icon: 'md-people',
+      access: ['超级管理员', '单位管理员']
+    },
+    children: [
+      {
+        name: 'userManage',
+        path: 'manage',
+        meta: {
+          title: '用户管理-调整',
+          icon: 'md-people',
+          access: ['超级管理员', '单位管理员']
+        },
+        component: () => import('@/view/UserManage/index')
+      },
+      {
+        path: 'userinfo/:username',
+        name: 'UserInfo',
+        meta: {
+          icon: 'md-people',
+          title: '个人信息-调整',
+          hideInBread: true,
+          hideInMenu: true,
+          access: ['超级管理员', '单位管理员', '养护组长', '养护人员']
+        },
+        component: () => import('@/view/Userinfo/userinfo')
+      }
+    ]
+  },
 
   // {
   //   name: 'yh_users',
