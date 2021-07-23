@@ -172,6 +172,7 @@ export default {
       this.taskInfo.maintenancePeople.currentName = option.value
     },
     handleDateChange (date) {
+      date = date.replace('年', '-').replace('月', '-').replace('日', '')
       this.taskInfo.maintenanceDate = date
     }
   },

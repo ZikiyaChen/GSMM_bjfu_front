@@ -193,7 +193,8 @@ export default {
       this.$emit('basicCancel')
     },
     handleDateChange (date) {
-      this.maintenanceInfo.date = date
+      date = date.replace('年', '-').replace('月', '-').replace('日', '')
+      this.taskInfo.maintenanceDate = date
     }
   },
   beforeMount () {
