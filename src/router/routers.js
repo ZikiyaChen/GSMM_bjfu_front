@@ -115,7 +115,8 @@ export default [
     name: 'survey',
     meta: {
       title: '名木古树调查建档',
-      icon: 'ios-book'
+      icon: 'ios-book',
+      access: ['超级管理员','单位管理员', '调查人员']
     },
     component: Main,
     children: [
@@ -124,7 +125,8 @@ export default [
         name: 'base_survey_page',
         meta: {
           icon: 'ios-document',
-          title: '名木古树信息'
+          title: '名木古树信息',
+          access: ['超级管理员','单位管理员', '调查人员']
         },
         component: () => import('@/view/survey/base_survey.vue')
       },
@@ -251,7 +253,7 @@ export default [
     meta: {
       title: '养护管理',
       icon: 'ios-folder-open',
-      access: ['超级管理员', '养护组长', '养护人员']
+      access: ['超级管理员', '单位管理员', '养护组长', '养护人员']
     },
     component: Main,
     children: [
@@ -261,7 +263,7 @@ export default [
         meta: {
           icon: 'ios-document',
           title: '养护任务结果管理',
-          access: ['超级管理员', '养护组长']
+          access: ['超级管理员', '单位管理员', '养护组长']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
       },
@@ -271,7 +273,7 @@ export default [
         meta: {
           icon: 'ios-document',
           title: '养护任务分配管理',
-          access: ['超级管理员', '养护组长']
+          access: ['超级管理员', '单位管理员', '养护组长']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_allot_manage')
       },
@@ -320,50 +322,50 @@ export default [
     ]
   },
 
-  {
-    name: 'admin_users',
-    path: '/users',
-    component: Main,
-    meta: {
-      title: '用户中心',
-      icon: 'md-people',
-      access: ['超级管理员', '养护组长']
-    },
-    children: [
-      {
-        name: 'usermanager',
-        path: 'managers',
-        meta: {
-          title: '用户管理',
-          icon: 'md-people',
-          access: ['超级管理员']
-        },
-        component: () => import('@/view/Userinfo/index')
-      },
-      {
-        path: 'yhuser',
-        name: 'admin_yhuser',
-        meta: {
-          icon: 'md-people',
-          title: '养护人员管理',
-          access: ['超级管理员', '养护组长']
-        },
-        component: () => import('@/view/Userinfo/YhUserManage')
-      },
-      {
-        path: 'userinfo/:username',
-        name: 'yh_userinfo',
-        meta: {
-          icon: 'md-people',
-          title: '个人信息',
-          hideInBread: true,
-          hideInMenu: true,
-          access: ['超级管理员', '养护组长', '养护人员']
-        },
-        component: () => import('@/view/Userinfo/userinfo')
-      }
-    ]
-  },
+  // {
+  //   name: 'admin_users',
+  //   path: '/users',
+  //   component: Main,
+  //   meta: {
+  //     title: '用户中心',
+  //     icon: 'md-people',
+  //     access: ['超级管理员', '养护组长']
+  //   },
+  //   children: [
+  //     {
+  //       name: 'usermanager',
+  //       path: 'managers',
+  //       meta: {
+  //         title: '用户管理',
+  //         icon: 'md-people',
+  //         access: ['超级管理员']
+  //       },
+  //       component: () => import('@/view/Userinfo/index')
+  //     },
+  //     {
+  //       path: 'yhuser',
+  //       name: 'admin_yhuser',
+  //       meta: {
+  //         icon: 'md-people',
+  //         title: '养护人员管理',
+  //         access: ['超级管理员', '养护组长']
+  //       },
+  //       component: () => import('@/view/Userinfo/YhUserManage')
+  //     },
+  //     {
+  //       path: 'userinfo/:username',
+  //       name: 'yh_userinfo',
+  //       meta: {
+  //         icon: 'md-people',
+  //         title: '个人信息',
+  //         hideInBread: true,
+  //         hideInMenu: true,
+  //         access: ['超级管理员', '养护组长', '养护人员']
+  //       },
+  //       component: () => import('@/view/Userinfo/userinfo')
+  //     }
+  //   ]
+  // },
 
   {
     name: 'usersCenter',
@@ -393,7 +395,7 @@ export default [
           title: '个人信息-调整',
           hideInBread: true,
           hideInMenu: true,
-          access: ['超级管理员', '单位管理员', '养护组长', '养护人员']
+          access: ['超级管理员', '单位管理员', '养护人员','调查人员']
         },
         component: () => import('@/view/Userinfo/userinfo')
       }

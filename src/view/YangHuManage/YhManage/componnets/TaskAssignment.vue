@@ -74,7 +74,7 @@
 <script>
 import { queryTreeBasicProperty } from "@/api/table";
 import { insertMaintenanceAllot, queryYhOptions } from "@/api/yh_manage";
-import { queryGroupUsers } from "@/api/user";
+import {queryGroupUsers, queryUnitUsers} from "@/api/user";
 
 export default {
   name: 'TaskAssignment',
@@ -172,6 +172,7 @@ export default {
       this.taskInfo.maintenancePeople.currentName = option.value
     },
     handleDateChange (date) {
+      date = date.replace('年', '-').replace('月', '-').replace('日', '')
       this.taskInfo.maintenanceDate = date
     }
   },
@@ -204,9 +205,9 @@ export default {
     initializeMaintenanceType()
 
     const initializeMaintenancePeople = () => {
-      queryGroupUsers().then(message => {
+      queryUnitUsers({is_yh: true}).then(message => {
         console.log(message)
-        for (let item of message.data.group_users) {
+        for (let item of message.data.users) {
           this.taskInfo.maintenancePeople.list.push(item.name)
           this.taskInfo.maintenancePeople.nameMap[item.username] = item.name
           if (item.is_group_leader) {

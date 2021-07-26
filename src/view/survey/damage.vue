@@ -514,8 +514,11 @@
       </Row>
       <Row>
         <Col span="9" offset="2">
-          <FormItem label="调查人" prop="investigate_username">
-            <Input v-model="Damage.investigate_username" placeholder="请输入调查人姓名"></Input>
+          <FormItem label="调查单位" prop="dc_unit">
+            <Select v-model="Damage.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
+                    @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+            </Select>
           </FormItem>
         </Col>
         <Col span="9">
@@ -524,8 +527,18 @@
           </FormItem>
         </Col>
       </Row>
+      <Row>
+        <Col span="9" offset="2">
+          <FormItem label="调查人" prop="investigate_username">
+            <Select v-model="Damage.investigate_username" placeholder="名字" filterable
+                    @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+            </Select>
+          </FormItem>
+        </Col>
+      </Row>
     </Form>
-    <float_bar v-role="['管理员','调查组长','调查人员']">
+    <float_bar v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center" v-show="isShow">
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
         <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
@@ -584,6 +597,7 @@ import {
 } from "@/api/table";
 import {ShowPic} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
+import {queryUnits, queryUsers} from "@/api/user";
 
 export default {
   name: "damage",
@@ -602,7 +616,8 @@ export default {
 
       showImageUrl: '',
 
-
+      dcUnits: [],
+      dcUsers: [],
       TreeInformation:{
         Base:{
           family:'',
@@ -657,6 +672,7 @@ export default {
       Damage: {
         id: 0,
         investigate_username: '',
+        dc_unit: '',
         base1: '', // 树干基部-树皮损伤比例
         pic_base1: [], // (照片)树干基部-树皮损伤比例
         base2: '', // 树干基部-木质部损伤（未达心材）比例
@@ -695,7 +711,8 @@ export default {
         skeleton2: [{ required: true, trigger: 'change', message: '请选择' }],
         skeleton3: [{ required: true, trigger: 'change', message: '请选择' }],
 
-        investigate_username: [{ required: true, trigger: 'blur', message: '请填写调查人姓名' }],
+        investigate_username: [{ required: true, trigger: 'change', message: '请填写调查人姓名' }],
+        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
       }
     }
@@ -721,6 +738,21 @@ export default {
       // /survey/update/BasicInformation/110131B03
       this.$router.push({ path: item.path_to+`${this.tree_code}` })
     },
+    GetUnits(){
+      queryUnits().then(res=>{
+        this.dcUnits = res.data.units
+      })
+    },
+    onDcUnitSelectQueryChange(value){
+      queryUsers({unit: value, is_dc: true}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange(value){
+      queryUsers({name_like: value, is_dc: true, unit: this.Damage.dc_unit}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
     changeActive(index) {
       this.timeIndex = index;
     },
@@ -731,6 +763,8 @@ export default {
       }))
     },
     fetchData(){
+      this.dcUnits = []
+      this.dcUsers = []
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'damage'}).then((record=>{
         if(record.data.total!==0){
           this.isShow = false
@@ -738,11 +772,16 @@ export default {
           this.tjxm_record = record.data.tjxm_records[0]
           getDamage({'id':this.tjxm_record.t_id}).then((res=>{
             this.Damage = res.data.tree_damage
+            this.dcUnits.push({'unit': res.data.tree_damage.dc_unit})
+            this.dcUsers.push(res.data.tree_damage.dc_user)
             this.fetchPic()
           }))
         }else {
           this.isShow =true
           this.isSubmit = false
+          queryUnits().then(res=>{
+            this.dcUnits = res.data.units
+          })
         }
       }))
     },

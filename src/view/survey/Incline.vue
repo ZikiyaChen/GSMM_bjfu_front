@@ -502,8 +502,11 @@
 
       <Row>
         <Col span="9" offset="2">
-          <FormItem label="调查人" prop="investigate_username">
-            <Input v-model="Incline.investigate_username" placeholder="请输入调查人姓名"></Input>
+          <FormItem label="调查单位" prop="dc_unit">
+            <Select v-model="Incline.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
+                    @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+            </Select>
           </FormItem>
         </Col>
         <Col span="9">
@@ -512,9 +515,19 @@
           </FormItem>
         </Col>
       </Row>
+      <Row>
+        <Col span="9" offset="2">
+          <FormItem label="调查人" prop="investigate_username">
+            <Select v-model="Incline.investigate_username" placeholder="名字" filterable
+                    @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+            </Select>
+          </FormItem>
+        </Col>
+      </Row>
 
     </Form>
-    <float_bar  v-role="['管理员','调查组长','调查人员']">
+    <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
     <div style="text-align: center" v-show="isShow">
       <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
       <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
@@ -572,6 +585,7 @@ import {
 } from "@/api/table";
 import {ShowPic} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
+import {queryUnits, queryUsers} from "@/api/user";
 
 export default {
   name: "Incline",
@@ -591,7 +605,8 @@ export default {
       HasAbsoundList: has_absoundList,
 
       showImageUrl: '',
-
+      dcUnits: [],
+      dcUsers: [],
 
       i1: 0,
       PicUrlList1: [],
@@ -639,6 +654,7 @@ export default {
       Incline: {
         id: 0,
         investigate_username: '',
+        dc_unit: '',
         base_loose: '', // *树基松动结果
         pic_1: [], // *树基松动照片
         root_rot: '', // *根部腐朽结果
@@ -672,7 +688,8 @@ export default {
         lopsided: [{ required: true, trigger: 'change', message: '请选择' }],
         deadwood: [{ required: true, trigger: 'change', message: '请选择' }],
         twig: [{ required: true, trigger: 'change', message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'blur', message: '请填写调查人姓名' }],
+        investigate_username: [{ required: true, trigger: 'change', message: '请填写调查人姓名' }],
+        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }]
       }
     }
@@ -702,7 +719,24 @@ export default {
       this.timeIndex = index;
     },
 
+    GetUnits(){
+      queryUnits().then(res=>{
+        this.dcUnits = res.data.units
+      })
+    },
+    onDcUnitSelectQueryChange(value){
+      queryUsers({unit: value, is_dc: true}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange(value){
+      queryUsers({name_like: value, is_dc: true, unit: this.Incline.dc_unit}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
     fetchData(){
+      this.dcUnits = []
+      this.dcUsers = []
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Incline'}).then((record=>{
         if(record.data.total!==0){
           this.isShow = false
@@ -711,11 +745,16 @@ export default {
 
           getIncline({'id':this.tjxm_record.t_id}).then((res=>{
             this.Incline = res.data.tree_Incline
+            this.dcUsers.push(res.data.tree_Incline.dc_user)
+            this.dcUnits.push({'unit': res.data.tree_Incline.dc_unit})
             this.fetchPic()
           }))
         }else {
           this.isShow =true
           this.isSubmit = false
+          queryUnits().then(res=>{
+            this.dcUnits = res.data.units
+          })
         }
       }))
     },

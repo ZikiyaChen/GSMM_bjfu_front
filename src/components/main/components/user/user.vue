@@ -55,7 +55,7 @@ export default {
     userinfo () {
       console.log('44',this.userInfo.userInfo)
       this.$router.push({
-      path:`/users/userinfo/${this.userInfo.userInfo.username}`
+      path:`/userCenter/userinfo/${this.userInfo.userInfo.username}`
       })
     },
     handleClick (name) {

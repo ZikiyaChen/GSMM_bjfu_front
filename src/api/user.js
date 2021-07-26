@@ -181,3 +181,11 @@ export const queryUnitUsers = (params) => {
     params: params
   })
 }
+// 从user表中获取去重的units
+export const queryUnits = (params) => {
+  return axios.request({
+    url: '/query_unit_quchong',
+    method: 'get',
+    params: params
+  })
+}

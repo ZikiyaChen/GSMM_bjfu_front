@@ -9,6 +9,16 @@
           </Input>
         </FormItem>
 
+        <FormItem label="单位：" prop="unit">
+          <AutoComplete
+            v-model="query.unit"
+            placeholder="输入或选择"
+            style="width: 180px"
+            clearable>
+            <Option v-for="item in units" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+          </AutoComplete>
+        </FormItem>
+
         <FormItem >
           <Button type="primary" @click=" onSearch">查询</Button>
         </FormItem>
@@ -41,7 +51,7 @@
 </template>
 
 <script>
-import { AddUser, queryUnitUsers, updateUser } from "@/api/user";
+import {AddUser, queryUnits, queryUnitUsers, updateUser} from "@/api/user";
 import AddNewUserModal from "@/view/UserManage/components/AddNewUserModal";
 import { getToken } from "@/libs/util";
 import UpdateUserInfo from "@/view/Userinfo/components/UpdateUserInfo";
@@ -49,11 +59,14 @@ export default {
   name: "index",
   components: { UpdateUserInfo, AddNewUserModal },
   data () {
+    let that = this
     return {
+      units: [],
       showAddNewUserModal: false,
       showUserUpdateModal: false,
       query: {
         name_like: undefined,
+        unit: undefined
       },
       selected_username: undefined,
       total: 0, // 总数量
@@ -88,6 +101,43 @@ export default {
               return h('Tag', item)
             })
             return h('span', tags)
+          },
+
+          filters: [
+            {
+              label: '超级管理员',
+              value: 'is_admin'
+            },
+            {
+              label: '单位管理员',
+              value: 'is_unitAdmin'
+            },
+            {
+              label: '养护人员',
+              value: 'is_yh'
+            },
+            {
+              label: '调查人员',
+              value: 'is_dc'
+            }
+          ],
+          filterMultiple: true, // 使用多选
+          filterRemote: function (value,row) {
+            //  value是数组类型  每次都先把query中的除了unit和name_like之外的字段删除掉，不然会记住上一次筛选时的字段
+            for(var key in that.query){
+              if(key !== 'name_like' || key !== 'unit'){
+                delete that.query[key]
+              }
+            }
+            if(value.length ===0){ // 选择“全部”时， value数组为空
+              console.log('query',that.query)
+              that.fetchData()
+            }else {
+              for (const elem of value) {
+                that.query[elem] = true
+              }
+              that.fetchData()
+            }
           }
         },
         {
@@ -144,7 +194,12 @@ export default {
   methods: {
     fetchData: function () {
       // 数据表发生变化请求数据
-      let args = { ...this.query, ...this.pages }
+      // query.unit清空后，会变成'',查到的是空
+      if (this.query.unit === ''){
+        this.query.unit = undefined
+      }
+
+      let args = { ...this.query, ...this.pages}
       return queryUnitUsers(args).then((resp) => {
         this.data = resp.data.users
         this.total = resp.data.total
@@ -204,6 +259,9 @@ export default {
     queryUnitUsers({ ...this.pages, ...this.query }).then((resp) => {
       this.data = resp.data.users
       this.total = resp.data.total
+    })
+    queryUnits().then(res=>{
+      this.units= res.data.units
     })
   }
 }

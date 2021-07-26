@@ -36,7 +36,7 @@
         <Button type="primary" @click=" onSearch">查询</Button>
       </FormItem>
       <FormItem>
-      <router-link :to="{path: `/survey/right`}" v-role="['管理员','调查组长','调查人员']" >
+      <router-link :to="{path: `/survey/right`}" v-role="['超级管理员','单位管理员','调查人员']" >
         <Button type="success" style="margin-right: 30px">新增古树</Button>
       </router-link>
       </FormItem>
@@ -225,15 +225,28 @@ export default {
           }
         },
 
-        // {
-        //   title: '调查时间',
-        //   align: 'center',
-        //   width: '150px',
-        //   render: function (h, params) {
-        //     return h('span', params.row.dynamic_property.investigate_time)
-        //   }
-        // },
-
+        {
+          title: '调查时间',
+          align: 'center',
+          width: '150px',
+          render: function (h, params) {
+            return h('span', params.row.investigate_time)
+          }
+        },
+        {
+          title: '调查单位',
+          align: 'center',
+          render: function (h, params) {
+            return h('span', params.row.dc_unit)
+          }
+        },
+        {
+          title: '调查人',
+          align: 'center',
+          render: function (h, params) {
+            return h('span', params.row.dc_user.name)
+          }
+        },
         {
           title: '操作',
           align: 'center',
@@ -262,19 +275,15 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['管理员']
+                  value: ['超级管理员','单位管理员']
                 }],
                 style: {
                   marginRight: '2px'
                 },
                 on: {
                   click: () => {
-
-                    this.seleceted_tree_code = params.row.tree_code
+                    this.selected_tree_code = params.row.tree_code
                     this.showDeleteModal=true
-
-
-
                   }
                 }
               }, '删除')

@@ -24,24 +24,31 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="古树编号" prop="tree_code">
-              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" style="width: 200px" disabled></Input>
+              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" style="width: 200px"></Input>
             </FormItem>
           </Col>
           <Col span="9">
-            <FormItem label="调查顺序号" prop="Dong.investigate_id">
-              <Input v-model="TreeInformation.Dong.investigate_id" placeholder="请输入调查顺序号" style="width: 200px"></Input>
+            <FormItem label="调查时间" prop="Dong.investigate_time">
+              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="datetime" placeholder="请选择日期" style="width: 200px"></DatePicker>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="9" offset="1">
             <FormItem label="管护单位" prop="Base.gh_unit">
-              <Input v-model="TreeInformation.Base.gh_unit" placeholder="请输入管护单位名称" style="width: 200px"></Input>
+              <Select v-model="TreeInformation.Base.gh_unit" placeholder="选择管护单位名称" filterable @on-clear="GetGhUnit"
+                      @on-query-change="onGhUnitSelectQueryChange" clearable style="width: 200px" >
+                <Option v-for="item in ghUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+              </Select>
             </FormItem>
           </Col>
+
           <Col span="9">
-            <FormItem label="调查时间" prop="Dong.investigate_time">
-              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+            <FormItem label="调查单位" prop="Base.gh_unit">
+              <Select v-model="TreeInformation.Base.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetDcUnit"
+                      @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+              </Select>
             </FormItem>
           </Col>
 
@@ -51,18 +58,20 @@
           <Col span="9"  offset="1">
             <FormItem label="管护人" prop="Base.gh_username">
               <Select v-model="TreeInformation.Base.gh_username" placeholder="名字" filterable
-                      @on-query-change="onUserSelectQueryChange" clearable style="width: 150px" >
+                      @on-query-change="onGhUserSelectQueryChange" clearable style="width: 200px">
                 <Option v-for="item in ghUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
               </Select>
-<!--              <Input v-model="TreeInformation.Base.gh_username" placeholder="请输入管护人姓名" style="width: 200px"></Input>-->
             </FormItem>
           </Col>
-          <Col span="9">
-              <FormItem label="调查人" prop="Dong.username">
-                <Input v-model="TreeInformation.Dong.username" placeholder="请输入调查人姓名" style="width: 200px"></Input>
-              </FormItem>
-          </Col>
 
+          <Col span="9">
+            <FormItem label="调查人" prop="Base.dc_username">
+              <Select v-model="TreeInformation.Base.dc_username" placeholder="名字" filterable
+                      @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
         </Row>
 
         <Row>
@@ -73,10 +82,8 @@
 
           </Col>
           <Col span="9">
-            <FormItem label="树高" prop="Dong.height">
-              <Input v-model="TreeInformation.Dong.height" placeholder="请输入树高" style="width: 160px">
-                <span slot="append">m</span>
-              </Input>
+            <FormItem label="调查顺序号" prop="Dong.investigate_id">
+              <Input v-model="TreeInformation.Dong.investigate_id" placeholder="请输入调查顺序号" style="width: 200px"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -90,9 +97,9 @@
 
           </Col>
           <Col span="9">
-            <FormItem label="胸围" prop="Dong.bust">
-              <Input v-model="TreeInformation.Dong.bust" placeholder="请输入古树的胸围" style="width: 160px">
-                <span slot="append">cm</span>
+            <FormItem label="树高" prop="Dong.height">
+              <Input v-model="TreeInformation.Dong.height" placeholder="请输入树高" style="width: 160px">
+                <span slot="append">m</span>
               </Input>
             </FormItem>
           </Col>
@@ -103,6 +110,13 @@
               <RadioGroup v-model="TreeInformation.Base.is_signed">
                 <Radio v-for="item in IsSignedList" :label="item.value" :key="item.value">{{item.label}}</Radio>
               </RadioGroup>
+            </FormItem>
+          </Col>
+          <Col span="9">
+            <FormItem label="胸围" prop="Dong.bust">
+              <Input v-model="TreeInformation.Dong.bust" placeholder="请输入古树的胸围" style="width: 160px">
+                <span slot="append">cm</span>
+              </Input>
             </FormItem>
           </Col>
         </Row>
@@ -523,7 +537,7 @@
         </Row>
 
       </Form>
-      <float_bar  v-role="['管理员','调查组长','调查人员']">
+      <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center">
         <Button  @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存修改</Button>
@@ -573,7 +587,7 @@ import {
 import Float_bar from "_c/FloatBar/float_bar";
 import {checkLat, checkLon} from "@/view/tools-methods/someValidateRule";
 import {PathToList} from "@/view/survey/options";
-import {queryUsers} from "@/api/user";
+import {queryUnits, queryUsers} from "@/api/user";
 
 export default {
   name: "BasicInformation",
@@ -586,6 +600,9 @@ export default {
       showModal: false,
       options:[],
       ghUsers: [],
+      dcUsers: [],
+      ghUnits: [],
+      dcUnits: [],
       tree_code: this.$route.params.tree_code,
       TreeInformation: {
         tree_code: undefined,
@@ -615,6 +632,9 @@ export default {
           jd_record: '', // 树种鉴定记载
           gh_unit: '', // 管护单位
           gh_username: '', // 管护人
+          dc_unit: '',
+          dc_username: '',
+          investigate_time: '',
           is_signed: 0, // 是否签订管护责任书
           tree_code: '1',
         },
@@ -653,7 +673,6 @@ export default {
           history_pic: [], // 古树历史信息图片
           conserve_status: [], // 保护现状
           yhfz_status: [], // 养护复壮现状
-          username: '', // 调查人
           investigate_time: '', // 调查日期
           tree_code: '1',
         },
@@ -731,12 +750,13 @@ export default {
         'Dong.yhfz_status':[{required:true, message: '请选择养护复状现状'}],
         'Base.dizhi': [{required:true, message: '请选择'}],
         'Base.level': [{required:true, message: '请选择'}],
-        'Dong.username':[{required:true, message: '请填写',trigger:'blur'}],
         'Position.longitude':[{required:true, validator: checkLon, message: '请填写经度(-180~180,小数限7位)',trigger:'blur'}],
         'Position.latitude':[{required:true, validator: checkLat, message: '请填写纬度(-90~90,小数限7位)',trigger:'blur'}],
         'Base.owner':[{required:true, message: '请选择'}],
-        'Base.gh_unit':[{required:true, message: '请填写',trigger:'blur'}],
-        'Base.gh_username':[{required:true, message: '请选择',trigger:'blur'}],
+        'Base.gh_unit':[{required:true, message: '请填写',trigger:'change'}],
+        'Base.gh_username':[{required:true, message: '请选择',trigger:'change'}],
+        'Base.dc_unit':[{required:true, message: '请填写',trigger:'change'}],
+        'Base.dc_username':[{required:true, message: '请选择',trigger:'change'}],
         'Dong.real_age':[{required:true, message: '请填写'}],
         'Dong.height':[{required:true, message: '请填写',trigger:'blur'}],
         'Dong.bust':[{required:true, message: '请填写',trigger:'blur'}],
@@ -750,12 +770,34 @@ export default {
 
   },
   methods : {
-    onUserSelectQueryChange (value) {
-      let args={}
-      // ############非管理员才会出现在下拉框中
-      args = { name_like: value, is_admin: false }
-      queryUsers(args).then((resp) => {
-        this.ghUsers = resp.data.users
+    GetGhUnit(){
+      queryUnits().then(res=>{
+        this.ghUnits = res.data.units
+      })
+    },
+    GetDcUnit(){
+      queryUnits().then(res=>{
+        this.dcUnits = res.data.units
+      })
+    },
+    onGhUnitSelectQueryChange(value){
+      queryUsers({unit: value, is_yh: true}).then(res=>{
+        this.ghUsers = res.data.users
+      })
+    },
+    onGhUserSelectQueryChange(value){
+      queryUsers({name_like: value, is_yh: true, unit: this.TreeInformation.Base.gh_unit}).then(res=>{
+        this.ghUsers = res.data.users
+      })
+    },
+    onDcUnitSelectQueryChange(value){
+      queryUsers({unit: value, is_dc: true}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange(value){
+      queryUsers({name_like: value, is_dc: true, unit: this.TreeInformation.Base.dc_unit}).then(res=>{
+        this.dcUsers = res.data.users
       })
     },
     InitIndex(){
@@ -769,9 +811,6 @@ export default {
     },
 
     Show(item){
-      console.log('^^^',item)
-
-      // /survey/update/BasicInformation/110131B03
       this.$router.push({ path: item.path_to+`${this.tree_code}` })
     },
     changeActive(index) {
@@ -974,7 +1013,7 @@ export default {
           this.TreeInformation.Base.ld_name = this.TreeInformation.Base.treetype[3]
           this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
           this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
-          this.tjxm_record.username = this.TreeInformation.Dong.username
+          this.tjxm_record.username = this.TreeInformation.Base.dc_username
           this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
           this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
           this.tjxm_record.status = '待提交'
@@ -1027,7 +1066,7 @@ export default {
             this.TreeInformation.Base.ld_name = this.TreeInformation.Base.treetype[3]
             this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
             this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
-            this.tjxm_record.username = this.TreeInformation.Dong.username
+            this.tjxm_record.username = this.TreeInformation.Base.dc_username
             this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
             this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
             this.tjxm_record.status = '已完成'
@@ -1072,6 +1111,10 @@ export default {
     },
 
     fetchData(){
+      this.dcUnits = []
+      this.dcUsers = []
+      this.ghUnits = []
+      this.ghUsers = []
       getOneTreeBaseInfo(this.tree_code).then((res => {
 
         console.log('one_tree',res.data)
@@ -1087,6 +1130,10 @@ export default {
         this.getTreeType(this.TreeInformation.Base)
         // 初始化管护人列表 ghUsers
         this.ghUsers.push(this.TreeInformation.Base.gh_user)
+        this.dcUsers.push(this.TreeInformation.Base.dc_user)
+        this.ghUnits.push({'unit': this.TreeInformation.Base.gh_unit})
+        this.dcUnits.push({'unit': this.TreeInformation.Base.dc_unit})
+
       }))
 
     },
@@ -1181,7 +1228,6 @@ export default {
   mounted:function (){
     this.fetchData()
     this.InitIndex()
-
     // this.fetchOptions()
 
     // setTimeout(()=>{

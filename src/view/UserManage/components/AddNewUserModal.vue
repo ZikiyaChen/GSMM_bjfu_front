@@ -29,10 +29,19 @@
           </FormItem>
         </Col>
 
-        <Col span="11" >
-          <FormItem prop="unit" label="单位:" v-role="['超级管理员']">
-            <Input v-model="user.unit" placeholder="单位">
-            </Input>
+<!--        <Col span="11" >-->
+<!--          <FormItem prop="unit" label="单位:" v-role="['超级管理员']">-->
+<!--            <Input v-model="user.unit" placeholder="单位">-->
+<!--            </Input>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+        <Col span="11">
+          <FormItem prop="unit" label="单位" v-role="['超级管理员']">
+            <AutoComplete
+              v-model="user.unit"
+              placeholder="输入或选择">
+              <Option v-for="item in units" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+            </AutoComplete>
           </FormItem>
         </Col>
       </Row>
@@ -75,6 +84,7 @@
 
 <script>
 import UserMixin from "@/mixin/UserMixin";
+import {queryUnits} from "@/api/user";
 
 export default {
   name: "AddNewUserModal",
@@ -86,6 +96,7 @@ export default {
   mixins: [UserMixin],
   data () {
     return {
+      units: [],
       is_not_change: false,
       user: {
         username: '',
@@ -117,8 +128,8 @@ export default {
         sex: [{ required: true, message: 'the sex can not be empty', trigger: 'change' }],
         // unit: [{ required: true, message: 'the unit can not be empty', trigger: 'blur' }],
 
-        role_names: [ { required: true, type: 'array', min: 1, message: '至少选择一个身份', trigger: 'change' },
-          { type: 'array', max: 2, message: '最多选择两个身份', trigger: 'change' }],
+        // role_names: [ { required: true, type: 'array', min: 1, message: '至少选择一个身份', trigger: 'change' },
+        //   { type: 'array', max: 2, message: '最多选择两个身份', trigger: 'change' }],
         tele: [{ required: true, message: 'the telephone number can not be empty', trigger: 'blur' },
           {
             validator (rule, value, callback) {
@@ -136,7 +147,11 @@ export default {
       }
     }
   },
-
+  created() {
+    queryUnits().then(res=>{
+      this.units=res.data.units
+    })
+  },
   methods: {
 
     changeLoading: function () {

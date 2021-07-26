@@ -71,13 +71,26 @@
 
       <Row>
         <Col span="9" offset="1">
-          <FormItem label="调查人" prop="investigate_username">
-            <Input v-model="environment.investigate_username" placeholder="请输入调查人姓名"></Input>
+          <FormItem label="调查单位" prop="dc_unit">
+            <Select v-model="environment.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
+                    @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+            </Select>
           </FormItem>
         </Col>
         <Col span="9">
           <FormItem label="调查时间" prop="update_time">
             <DatePicker v-model="environment.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="9" offset="1">
+          <FormItem label="调查人" prop="investigate_username">
+            <Select v-model="environment.investigate_username" placeholder="名字" filterable
+                    @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+            </Select>
           </FormItem>
         </Col>
       </Row>
@@ -443,7 +456,7 @@
         </Col>
       </Row>
     </Form>
-    <float_bar  v-role="['管理员','调查组长','调查人员']">
+    <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
     <div style="text-align: center" v-show="isShow">
       <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
       <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
@@ -492,6 +505,7 @@ import {
 } from "@/api/table";
 import {ShowPic} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
+import {queryUnits, queryUsers} from "@/api/user";
 
 export default {
   name: "environment",
@@ -515,6 +529,8 @@ export default {
       visible2: false,
       i2: 0,
 
+      dcUsers: [],
+      dcUnits: [],
 
       tjxm_record:{
         t_id: 0,
@@ -537,6 +553,7 @@ export default {
       environment: {
         id: 0,
         investigate_username: '',
+        dc_unit: '',
         elevation: 0, // 海拔
         habitat_type: '', // 生长环境类型
         plain_type: [], // 平原类型
@@ -595,7 +612,8 @@ export default {
 
       ruleValidate: {
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
-        investigate_username: [{ required: true, message: '请填写调查人姓名'}],
+        dc_unit: [{ required: true, message: '请填写调查单位', trigger: 'change'}],
+        investigate_username: [{ required: true, message: '请填写调查人姓名', trigger: 'change'}],
         elevation: [{ required: true,  message: '请填写海拔' }],
         habitat_type: [{ required: true, trigger: 'change', message: '请选择生长环境类型' }],
         plain_type: [{ required: true, type: 'array', min: 1, trigger: 'change', message: '请选择平原类型' }],
@@ -622,8 +640,24 @@ export default {
   },
   mounted() {
     // this.fetchOptions()
+
   },
   methods: {
+    GetUnits(){
+      queryUnits().then(res=>{
+        this.dcUnits = res.data.units
+      })
+    },
+    onDcUnitSelectQueryChange(value){
+      queryUsers({unit: value, is_dc: true}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange(value){
+      queryUsers({name_like: value, is_dc: true, unit: this.environment.dc_unit}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
     InitIndex(){
       this.timeLineList.forEach((item,index)=>{
         //执行代码
@@ -645,6 +679,8 @@ export default {
     },
 
     fetchData(){
+      this.dcUnits = []
+      this.dcUsers = []
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((record=>{
         if(record.data.total!==0){
           this.tjxm_record = record.data.tjxm_records[0]
@@ -652,11 +688,17 @@ export default {
           this.isSubmit= true
           getEnvironmentById(this.tjxm_record.t_id).then((res=>{
             this.environment= res.data.environment_by_id
+            this.dcUnits.push({'unit':this.environment.dc_unit})
+            this.dcUsers.push(this.environment.dc_user)
             this.fetchPic()
           }))
         }else {
+          queryUnits().then((res=>{
+            this.dcUnits = res.data.units
+          }))
           this.isShow = true
           this.isSubmit= false
+
         }
       }))
     },
