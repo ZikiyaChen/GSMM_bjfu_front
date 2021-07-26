@@ -22,7 +22,7 @@ export default {
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.tree_code } </span>
+              <span>{ params.row.tree_code }</span>
             )
           }
         },
@@ -31,7 +31,7 @@ export default {
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.type } </span>
+              <span>{ params.row.type }</span>
             )
           }
         },
@@ -40,7 +40,7 @@ export default {
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.username } </span>
+              <span>{ params.row.dc_user.name } </span>
             )
           }
         },
@@ -49,7 +49,7 @@ export default {
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.time } </span>
+              <span>{ params.row.time }</span>
             )
           }
         },
@@ -99,7 +99,7 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['管理员','调查人员','调查组长']
+                  value: ['超级管理员','调查人员','单位管理员']
                 }],
                 style: {
                   marginRight: '2px',
@@ -123,7 +123,7 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['管理员','调查人员','调查组长']
+                  value: ['超级管理员','调查人员','单位管理员']
                 }],
                 style: {
                   marginRight: '2px',
@@ -145,7 +145,7 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['管理员']
+                  value: ['超级管理员','单位管理员']
                 }],
                 style: {
                   marginRight: '2px',
@@ -205,7 +205,7 @@ export default {
 
       for(let key in alltypes){
         if (!Type_key.includes(key)){
-          data.push({'tree_code':tree_code,'type':alltypes[key],'type_yw':key,'status':'未完成'})
+          data.push({'tree_code':tree_code,'type':alltypes[key],'type_yw':key,'status':'未完成','dc_user':{'name':''}})
         }
       }
       console.log('enddata:',data)

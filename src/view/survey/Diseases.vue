@@ -420,8 +420,11 @@
 
       <Row>
         <Col span="9" offset="2">
-          <FormItem label="调查人" prop="investigate_username">
-            <Input v-model="Diseases.investigate_username" placeholder="请输入调查人姓名"></Input>
+          <FormItem label="调查单位" prop="dc_unit">
+            <Select v-model="Diseases.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
+                    @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+            </Select>
           </FormItem>
         </Col>
         <Col span="9">
@@ -430,10 +433,20 @@
           </FormItem>
         </Col>
       </Row>
+      <Row>
+        <Col span="9" offset="2">
+          <FormItem label="调查人" prop="investigate_username">
+            <Select v-model="Diseases.investigate_username" placeholder="名字" filterable
+                    @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+            </Select>
+          </FormItem>
+        </Col>
+      </Row>
 
     </Form>
 
-    <float_bar  v-role="['管理员','调查组长','调查人员']">
+    <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center" v-show="isShow">
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
 
@@ -481,6 +494,7 @@ import {
 } from "@/api/table"
 import {ShowPic} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
+import {queryUnits, queryUsers} from "@/api/user";
 
 export default {
   name: "Diseases",
@@ -489,6 +503,8 @@ export default {
     return {
       timeIndex: 0,
       timeLineList: PathToList,
+      dcUsers: [],
+      dcUnits: [],
 
       showPreviousPageModal: false,
 
@@ -541,6 +557,7 @@ export default {
       Diseases: {
         id: 0,
         investigate_username: '',
+        dc_unit: '',
         bmoth_status: '', // 树干基部-蛀干害虫情况
         bmoth_name: '', // 树干基部-害虫名称
         bdisease_status: '', // 树干基部-病害情况
@@ -580,7 +597,8 @@ export default {
         sdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
         blade_status: [{ required: true, trigger: 'change', message: '请选择' }],
         branch_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'blur', message: '请填写调查人姓名' }],
+        investigate_username: [{ required: true, trigger: 'change', message: '请填写调查人姓名' }],
+        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位名称' }],
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }]
 
       }
@@ -637,7 +655,24 @@ export default {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
       }))
     },
+    GetUnits(){
+      queryUnits().then(res=>{
+        this.dcUnits = res.data.units
+      })
+    },
+    onDcUnitSelectQueryChange(value){
+      queryUsers({unit: value, is_dc: true}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange(value){
+      queryUsers({name_like: value, is_dc: true, unit: this.Diseases.dc_unit}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
     fetchData(){
+      this.dcUnits = []
+      this.dcUsers = []
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Diseases'}).then((record=>{
         if(record.data.total!==0){
           this.isShow = false
@@ -645,11 +680,16 @@ export default {
           this.tjxm_record = record.data.tjxm_records[0]
           getDiseases({'id':this.tjxm_record.t_id}).then((res=>{
             this.Diseases = res.data.tree_Bch
+            this.dcUsers.push(res.data.tree_Bch.dc_user)
+            this.dcUnits.push({'unit': res.data.tree_Bch.dc_unit})
             this.fetchPic()
           }))
         }else {
           this.isShow =true
           this.isSubmit = false
+          queryUnits().then(res=>{
+            this.dcUnits = res.data.units
+          })
         }
       }))
     },

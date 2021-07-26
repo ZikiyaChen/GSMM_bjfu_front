@@ -24,24 +24,24 @@
       <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
         <h4>古树基本信息</h4>
         <Row>
-          <Col  span="5" offset="3">
+          <Col  span="6" offset="2">
             <FormItem label="古树编号">
               <Input disabled  v-model="tree_code" class="TextColor"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="5" offset="3">
+          <Col span="6" offset="2">
             <FormItem label="科" prop="Base.family">
               <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
             </FormItem>
           </Col>
-          <Col span="5" >
+          <Col span="6" >
             <FormItem label="属" prop="Base.genus">
               <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
             </FormItem>
           </Col>
-          <Col span="5" >
+          <Col span="6" >
             <FormItem label="中文名" prop="Base.zw_name">
               <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
             </FormItem>
@@ -49,12 +49,12 @@
         </Row>
 
         <Row>
-          <Col span="5" offset="3">
+          <Col span="6" offset="2">
             <FormItem label="拉丁名" prop="Base.ld_name">
               <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
             </FormItem>
           </Col>
-          <Col span="5">
+          <Col span="6">
             <FormItem label="俗名" prop="Base.bm_name">
               <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
               </Input>
@@ -66,14 +66,27 @@
       <h4>已采取复壮保护措施情况与分析</h4>
       <Form :label-width="198" label-position="right"  ref="protect_form" :model="Protect" :rules="ruleValidate" inline>
         <Row>
-          <Col span="9" offset="2">
-            <FormItem label="调查人" prop="investigate_username">
-              <Input v-model="Protect.investigate_username" placeholder="请输入调查人姓名"></Input>
+          <Col span="9" offset="1">
+            <FormItem label="调查单位" prop="dc_unit">
+              <Select v-model="Protect.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
+                      @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span="9">
             <FormItem label="调查时间" prop="update_time">
               <DatePicker v-model="Protect.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="9" offset="1">
+            <FormItem label="调查人" prop="investigate_username">
+              <Select v-model="Protect.investigate_username" placeholder="名字" filterable
+                      @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+              </Select>
             </FormItem>
           </Col>
         </Row>
@@ -437,7 +450,7 @@
           </Row>
         </div>
       </Form>
-      <float_bar  v-role="['管理员','调查组长','调查人员']">
+      <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center" v-show="isShow">
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
@@ -498,6 +511,7 @@ import {
 } from "@/api/table";
 import Float_bar from "_c/FloatBar/float_bar";
 import {ShowPic} from "@/api/upload";
+import {queryUnits, queryUsers} from "@/api/user";
 
 export default {
   name: "Protect",
@@ -517,6 +531,8 @@ export default {
           ld_name:''
         }
       },
+      dcUnits: [],
+      dcUsers: [],
 
       tjxm_record:{
         t_id: 0,
@@ -595,7 +611,8 @@ export default {
         pic: [], // 特征照片
         update_time: '',
         tree_code: '',
-        investigate_username:''
+        investigate_username:'',
+        dc_unit: ''
       },
       ruleValidate: {
         protect: [{ required: true, message: '请选择' }],
@@ -603,7 +620,8 @@ export default {
         is_block: [{ required: true, message: '请选择' }],
         is_support: [{ required: true, message: '请选择' }],
         has_ditch: [{ required: true, message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'blur', message: '请填写调查人姓名' }],
+        investigate_username: [{ required: true, trigger: 'change', message: '请选择调查人姓名' }],
+        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
       }
     }
@@ -623,6 +641,22 @@ export default {
         }
       })
     },
+    GetUnits(){
+      queryUnits().then(res=>{
+        this.dcUnits = res.data.units
+      })
+    },
+    onDcUnitSelectQueryChange(value){
+      queryUsers({unit: value, is_dc: true}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange(value){
+      queryUsers({name_like: value, is_dc: true, unit: this.Protect.dc_unit}).then(res=>{
+        this.dcUsers = res.data.users
+      })
+    },
+
     Show(item){
       console.log('^^^',item)
 
@@ -634,6 +668,8 @@ export default {
     },
 
     fetchData(){
+      this.dcUnits = []
+      this.dcUsers = []
       queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Protect'}).then((record=>{
         if(record.data.total!==0){
           this.isShow = false
@@ -641,11 +677,16 @@ export default {
           this.tjxm_record = record.data.tjxm_records[0]
           getProtect_By_id(this.tjxm_record.t_id).then((res=>{
             this.Protect = res.data.new_Fzbh
+            this.dcUnits.push({'unit': res.data.new_Fzbh.dc_unit})
+            this.dcUsers.push(res.data.new_Fzbh.dc_user)
             this.fetchPic()
           }))
         }else {
           this.isShow = true
           this.isSubmit= false
+          queryUnits().then(res=>{
+            this.dcUnits = res.data.units
+          })
         }
       }))
     },
