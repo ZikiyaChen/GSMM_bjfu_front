@@ -1,5 +1,6 @@
 <template>
   <div>
+    <task-assignment></task-assignment>
     <Card>
       <h1>养护任务分配---只显示分配的工单</h1>
       <Table stripe :columns="columns" :data="data" border></Table>
@@ -12,9 +13,13 @@
 import { getUserInfo } from "@/api/user";
 import { queryYhAllots } from "@/api/yh_manage";
 import yh_record_extend_table from "@/view/YangHuManage/components/yh_record_extend_table";
+import TaskAssignment from "@/view/YangHuManage/YhManage/componnets/TaskAssignment";
 
 export default {
   name: "yh_allot_manage",
+  components: {
+    TaskAssignment
+  },
   data () {
     return {
       query: {

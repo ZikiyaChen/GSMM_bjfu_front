@@ -23,6 +23,7 @@
             <Col span="24">
               <DatePicker
                 ref="datePicker"
+                @on-change="handleDateChange"
                 :value="maintenanceInfo.date"
                 format="yyyy年MM月dd日"
                 type="date"
@@ -162,10 +163,10 @@ export default {
       }
     },
 
-    treeNumberOptionChange (option) {
+    treeNumberOptionChange (options) {
       let treeSpeciesArray = []
       this.treesCode.length = 0
-      for (let item of option) {
+      for (let item of options) {
         for (let property of this.treesBasicProperty) {
           if (property.tree_code.indexOf(item) > -1) {
             treeSpeciesArray.push(property.zw_name)
@@ -191,6 +192,10 @@ export default {
     handleCancel () {
       this.$emit('basicCancel')
     },
+    handleDateChange (date) {
+      date = date.replace('年', '-').replace('月', '-').replace('日', '')
+      this.taskInfo.maintenanceDate = date
+    }
   },
   beforeMount () {
     const initializeWeatherInfo = () => {
