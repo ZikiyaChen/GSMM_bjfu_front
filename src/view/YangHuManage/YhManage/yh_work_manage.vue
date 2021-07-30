@@ -1,7 +1,6 @@
 <template>
   <div>
     <Card>
-
       <Table stripe :columns="columns" :data="data" border></Table>
       <TreeYhHistory
         :show="showTreeYhHistory"
@@ -9,6 +8,13 @@
         @onOK="onShowTreeYhHistoryModalOK"
         @onCancel="onShowTreeYhHistoryModalCancel">
       </TreeYhHistory>
+      <display-update-record
+        v-if="showRecord"
+        :recordType="recordType"
+        :maintenanceId="maintenanceId"
+        @recordCancel="handleRecordCancel"
+        @recordConfirm="handleRecordConfirm">
+      </display-update-record>
     </Card>
   </div>
 </template>
@@ -19,14 +25,18 @@ import { queryYhRecords } from "@/api/yh_manage";
 
 import UserMixin from "@/mixin/UserMixin";
 import TreeYhHistory from "@/view/YangHuManage/YhManage/componnets/TreeYhHistory";
+import DisplayUpdateRecord from "@/view/YangHuManage/YhManage/componnets/DisplayUpdateRecord";
 export default {
   name: "yh_work_manage",
-  components: {TreeYhHistory},
+  components: { DisplayUpdateRecord, TreeYhHistory },
   mixins: [UserMixin],
 
   data () {
     let that = this
     return {
+      showRecord: false,
+      recordType: '',
+      maintenanceId: -1,
       data: [],
       showTreeYhHistory: false,
       current_user: {},
@@ -105,7 +115,7 @@ export default {
           render: function (h, params) {
             if (params.row.work_type === '分配') {
               return h('Tag', { props: { color: 'red' } }, '分配')
-            }  else {
+            } else {
               return h('Tag', { props: { color: 'blue' } }, '自主')
             }
           }
@@ -137,12 +147,12 @@ export default {
             }
           ],
           filterMultiple: false,
-          filterRemote: function (value,row) {
+          filterRemote: function (value, row) {
             console.log(value)//  value是数组类型
-            if(value.length ===0){ // 选择“全部”时， value数组为空
+            if (value.length === 0) { // 选择“全部”时， value数组为空
               that.query.state = undefined
               that.fetchData()
-            }else {
+            } else {
               that.query.state = value.toString()
               console.log(that.query)
               that.fetchData()
@@ -179,6 +189,10 @@ export default {
                 },
                 on: {
                   click: () => {
+                    this.showRecord = true
+                    console.log(params.row)
+                    this.recordType = params.row.yh_type
+                    this.maintenanceId = params.row.yh_id
                   }
                 }
               }, '查看')
@@ -213,10 +227,10 @@ export default {
     }
   },
   methods: {
-    onShowTreeYhHistoryModalOK(){
+    onShowTreeYhHistoryModalOK () {
       this.showTreeYhHistory = false
     },
-    onShowTreeYhHistoryModalCancel(){
+    onShowTreeYhHistoryModalCancel () {
       this.showTreeYhHistory = false
     },
     // fetchData(){
@@ -239,8 +253,15 @@ export default {
       }
       let args = { ...this.query, ...this.pages }
       queryYhRecords(args).then(res => {
+        console.log(res.data.yh_records)
         this.data = res.data.yh_records
       })
+    },
+    handleRecordCancel () {
+      this.showRecord = false
+    },
+    handleRecordConfirm () {
+      this.showRecord = false
     }
   },
   created () {

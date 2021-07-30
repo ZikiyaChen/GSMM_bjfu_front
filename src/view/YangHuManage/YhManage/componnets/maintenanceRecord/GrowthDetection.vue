@@ -40,7 +40,7 @@ export default {
       this.$emit('cancelOrConfirm')
     }
   },
-  beforeMount () {
+  created () {
     const initializeIdicatorTypes = () => {
       let temp = '土壤含水量、新稍生长量、土样检测、树体标本检测'.split('、')
       this.indicatorType.types = temp.map(item => {

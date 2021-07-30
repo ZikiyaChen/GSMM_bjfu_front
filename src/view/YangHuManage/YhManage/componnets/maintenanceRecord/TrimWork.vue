@@ -11,9 +11,10 @@
         <Row>
           <Col span="24">
             <Select
-              v-model="reason.modal"
               filterable
               multiple
+              v-model="reason.modal"
+              :default-label="reason.modal"
               @on-change="handleReasonChange">
               <Option v-for="item in reason.projects" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
@@ -24,9 +25,10 @@
         <Row>
           <Col span="9" style="padding-right:5px">
             <Select v-model="explain.modal"
-                    placeholder="请选择或输入方向"
                     filterable
                     allow-create
+                    placeholder="请选择或输入方向"
+                    :default-label="explain.modal"
                     @on-change="handleDirectionChange"
                     @on-create="handleExplainCreate">
               <Option v-for="item in explain.direction" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -54,10 +56,11 @@
       </FormItem>
       <FormItem label="保护方法" slot="other">
         <Select
-          v-model="protection.modal"
-          placeholder="请选择保护方法"
           filterable
           multiple
+          v-model="protection.modal"
+          placeholder="请选择保护方法"
+          :deault-label="protection.modal"
           @on-change="handleProtectionChange">
           <Option v-for="item in protection.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
@@ -69,21 +72,28 @@
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
 import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+import { mapState } from "vuex";
 
 export default {
   name: 'TrimWork',
   components: {
     BasicForm
   },
+  computed: {
+    ...mapState('maintenanceForm', {
+      otherFormData: state => state.otherFormData,
+      showFlag: state => state.showFlag
+    })
+  },
   data () {
     return {
       reason: {
-        modal: '',
+        modal: [],
         projects: [],
         projectsStr: ''
       },
       explain: {
-        modal: '',
+        modal: [],
         direction: [],
         directionStr: '',
         length: '',
@@ -91,7 +101,7 @@ export default {
         quantity: ''
       },
       protection: {
-        modal: '',
+        modal: [],
         methods: [],
         methodsStr: ''
       }
@@ -130,7 +140,7 @@ export default {
       this.$emit('cancelOrConfirm', 'confirm', result)
     }
   },
-  beforeMount () {
+  created () {
     const initializeTrimWorkProjects = () => {
       getMaintenanceProjects('修剪').then(message => {
         for (let item of message.data.projects) {
@@ -172,6 +182,18 @@ export default {
       })
     }
     initializeProtectionMethods()
+
+    const initializeTypicalData = () => {
+      if (this.showFlag) {
+        this.reason.modal = this.otherFormData.reasons
+        this.explain.modal = this.otherFormData.direction
+        this.explain.length = this.otherFormData.length
+        this.protection.modal = this.otherFormData.methods
+        this.explain.diameter = this.otherFormData.diameter
+        this.explain.quantity = this.otherFormData.quantity
+      }
+    }
+    initializeTypicalData()
   }
 }
 </script>

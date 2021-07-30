@@ -232,11 +232,17 @@ export default {
   },
 
   mounted () {
+    if (this.$refs.datePicker.$el === undefined) {
+      return
+    }
     window.onresize = () => {
       this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
     }
   },
   updated () {
+    if (this.$refs.datePicker.$el === undefined) {
+      return
+    }
     this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
     window.onresize = () => {
       this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'

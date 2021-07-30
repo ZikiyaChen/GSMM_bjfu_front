@@ -10,9 +10,11 @@
       <FormItem label="防治类型">
         <Row>
           <Col span="24">
-            <Select v-model="controlType.model"
-                    @on-change="handleControlTypeChange"
-                    multiple>
+            <Select
+              multiple
+              :default-label="controlType.model"
+              v-model="controlType.model"
+              @on-change="handleControlTypeChange">
               <Option v-for="item in controlType.types" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -24,9 +26,11 @@
       <FormItem label="防治方法">
         <Row>
           <Col span="24">
-            <Select v-model="controlMethod.model"
-                    @on-change="handleControlMethodChange"
-                    multiple>
+            <Select
+              multiple
+              :default-label="controlMethod.model"
+              v-model="controlMethod.model"
+              @on-change="handleControlMethodChange">
               <Option v-for="item in controlMethod.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -44,9 +48,11 @@
       <FormItem label="诱捕器名称">
         <Row>
           <Col span="24">
-            <Select v-model="trapper.model"
-                    @on-change="handleTrapperChange"
-                    multiple>
+            <Select
+              multiple
+              :default-label="trapper.model"
+              v-model="trapper.model"
+              @on-change="handleTrapperChange">
               <Option v-for="item in trapper.names" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -55,9 +61,11 @@
       <FormItem label="病虫害名称">
         <Row>
           <Col span="24">
-            <Select v-model="pestName.model"
-                    @on-change="handlePestNameChange"
-                    multiple>
+            <Select
+              multiple
+              :default-label="pestName.model"
+              v-model="pestName.model"
+              @on-change="handlePestNameChange">
               <Option v-for="item in pestName.names" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -67,8 +75,10 @@
       <FormItem label="防治效果">
         <Row>
           <Col span="24">
-            <Select v-model="controlEffect.model"
-                    @on-change="handleEffectChange">
+            <Select
+              :default-label="controlEffect.model"
+              v-model="controlEffect.model"
+              @on-change="handleEffectChange">
               <Option v-for="item in controlEffect.effects" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -82,38 +92,45 @@
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
 import { getPestName, queryYhOptions } from "@/api/yh_manage";
+import { mapState } from "vuex";
 
 export default {
   name: 'PestControl',
   components: {
     BasicForm
   },
+  computed: {
+    ...mapState('maintenanceForm', {
+      showFlag: state => state.showFlag,
+      otherFormData: state => state.otherFormData
+    })
+  },
   data () {
     return {
       controlType: {
-        modal: '',
+        model: [],
         types: ['生物防治', '物理防治', '化学防治'],
         typesStr: ''
       },
       controlMethod: {
-        modal: '',
+        model: [],
         methods: [],
         methodsStr: ''
       },
       potionConcentration: '',
       releasedCreaturesQuantity: '',
       trapper: {
-        modal: '',
+        model: [],
         names: ['诱木（侧柏）', '蛀干害虫植物源引诱剂', '松梢螟诱捕器', '小蠹属诱捕器'],
         namesStr: ''
       },
       pestName: {
-        modal: '',
+        model: [],
         names: [],
         namesStr: ''
       },
       controlEffect: {
-        modal: '',
+        model: [],
         effects: ['良好', '一般', '不好'],
         effectsStr: ''
       }
@@ -152,7 +169,7 @@ export default {
       this.$emit('cancelOrConfirm', 'confirm', result)
     }
   },
-  beforeMount () {
+  created () {
     const initializeControlTypes = () => {
       this.controlType.types = this.controlType.types.map(item => {
         return {
@@ -210,6 +227,19 @@ export default {
       })
     }
     initializeEffect()
+
+    const initializeTypicalData = () => {
+      if (this.showFlag) {
+        this.controlType.model = this.otherFormData.contentType
+        this.controlMethod.model = this.otherFormData.methods
+        this.potionConcentration = this.otherFormData.potionConcentration
+        this.releasedCreaturesQuantity = this.otherFormData.releasedCreaturesQuantity
+        this.trapper.model = this.otherFormData.trapper
+        this.pestName.model = this.otherFormData.pestName
+        this.controlEffect.model = this.otherFormData.effects
+      }
+    }
+    initializeTypicalData()
   }
 
 }

@@ -64,7 +64,6 @@ import TreeInspection from "@/view/YangHuManage/YhManage/componnets/maintenanceR
 import GrowthDetection from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/GrowthDetection";
 import { insertRecordByTypeSelf } from "@/api/yh_manage";
 import { mapMutations } from "vuex";
-
 export default {
   name: "RecordAdd",
   components: {
@@ -80,7 +79,6 @@ export default {
     return {
       componentName: '',
       projectName: '',
-
       result: {},
       saveFlag: false,
       noticeModal: false,
@@ -135,7 +133,6 @@ export default {
       }
       this.initializeRadioOption()
     },
-
     handleCancelOrConfirm (type, result) {
       if (type === 'cancel') {
         this.componentName = ''
@@ -178,7 +175,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-
   .ivu-modal {
     top: 0;
   }
