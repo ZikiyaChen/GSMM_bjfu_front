@@ -203,7 +203,7 @@ export default {
                     this.showRecord = true
                     console.log(params.row)
                     this.recordType = params.row.yh_type
-                    this.maintenanceId = params.row.yh_id
+                    this.maintenanceId = params.row.id
                   }
                 }
               }, '查看')
