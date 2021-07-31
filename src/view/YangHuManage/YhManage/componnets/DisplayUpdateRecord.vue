@@ -21,6 +21,7 @@ import { getSpecificRecord, updateSpecificRecord } from "@/api/yh_manage";
 export default {
   name: 'DisplayUpdateRecord',
   props: {
+    id: Number,
     recordType: String,
     maintenanceId: Number
   },
@@ -48,7 +49,7 @@ export default {
         console.log('maintenanceId: ', this.maintenanceId)
         result.state = '已完成'
         console.log('result', result)
-        updateSpecificRecord(this.maintenanceId, result).then(message => {
+        updateSpecificRecord(this.id, result).then(message => {
           console.log(message)
           this.$emit('recordConfirm')
         })

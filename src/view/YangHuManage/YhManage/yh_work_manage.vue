@@ -17,6 +17,7 @@
       </TreeYhHistory>
       <display-update-record
         v-if="showRecord"
+        :id="id"
         :recordType="recordType"
         :maintenanceId="maintenanceId"
         @recordCancel="handleRecordCancel"
@@ -43,7 +44,8 @@ export default {
     return {
       showRecord: false,
       recordType: '',
-      maintenanceId: -1,
+      id: -1, // yh_record中的id
+      maintenanceId: -1, // specific中的id
       data: [],
       showTreeYhHistory: false,
       current_user: {},
@@ -202,8 +204,9 @@ export default {
                   click: () => {
                     this.showRecord = true
                     console.log(params.row)
+                    this.id = params.row.id
                     this.recordType = params.row.yh_type
-                    this.maintenanceId = params.row.id
+                    this.maintenanceId = params.row.yh_id
                   }
                 }
               }, '查看')
