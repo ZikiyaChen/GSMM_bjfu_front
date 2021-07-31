@@ -172,3 +172,20 @@ export const queryGroups = (params) => {
     params: params
   })
 }
+
+// --------用户    修改    测试
+export const queryUnitUsers = (params) => {
+  return axios.request({
+    url: '/query_users',
+    method: 'get',
+    params: params
+  })
+}
+// 从user表中获取去重的units
+export const queryUnits = (params) => {
+  return axios.request({
+    url: '/query_unit_quchong',
+    method: 'get',
+    params: params
+  })
+}

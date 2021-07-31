@@ -6,23 +6,23 @@
 </template>
 
 <script>
-import {deleteTjxmRecord, queryTjxmRecord} from "@/api/table";
+import { deleteTjxmRecord, queryTjxmRecord } from "@/api/table";
 
 export default {
   name: "tjxm_record_extend_table",
   props: {
     selected_tree_code: String
   },
-  data: function (){
-    return{
-      data:[],
+  data: function () {
+    return {
+      data: [],
       columns: [
         {
           title: '古树编号',
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.tree_code } </span>
+              <span>{ params.row.tree_code }</span>
             )
           }
         },
@@ -31,7 +31,7 @@ export default {
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.type } </span>
+              <span>{ params.row.type }</span>
             )
           }
         },
@@ -40,7 +40,7 @@ export default {
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.username } </span>
+              <span>{ params.row.dc_user.name } </span>
             )
           }
         },
@@ -49,7 +49,7 @@ export default {
           align: 'center',
           render: function (h, params) {
             return (
-              <span> { params.row.time } </span>
+              <span>{ params.row.time }</span>
             )
           }
         },
@@ -57,17 +57,13 @@ export default {
           title: '完成状态',
           align: 'center',
           render: function (h, params) {
-
-              if(params.row.status === '已完成'){
-                return h('Tag', { props: { color: 'blue' } }, '已完成')
-              }else if(params.row.status === '待提交'){
-                return h('Tag', { props: { color: 'green' } }, '待提交')
-              }else {
-                return h('Tag', { props: { color: 'red' } }, '未完成')
-              }
-
-
-
+            if (params.row.status === '已完成') {
+              return h('Tag', { props: { color: 'blue' } }, '已完成')
+            } else if (params.row.status === '待提交') {
+              return h('Tag', { props: { color: 'green' } }, '待提交')
+            } else {
+              return h('Tag', { props: { color: 'red' } }, '未完成')
+            }
           }
         },
         {
@@ -99,19 +95,19 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['管理员','调查人员','调查组长']
+                  value: ['超级管理员', '调查人员', '单位管理员']
                 }],
                 style: {
                   marginRight: '2px',
-                  display:( params.row.status === '未完成' )?"none":"inline-block",
+                  display: (params.row.status === '未完成') ? "none" : "inline-block",
                 },
                 on: {
                   click: () => {
-                    console.log('编辑',params)
-                    if(params.row.type_yw === 'BasicInformation'){
-                      this.$router.push({ path: `/survey/update/`+params.row.type_yw+`/${params.row.tree_code}` })
-                    }else {
-                      this.$router.push({ path: `/survey/`+params.row.type_yw+`/${params.row.tree_code}` })
+                    console.log('编辑', params)
+                    if (params.row.type_yw === 'BasicInformation') {
+                      this.$router.push({ path: `/survey/update/` + params.row.type_yw + `/${params.row.tree_code}` })
+                    } else {
+                      this.$router.push({ path: `/survey/` + params.row.type_yw + `/${params.row.tree_code}` })
                     }
                   }
                 }
@@ -123,18 +119,17 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['管理员','调查人员','调查组长']
+                  value: ['超级管理员', '调查人员', '单位管理员']
                 }],
                 style: {
                   marginRight: '2px',
-                  display:( params.row.status === '已完成' || params.row.status ==='待提交')?"none":"inline-block",
+                  display: (params.row.status === '已完成' || params.row.status === '待提交') ? "none" : "inline-block",
                 },
                 on: {
                   click: () => {
-                    console.log('填写',params)
+                    console.log('填写', params)
 
-                    this.$router.push({path:'/survey/'+params.row.type_yw+'/'+params.row.tree_code})
-
+                    this.$router.push({ path: '/survey/' + params.row.type_yw + '/' + params.row.tree_code })
                   }
                 }
               }, '填写'),
@@ -145,20 +140,20 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['管理员']
+                  value: ['超级管理员', '单位管理员']
                 }],
                 style: {
                   marginRight: '2px',
-                  display:( params.row.type_yw === 'BasicInformation'|| params.row.status ==='未完成')?"none":"inline-block",
+                  display: (params.row.type_yw === 'BasicInformation' || params.row.status === '未完成') ? "none" : "inline-block",
                 },
                 on: {
                   click: () => {
-                    console.log('删除',params)
-                    deleteTjxmRecord(params.row).then(res=>{
-                      if(res.data.code === 200){
+                    console.log('删除', params)
+                    deleteTjxmRecord(params.row).then(res => {
+                      if (res.data.code === 200) {
                         this.$Message.success('删除成功')
                         this.fetchTjxmRecord()
-                      }else {
+                      } else {
                         this.$Message.error('删除失败')
                       }
                     })
@@ -172,8 +167,8 @@ export default {
     }
   },
   methods: {
-    getArrDifference(arr1, arr2) {
-      return arr1.concat(arr2).filter(function(v, i, arr) {
+    getArrDifference (arr1, arr2) {
+      return arr1.concat(arr2).filter(function (v, i, arr) {
         return arr.indexOf(v) === arr.lastIndexOf(v)
       })
     },
@@ -193,22 +188,26 @@ export default {
     //
     // }
 
-    insertUnFinished(tree_code,data){
-      var alltypes={'BasicInformation':'基本信息','environment':'生长环境评价分析','GrowthVigor':'生长势分析',
-        'Protect':'已采取复壮保护措施情况与分析', 'damage':'树体损伤情况评估','Incline':'树体倾斜、空腐情况检测',
-        'Diseases':'病虫害发生情况分析'}
-      var Type_key=[]
-      console.log('Type_key',Type_key)
-      data.forEach((tjxm=>{
-          Type_key.push(tjxm.type_yw)
-      }))
+    insertUnFinished (tree_code, data) {
+      var alltypes = { 'BasicInformation': '基本信息',
+        'environment': '生长环境评价分析',
+        'GrowthVigor': '生长势分析',
+        'Protect': '已采取复壮保护措施情况与分析',
+        'damage': '树体损伤情况评估',
+        'Incline': '树体倾斜、空腐情况检测',
+        'Diseases': '病虫害发生情况分析' }
+      var Type_key = []
+      console.log('Type_key', Type_key)
+      data.forEach(tjxm => {
+        Type_key.push(tjxm.type_yw)
+      })
 
-      for(let key in alltypes){
-        if (!Type_key.includes(key)){
-          data.push({'tree_code':tree_code,'type':alltypes[key],'type_yw':key,'status':'未完成'})
+      for (let key in alltypes) {
+        if (!Type_key.includes(key)) {
+          data.push({ 'tree_code': tree_code, 'type': alltypes[key], 'type_yw': key, 'status': '未完成', 'dc_user': { 'name': '' } })
         }
       }
-      console.log('enddata:',data)
+      console.log('enddata:', data)
     },
 
     // insertUnFinished(tree_code,data){
@@ -238,18 +237,17 @@ export default {
     //   console.log('enddata:',data)
     // },
 
-
-    fetchTjxmRecord(){
-      console.log('###',this.selected_tree_code,typeof (this.selected_tree_code))
-      queryTjxmRecord({'tree_code':this.selected_tree_code}).then((res=>{
-        console.log('tjxm',res.data)
+    fetchTjxmRecord () {
+      console.log('###', this.selected_tree_code, typeof (this.selected_tree_code))
+      queryTjxmRecord({ 'tree_code': this.selected_tree_code }).then(res => {
+        console.log('tjxm', res.data)
         this.data = res.data.tjxm_records
-        this.insertUnFinished(this.selected_tree_code,this.data)
-      }))
+        this.insertUnFinished(this.selected_tree_code, this.data)
+      })
     }
 
   },
-  created() {
+  created () {
     this.fetchTjxmRecord()
   }
 }

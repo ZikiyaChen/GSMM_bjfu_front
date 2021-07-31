@@ -1,8 +1,16 @@
 <template>
   <div>
-    <record-add></record-add>
+
     <Card>
+      <h1>个人养护记录</h1>
+      <br>
+      <record-add></record-add>
       <Table stripe :columns="columns" :data="data" border></Table>
+      <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+          <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+        </div>
+      </div>
       <TreeYhHistory
         :show="showTreeYhHistory"
         :tree_code="selected_tree_code"
@@ -35,6 +43,11 @@ export default {
       query: {
         state: undefined,
       },
+      total: 0,
+      pages: {
+        _page: 1,
+        _per_page: 5
+      }, // 分页
       columns: [
         {
           title: '古树编号',
@@ -79,10 +92,10 @@ export default {
           }
         },
         {
-          title: '养护小组',
+          title: '养护单位',
           align: "center",
           render: function (h, params) {
-            return h('span', params.row.group_name)
+            return h('span', params.row.unit)
           }
         },
         {
@@ -215,12 +228,18 @@ export default {
     this.fetchData()
   },
   methods: {
+    onPageChange (page) {
+      // 分页变化
+      this.pages._page = page
+      this.fetchData()
+    },
     fetchData () {
       console.log('@@@', this.username)
       this.query['yh_username'] = this.username
       let args = { ...this.query, ...this.pages }
       queryYhRecords(args).then(res => {
         this.data = res.data.yh_records
+        this.total = res.data.total
       })
     },
     onShowTreeYhHistoryModalOK () {

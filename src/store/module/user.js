@@ -1,6 +1,5 @@
 import {
   login,
-  logout,
   getUserInfo,
   getMessage,
   getContentByMsgId,
@@ -80,7 +79,7 @@ export default {
     userInfo: state => {
       return state.userInfo
     },
-    username: state =>{
+    username: state => {
       return state.username
     },
     messageUnreadCount: state => state.messageUnreadList.length,
@@ -97,16 +96,15 @@ export default {
           username,
           password
         }).then(res => {
-          console.log('login',res)
+          console.log('login', res)
           const data = res.data
-          console.log('后台返回的数据',res.data)
-          console.log('token==',data.token)
+          console.log('后台返回的数据', res.data)
+          console.log('token==', data.token)
           commit('setToken', data.token)
           resolve()
         }).catch(err => {
           reject(err)
-          console.log('报错的信息',err)
-
+          console.log('报错的信息', err)
         })
       })
     },
@@ -130,10 +128,10 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          console.log('#',state.token)
+          console.log('#', state.token)
           getUserInfo().then(res => {
           // getUserInfo().then(res => {
-            console.log('getUserinfo',res)
+            console.log('getUserinfo', res)
             // localStorage.setItem('loginxinix', res.data)
             // localStorage.getItem('loginxinix')
             const data = res.data
@@ -151,15 +149,16 @@ export default {
             //   commit('setAccess', data.current_user.role_names)
             // }
 
-            if(data.current_user.role_names.includes('养护组长')){
-              commit('setAccess', ['养护组长'])
-            }else if(data.current_user.role_names.includes('调查组长')){
-              commit('setAccess', ['调查组长'])
-            }else {
-              commit('setAccess', data.current_user.role_names)
-            }
+            // 带group 组长的
+            // if(data.current_user.role_names.includes('养护组长')){
+            //   commit('setAccess', ['养护组长'])
+            // }else if(data.current_user.role_names.includes('调查组长')){
+            //   commit('setAccess', ['调查组长'])
+            // }else {
+            //   commit('setAccess', data.current_user.role_names)
+            // }
 
-            // commit('setAccess', data.current_user.role_names)
+            commit('setAccess', data.current_user.role_names)
             commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {
@@ -170,7 +169,6 @@ export default {
         }
       })
     },
-
 
     // getUserInfo ({ state, commit }) {
     //   return new Promise((resolve, reject) => {

@@ -1,7 +1,14 @@
 <template>
   <div>
     <Card>
+      <h1>养护任务结果管理</h1>
+      <br>
       <Table stripe :columns="columns" :data="data" border></Table>
+      <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+          <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+        </div>
+      </div>
       <TreeYhHistory
         :show="showTreeYhHistory"
         :tree_code="selected_tree_code"
@@ -42,9 +49,13 @@ export default {
       current_user: {},
       selected_tree_code: undefined,
       query: {
-        group_name: undefined,
         state: undefined,
       },
+      total: 0,
+      pages: {
+        _page: 1,
+        _per_page: 5
+      }, // 分页
       columns: [
         {
           title: '古树编号',
@@ -89,10 +100,10 @@ export default {
           }
         },
         {
-          title: '养护小组',
+          title: '养护单位',
           align: "center",
           render: function (h, params) {
-            return h('span', params.row.group_name)
+            return h('span', params.row.unit)
           }
         },
         {
@@ -248,13 +259,11 @@ export default {
     // }
 
     fetchData () {
-      if (this.userInfo.userInfo['role_names'].includes('养护组长')) {
-        this.query.group_name = this.userInfo.userInfo.group_info['group_name']
-      }
       let args = { ...this.query, ...this.pages }
       queryYhRecords(args).then(res => {
         console.log(res.data.yh_records)
         this.data = res.data.yh_records
+        this.total = res.data.total
       })
     },
     handleRecordCancel () {
@@ -262,7 +271,12 @@ export default {
     },
     handleRecordConfirm () {
       this.showRecord = false
-    }
+    },
+    onPageChange (page) {
+      // 分页变化
+      this.pages._page = page
+      this.fetchData()
+    },
   },
   created () {
     this.fetchData()
