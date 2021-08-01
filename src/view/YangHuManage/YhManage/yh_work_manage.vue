@@ -203,7 +203,6 @@ export default {
                 on: {
                   click: () => {
                     this.showRecord = true
-                    console.log(params.row)
                     this.id = params.row.id
                     this.recordType = params.row.yh_type
                     this.maintenanceId = params.row.yh_id

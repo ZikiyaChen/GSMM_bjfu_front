@@ -174,9 +174,12 @@ export default {
     handleDateChange (date) {
       date = date.replace('年', '-').replace('月', '-').replace('日', '')
       this.taskInfo.maintenanceDate = date
+    },
+    monitorWindowChange () {
+      this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
     }
   },
-  beforeMount () {
+  created () {
     const initializeTreeNumberList = () => {
       queryTreeBasicProperty().then(message => {
         this.taskInfo.treeNumber.list = message.data.trees_basic_property.map((item) => {
@@ -231,22 +234,12 @@ export default {
     initializeDateInfo()
   },
 
-  mounted () {
-    if (this.$refs.datePicker.$el === undefined) {
-      return
-    }
-    window.onresize = () => {
-      this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
-    }
-  },
   updated () {
-    if (this.$refs.datePicker.$el === undefined) {
-      return
-    }
     this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
-    window.onresize = () => {
-      this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
-    }
+    window.addEventListener('resize', this.monitorWindowChange)
+  },
+  beforeDestroy(){
+    window.removeEventListener('resize', this.monitorWindowChange)
   }
 }
 </script>
