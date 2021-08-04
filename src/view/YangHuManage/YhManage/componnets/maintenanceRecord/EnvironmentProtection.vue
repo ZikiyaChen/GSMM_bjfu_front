@@ -10,7 +10,9 @@
       <FormItem label="措施性质" slot="qualityOrType">
         <Row>
           <Col span="24">
-            <Select v-model="measureQuality.model">
+            <Select
+              :default-label="measureQuality.model"
+              v-model="measureQuality.model">
               <Option v-for="item in measureQuality.content" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -20,9 +22,11 @@
       <FormItem label="生境保护与改善项目名称" slot="other">
         <Row>
           <Col span="24">
-            <Select v-model="projectName.model"
-                    multiple
-                    @on-change="handleProjectNameChange">
+            <Select
+              multiple
+              :default-label="projectName.model"
+              v-model="projectName.model"
+              @on-change="handleProjectNameChange">
               <Option v-for="item in projectName.projects" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -32,9 +36,11 @@
       <FormItem label="处理方法" slot="other">
         <Row>
           <Col span="24">
-            <Select v-model="handleMethod.model"
-                    multiple
-                    @on-change="handleMethodChange">
+            <Select
+              multiple
+              :default-label="handleMethod.model"
+              v-model="handleMethod.model"
+              @on-change="handleMethodChange">
               <Option v-for="item in handleMethod.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
@@ -46,26 +52,33 @@
 
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
-import { getMaintenanceProjects, insertRecordByTypeSelf, queryYhOptions } from "@/api/yh_manage";
+import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+import { mapState } from "vuex";
 
 export default {
   name: 'EnvironmentProtection',
   components: { BasicForm },
+  computed: {
+    ...mapState('maintenanceForm', {
+      showFlag: state => state.showFlag,
+      otherFormData: state => state.otherFormData
+    })
+  },
   data () {
     return {
       show: true,
       measureQuality: {
-        modal: '',
+        model: '',
         content: ['日常维护', '单项工程'],
         contentStr: ''
       },
       projectName: {
-        modal: '',
+        model: [],
         projects: [],
         projectsStr: ''
       },
       handleMethod: {
-        modal: '',
+        model: [],
         methods: [],
         methodsStr: ''
       }
@@ -94,7 +107,7 @@ export default {
       this.$emit('cancelOrConfirm', 'confirm', result)
     }
   },
-  beforeMount () {
+  created () {
     const initializeMeasureQuality = () => {
       this.measureQuality.content = this.measureQuality.content.map(item => {
         return {
@@ -131,6 +144,15 @@ export default {
       })
     }
     initializeHandleMethod()
+
+    const initializeTypicalData = () => {
+      if (this.showFlag) {
+        this.measureQuality.model = this.otherFormData.contentStr
+        this.projectName.model = this.otherFormData.projects
+        this.handleMethod.model = this.otherFormData.methods
+      }
+    }
+    initializeTypicalData()
   }
 
 }

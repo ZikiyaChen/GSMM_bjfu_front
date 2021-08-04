@@ -187,12 +187,12 @@ export default {
       this.fetchData()
     },
     fetchData () {
-        let args = { ...this.query, ...this.pages }
-        queryYhAllots(args).then(resp => {
-          this.data = resp.data.yh_allots
-          this.total = resp.data.total
-        })
-      }
+      let args = { ...this.query, ...this.pages }
+      queryYhAllots(args).then(resp => {
+        this.data = resp.data.yh_allots
+        this.total = resp.data.total
+      })
+    }
 
   },
   mounted () {

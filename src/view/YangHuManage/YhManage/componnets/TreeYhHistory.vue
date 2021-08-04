@@ -13,7 +13,7 @@
       <p>生长地点: {{tree.city + tree.area + tree.town}}</p>
     </Card>
     <Timeline>
-      <TimelineItem v-for="(item, index) in data" :key="item.id">
+      <TimelineItem v-for="item in data" :key="item.id">
         <p class="time">{{item.actual_time}}</p>
         <p class="content">{{item.yh_type}}&nbsp;&nbsp;{{item.property}}&nbsp;&nbsp;
           {{item.projects.toString()}}&nbsp;&nbsp; 养护人：{{item.yh_user.name}}
@@ -25,43 +25,43 @@
 </template>
 
 <script>
-import {queryYhRecords} from "@/api/yh_manage";
-import {queryTreeBasicProperty} from "@/api/table";
+import { queryYhRecords } from "@/api/yh_manage";
+import { queryTreeBasicProperty } from "@/api/table";
 
 export default {
   name: "TreeYhHistory",
-  props:{
+  props: {
     show: Boolean,
     tree_code: String,
     onCancel: Function,
     onOK: Function,
   },
-  data(){
-    return{
+  data () {
+    return {
       data: [],
-      tree:{}
+      tree: {}
     }
   },
-  methods:{
-    handleOK(){
+  methods: {
+    handleOK () {
       this.$emit('onOK')
     },
-    handleCancel(){
+    handleCancel () {
       this.$emit('onCancel')
     },
-   fetchData(){
-     queryYhRecords({'tree_code': this.tree_code, 'state': '已完成'}).then((res=>{
-       this.data = res.data.yh_records
-     }))
-     queryTreeBasicProperty({'tree_code': this.tree_code}).then((treeRes=>{
-       this.tree = treeRes.data.trees_basic_property[0]
-     }))
-   },
-    ShowRecord(record){
-      console.log('record##',record)
+    fetchData () {
+      queryYhRecords({ 'tree_code': this.tree_code, 'state': '已完成' }).then(res => {
+        this.data = res.data.yh_records
+      })
+      queryTreeBasicProperty({ 'tree_code': this.tree_code }).then(treeRes => {
+        this.tree = treeRes.data.trees_basic_property[0]
+      })
+    },
+    ShowRecord (record) {
+      console.log('record##', record)
     }
   },
-  mounted() {
+  mounted () {
 
   }
 

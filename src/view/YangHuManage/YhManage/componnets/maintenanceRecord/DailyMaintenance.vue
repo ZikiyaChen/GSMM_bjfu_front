@@ -17,6 +17,8 @@
               <Select
                 v-model="model"
                 multiple
+                :default-label="model"
+                @on-set-default-options="setDefaultOptions"
                 @on-change="handleProjectsChange">
                 <Option v-for="item in projects" :value="item.value" :key="item.value">{{ item.label }}</Option>
               </Select>
@@ -31,15 +33,22 @@
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
 import { getMaintenanceProjects } from "@/api/yh_manage";
+import { mapState } from 'vuex'
 
 export default {
   name: 'DailyMaintenance',
   components: {
     BasicForm
   },
+  computed: {
+    ...mapState('maintenanceForm', {
+      dailyMaintenanceData: state => state.otherFormData,
+      showFlag: state => state.showFlag
+    })
+  },
   data () {
     return {
-      model: '',
+      model: [],
       projects: [],
       projectsStr: ''
     }
@@ -53,14 +62,22 @@ export default {
         project: this.projectsStr,
       }
       let result = Object.assign({}, temp, data)
+      console.log(result)
       this.$emit('cancelOrConfirm', 'confirm', result)
     },
-    handleProjectsChange (option) {
-      this.projectsStr = option.join(',')
+    handleProjectsChange (options) {
+      this.projectsStr = options.join(',')
+    },
+    setDefaultOptions (options) {
+      this.projects = options
     }
   },
-  beforeMount () {
+  created () {
     const initializeDailyMaintenanceProjects = () => {
+      if (this.showFlag) {
+        this.model = this.dailyMaintenanceData.project
+      }
+
       getMaintenanceProjects('日常养护管理').then(message => {
         for (let item of message.data.projects) {
           this.projects.push(item.project)

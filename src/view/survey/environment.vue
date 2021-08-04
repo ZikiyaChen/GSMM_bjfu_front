@@ -19,8 +19,6 @@
       </div>
     </div>
 
-
-
     <h2 slot="title" style="text-align: center">生长环境评价分析</h2>
     <Form :label-width="100" label-position="right" :model="TreeInformation" inline >
     <h4>古树基本信息</h4>
@@ -487,13 +485,12 @@
     </Modal>
   </Card>
 
-
 </div>
 </template>
 
 <script>
 import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList, soil_textureList, organic_contentList,
-  is_buriedList, other_plantsList, evaluationList, has_structuresList ,PathToList} from "@/view/survey/options";
+  is_buriedList, other_plantsList, evaluationList, has_structuresList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
   AddBasicProperty,
@@ -503,19 +500,19 @@ import {
   postTjxmRecord, queryClassTypes,
   queryFamilyTypes, queryGenusTypes, queryTjxmRecord, updateEnvironment, updateGrowthVigor, updateTjxmRecord
 } from "@/api/table";
-import {ShowPic} from "@/api/upload";
+import { ShowPic } from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
-import {queryUnits, queryUsers} from "@/api/user";
+import { queryUnits, queryUsers } from "@/api/user";
 
 export default {
   name: "environment",
-  components: {Float_bar},
+  components: { Float_bar },
   data () {
     return {
       timeIndex: 0,
       timeLineList: PathToList,
 
-      isShow:false,
+      isShow: false,
       isSubmit: false,
       loading: false,
       showNextPageModal: false,
@@ -532,7 +529,7 @@ export default {
       dcUsers: [],
       dcUnits: [],
 
-      tjxm_record:{
+      tjxm_record: {
         t_id: 0,
         type: '生长环境评价分析',
         username: '',
@@ -541,12 +538,12 @@ export default {
         time: ''
       },
 
-      TreeInformation:{
-        Base:{
-          family:'',
-          genus:'',
-          zw_name:'',
-          ld_name:''
+      TreeInformation: {
+        Base: {
+          family: '',
+          genus: '',
+          zw_name: '',
+          ld_name: ''
         }
       },
 
@@ -612,18 +609,18 @@ export default {
 
       ruleValidate: {
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
-        dc_unit: [{ required: true, message: '请填写调查单位', trigger: 'change'}],
-        investigate_username: [{ required: true, message: '请填写调查人姓名', trigger: 'change'}],
-        elevation: [{ required: true,  message: '请填写海拔' }],
+        dc_unit: [{ required: true, message: '请填写调查单位', trigger: 'change' }],
+        investigate_username: [{ required: true, message: '请填写调查人姓名', trigger: 'change' }],
+        elevation: [{ required: true, message: '请填写海拔' }],
         habitat_type: [{ required: true, trigger: 'change', message: '请选择生长环境类型' }],
         plain_type: [{ required: true, type: 'array', min: 1, trigger: 'change', message: '请选择平原类型' }],
         aspect: [{ required: true, trigger: 'blur', message: '请填写坡向' }],
         slope: [{ required: true, message: '请填写坡度' }],
         slope_position: [{ required: true, trigger: 'blur', message: '请填写坡位' }],
         protect_E: [{ required: true, message: '请填写数据' }],
-        protect_W: [{ required: true,  message: '请填写数据' }],
-        protect_N: [{ required: true,  message: '请填写数据' }],
-        protect_S: [{ required: true,  message: '请填写数据' }],
+        protect_W: [{ required: true, message: '请填写数据' }],
+        protect_N: [{ required: true, message: '请填写数据' }],
+        protect_S: [{ required: true, message: '请填写数据' }],
         other_plants: [{ required: true, trigger: 'change', message: '请选择' }],
         evaluation: [{ required: true, trigger: 'change', message: '请选择' }],
         envoriment_problem: [{ required: true, trigger: 'blur', message: '请填写' }],
@@ -633,118 +630,116 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.fetchTreeBasicData()
     this.fetchData()
     this.InitIndex()
   },
-  mounted() {
+  mounted () {
     // this.fetchOptions()
 
   },
   methods: {
-    GetUnits(){
-      queryUnits().then(res=>{
+    GetUnits () {
+      queryUnits().then(res => {
         this.dcUnits = res.data.units
       })
     },
-    onDcUnitSelectQueryChange(value){
-      queryUsers({unit: value, is_dc: true}).then(res=>{
+    onDcUnitSelectQueryChange (value) {
+      queryUsers({ unit: value, is_dc: true }).then(res => {
         this.dcUsers = res.data.users
       })
     },
-    onDcUserSelectQueryChange(value){
-      queryUsers({name_like: value, is_dc: true, unit: this.environment.dc_unit}).then(res=>{
+    onDcUserSelectQueryChange (value) {
+      queryUsers({ name_like: value, is_dc: true, unit: this.environment.dc_unit }).then(res => {
         this.dcUsers = res.data.users
       })
     },
-    InitIndex(){
-      this.timeLineList.forEach((item,index)=>{
-        //执行代码
-        if(item.type === this.tjxm_record.type_yw){
-          console.log('index',index)
+    InitIndex () {
+      this.timeLineList.forEach((item, index) => {
+        // 执行代码
+        if (item.type === this.tjxm_record.type_yw) {
+          console.log('index', index)
           this.timeIndex = index
         }
       })
     },
 
-    Show(item){
-      console.log('^^^',item)
+    Show (item) {
+      console.log('^^^', item)
 
       // /survey/update/BasicInformation/110131B03
-      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+      this.$router.push({ path: item.path_to + `${this.tree_code}` })
     },
-    changeActive(index) {
+    changeActive (index) {
       this.timeIndex = index;
     },
 
-    fetchData(){
+    fetchData () {
       this.dcUnits = []
       this.dcUsers = []
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((record=>{
-        if(record.data.total!==0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'environment' }).then(record => {
+        if (record.data.total !== 0) {
           this.tjxm_record = record.data.tjxm_records[0]
           this.isShow = false
-          this.isSubmit= true
-          getEnvironmentById(this.tjxm_record.t_id).then((res=>{
-            this.environment= res.data.environment_by_id
-            this.dcUnits.push({'unit':this.environment.dc_unit})
+          this.isSubmit = true
+          getEnvironmentById(this.tjxm_record.t_id).then(res => {
+            this.environment = res.data.environment_by_id
+            this.dcUnits.push({ 'unit': this.environment.dc_unit })
             this.dcUsers.push(this.environment.dc_user)
             this.fetchPic()
-          }))
-        }else {
-          queryUnits().then((res=>{
+          })
+        } else {
+          queryUnits().then(res => {
             this.dcUnits = res.data.units
-          }))
+          })
           this.isShow = true
-          this.isSubmit= false
-
+          this.isSubmit = false
         }
-      }))
+      })
     },
-    fetchPic(){
-      this.PicUrlList1=[]
-      this.PicUrlList2=[]
-      if(this.environment.protect_pic.length!==0) {
+    fetchPic () {
+      this.PicUrlList1 = []
+      this.PicUrlList2 = []
+      if (this.environment.protect_pic.length !== 0) {
         this.environment.protect_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList1.push(resp.data)
-          }))
+          })
         })
       }
 
-      if(this.environment.pic_path.length!==0) {
+      if (this.environment.pic_path.length !== 0) {
         this.environment.pic_path.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList2.push(resp.data)
-          }))
+          })
         })
       }
     },
 
-    ok(){
+    ok () {
       this.showNextPageModal = false
       this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
-
     },
-    cancel(){
+    cancel () {
       this.showNextPageModal = false
     },
-    NextPage(){
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'GrowthVigor'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+    NextPage () {
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'GrowthVigor' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/GrowthVigor/${this.tree_code}` })
           this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
-        }else {
+        } else {
           this.showNextPageModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
           // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
         }
-      }))
+      })
     },
 
-    TiJiao(){
+    TiJiao () {
       this.$refs.environment_form.validate((valid) => {
         console.log(valid)
         if (valid) {
@@ -752,45 +747,45 @@ export default {
           this.environment.tree_code = this.tree_code
           this.tjxm_record.username = this.environment.investigate_username
 
-          if( this.environment.habitat_type === '平原' ){
-            this.environment.highland_type=''
-          }else {
-            this.environment.plain_type=[]
+          if (this.environment.habitat_type === '平原') {
+            this.environment.highland_type = ''
+          } else {
+            this.environment.plain_type = []
           }
-          if(this.environment.is_buried === 0){
+          if (this.environment.is_buried === 0) {
             this.environment.buried_depth = 0
           }
-          if(this.environment.evaluation === '良好'){
-            this.environment.envoriment_problem =''
+          if (this.environment.evaluation === '良好') {
+            this.environment.envoriment_problem = ''
           }
-          if(this.environment.has_structures === 0){
-            this.environment.structures_affect=''
-            this.environment.structures_type=''
+          if (this.environment.has_structures === 0) {
+            this.environment.structures_affect = ''
+            this.environment.structures_type = ''
           }
 
-          console.error('!!!!',this.environment)
+          console.error('!!!!', this.environment)
           AddGeAnalysis(this.environment).then(res => {
-            getNewGeAnalysis(this.tree_code).then((resp=>{
-              this.tjxm_record.t_id =resp.data.new_ge_analysis.id
-              postTjxmRecord(this.tjxm_record).then((record=>{
-                if(record.data.code ===200){
-                  if(this.tjxm_record.status === '已完成'){
+            getNewGeAnalysis(this.tree_code).then(resp => {
+              this.tjxm_record.t_id = resp.data.new_ge_analysis.id
+              postTjxmRecord(this.tjxm_record).then(record => {
+                if (record.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成'){
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交失败')
-                  }else {
+                  } else {
                     this.$Message.success('保存失败')
                   }
                 }
-              }))
-            }))
-            console.log('####',res)
+              })
+            })
+            console.log('####', res)
           }).catch(err => {
             console.log(err)
           })
@@ -800,7 +795,7 @@ export default {
       })
     },
 
-    Update(){
+    Update () {
       this.$refs.environment_form.validate((valid) => {
         console.log(valid)
         if (valid) {
@@ -808,57 +803,57 @@ export default {
           this.environment.tree_code = this.tree_code
           this.tjxm_record.username = this.environment.investigate_username
 
-          if( this.environment.habitat_type === '平原' ){
-            this.environment.highland_type=''
-          }else {
-            this.environment.plain_type=[]
+          if (this.environment.habitat_type === '平原') {
+            this.environment.highland_type = ''
+          } else {
+            this.environment.plain_type = []
           }
-          if(this.environment.is_buried === 0){
+          if (this.environment.is_buried === 0) {
             this.environment.buried_depth = 0
           }
-          if(this.environment.evaluation === '良好'){
-            this.environment.envoriment_problem =''
+          if (this.environment.evaluation === '良好') {
+            this.environment.envoriment_problem = ''
           }
-          if(this.environment.has_structures === 0){
-            this.environment.structures_affect=''
-            this.environment.structures_type=''
+          if (this.environment.has_structures === 0) {
+            this.environment.structures_affect = ''
+            this.environment.structures_type = ''
           }
 
-          console.error('!!!!',this.environment.id)
-          updateEnvironment(this.environment.id,this.environment).then((res=>{
-            if(res.data.code === 200 ){
-              updateTjxmRecord(this.environment.id,this.tjxm_record).then((record=>{
-                if(res.data.code === 200 ){
-                  if(this.tjxm_record.status === '已完成') {
+          console.error('!!!!', this.environment.id)
+          updateEnvironment(this.environment.id, this.environment).then(res => {
+            if (res.data.code === 200) {
+              updateTjxmRecord(this.environment.id, this.tjxm_record).then(record => {
+                if (res.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('修改提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('修改保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成') {
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.error('修改提交失败')
-                  }else {
+                  } else {
                     this.$Message.error('修改保存失败')
                   }
                 }
-              }))
+              })
             }
-          }))
+          })
         } else {
           this.$Message.error('请填写完整信息')
         }
       })
     },
 
-    SubmitUpdate(){
+    SubmitUpdate () {
       this.tjxm_record.status = '已完成'
       this.Update()
     },
 
-    Submit() {
-      this.tjxm_record.status ='已完成'
+    Submit () {
+      this.tjxm_record.status = '已完成'
       this.TiJiao()
       // this.$refs.environment_form.validate((valid) => {
       //   console.log(valid)
@@ -914,7 +909,7 @@ export default {
       // })
       // this.$router.push({path:'/survey/base_survey'})
     },
-    Save(){
+    Save () {
       this.tjxm_record.status = '待提交'
       this.TiJiao()
     },
@@ -927,10 +922,10 @@ export default {
       console.log(typeof (this.tree_code))
     },
 
-    fetchTreeBasicData(){
-      getOneTreeBaseInfo(this.tree_code).then((res => {
+    fetchTreeBasicData () {
+      getOneTreeBaseInfo(this.tree_code).then(res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
-      }))
+      })
     },
 
     handleMaxSize (file) {
@@ -940,10 +935,9 @@ export default {
       })
     },
 
-
     // 保护范围示意图
     handleView1 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible1 = true
     },
     handleRemoveList1 (index) {
@@ -955,14 +949,14 @@ export default {
       if (res.code === 500) {
         this.environment.protect_pic.push(res.path)
         this.i1++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList1.push(resp.data)
-        }))
+        })
       }
     },
     // 特征照片
     handleView2 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible2 = true
     },
     handleRemoveList2 (index) {
@@ -974,9 +968,9 @@ export default {
       if (res.code === 500) {
         this.environment.pic_path.push(res.path)
         this.i2++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList2.push(resp.data)
-        }))
+        })
       }
     },
 
@@ -1002,8 +996,6 @@ export default {
     //     }
     //   })
     // },
-
-
 
   }
 }

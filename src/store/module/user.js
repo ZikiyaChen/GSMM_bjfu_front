@@ -1,6 +1,5 @@
 import {
   login,
-  logout,
   getUserInfo,
   getMessage,
   getContentByMsgId,

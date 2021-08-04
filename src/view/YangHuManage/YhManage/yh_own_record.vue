@@ -27,7 +27,6 @@ import RecordAdd from "@/view/YangHuManage/YhManage/componnets/RecordAdd";
 import TreeYhHistory from "@/view/YangHuManage/YhManage/componnets/TreeYhHistory";
 import UserMixin from "@/mixin/UserMixin";
 import { queryYhRecords } from "@/api/yh_manage";
-
 export default {
   name: "yh_own_record",
   components: {
@@ -222,7 +221,6 @@ export default {
             ])
           }
         },
-
       ]
     }
   },
@@ -251,10 +249,8 @@ export default {
       this.showTreeYhHistory = false
     }
   }
-
 }
 </script>
 
 <style scoped>
-
 </style>

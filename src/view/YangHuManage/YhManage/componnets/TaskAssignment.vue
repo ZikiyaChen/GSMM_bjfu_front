@@ -74,7 +74,7 @@
 <script>
 import { queryTreeBasicProperty } from "@/api/table";
 import { insertMaintenanceAllot, queryYhOptions } from "@/api/yh_manage";
-import {queryGroupUsers, queryUnitUsers} from "@/api/user";
+import { queryGroupUsers, queryUnitUsers } from "@/api/user";
 
 export default {
   name: 'TaskAssignment',
@@ -174,9 +174,12 @@ export default {
     handleDateChange (date) {
       date = date.replace('年', '-').replace('月', '-').replace('日', '')
       this.taskInfo.maintenanceDate = date
+    },
+    monitorWindowChange () {
+      this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
     }
   },
-  beforeMount () {
+  created () {
     const initializeTreeNumberList = () => {
       queryTreeBasicProperty().then(message => {
         this.taskInfo.treeNumber.list = message.data.trees_basic_property.map((item) => {
@@ -205,7 +208,7 @@ export default {
     initializeMaintenanceType()
 
     const initializeMaintenancePeople = () => {
-      queryUnitUsers({is_yh: true}).then(message => {
+      queryUnitUsers({ is_yh: true }).then(message => {
         console.log(message)
         for (let item of message.data.users) {
           this.taskInfo.maintenancePeople.list.push(item.name)
@@ -231,16 +234,12 @@ export default {
     initializeDateInfo()
   },
 
-  mounted () {
-    window.onresize = () => {
-      this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
-    }
-  },
   updated () {
     this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
-    window.onresize = () => {
-      this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
-    }
+    window.addEventListener('resize', this.monitorWindowChange)
+  },
+  beforeDestroy(){
+    window.removeEventListener('resize', this.monitorWindowChange)
   }
 }
 </script>

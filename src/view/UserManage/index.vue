@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import {AddUser, queryUnits, queryUnitUsers, updateUser} from "@/api/user";
+import { AddUser, queryUnits, queryUnitUsers, updateUser } from "@/api/user";
 import AddNewUserModal from "@/view/UserManage/components/AddNewUserModal";
 import { getToken } from "@/libs/util";
 import UpdateUserInfo from "@/view/Userinfo/components/UpdateUserInfo";
@@ -122,17 +122,17 @@ export default {
             }
           ],
           filterMultiple: true, // 使用多选
-          filterRemote: function (value,row) {
+          filterRemote: function (value, row) {
             //  value是数组类型  每次都先把query中的除了unit和name_like之外的字段删除掉，不然会记住上一次筛选时的字段
-            for(var key in that.query){
-              if(key !== 'name_like' || key !== 'unit'){
+            for (var key in that.query) {
+              if (key !== 'name_like' || key !== 'unit') {
                 delete that.query[key]
               }
             }
-            if(value.length ===0){ // 选择“全部”时， value数组为空
-              console.log('query',that.query)
+            if (value.length === 0) { // 选择“全部”时， value数组为空
+              console.log('query', that.query)
               that.fetchData()
-            }else {
+            } else {
               for (const elem of value) {
                 that.query[elem] = true
               }
@@ -195,11 +195,11 @@ export default {
     fetchData: function () {
       // 数据表发生变化请求数据
       // query.unit清空后，会变成'',查到的是空
-      if (this.query.unit === ''){
+      if (this.query.unit === '') {
         this.query.unit = undefined
       }
 
-      let args = { ...this.query, ...this.pages}
+      let args = { ...this.query, ...this.pages }
       return queryUnitUsers(args).then((resp) => {
         this.data = resp.data.users
         this.total = resp.data.total
@@ -260,8 +260,8 @@ export default {
       this.data = resp.data.users
       this.total = resp.data.total
     })
-    queryUnits().then(res=>{
-      this.units= res.data.units
+    queryUnits().then(res => {
+      this.units = res.data.units
     })
   }
 }

@@ -84,7 +84,7 @@
 
 <script>
 import UserMixin from "@/mixin/UserMixin";
-import {queryUnits} from "@/api/user";
+import { queryUnits } from "@/api/user";
 
 export default {
   name: "AddNewUserModal",
@@ -147,9 +147,9 @@ export default {
       }
     }
   },
-  created() {
-    queryUnits().then(res=>{
-      this.units=res.data.units
+  created () {
+    queryUnits().then(res => {
+      this.units = res.data.units
     })
   },
   methods: {

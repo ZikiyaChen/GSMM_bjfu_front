@@ -302,14 +302,14 @@ import {
   getOneTreeBaseInfo, getProtect_By_id,
   postTjxmRecord, queryTjxmRecord, updateGrowthVigor, updateProtect, updateTjxmRecord
 } from "@/api/table"
-import {ShowPic} from "@/api/upload";
-import {checkDecimal} from "@/view/tools-methods/someValidateRule";
+import { ShowPic } from "@/api/upload";
+import { checkDecimal } from "@/view/tools-methods/someValidateRule";
 import Float_bar from "_c/FloatBar/float_bar";
-import {queryUnits, queryUsers} from "@/api/user";
+import { queryUnits, queryUsers } from "@/api/user";
 
 export default {
   name: "GrowthVigor",
-  components: {Float_bar},
+  components: { Float_bar },
   data () {
     return {
       timeIndex: 0,
@@ -317,8 +317,8 @@ export default {
 
       isShow: false,
       isSubmit: false,
-      showNextPageModal:false,
-      showPreviousPageModal:false,
+      showNextPageModal: false,
+      showPreviousPageModal: false,
       tree_code: this.$route.params.tree_code,
       value: 0,
       PicUrlList: [],
@@ -329,16 +329,16 @@ export default {
       dcUnits: [],
       dcUsers: [],
 
-      TreeInformation:{
-        Base:{
-          family:'',
-          genus:'',
-          zw_name:'',
-          ld_name:''
+      TreeInformation: {
+        Base: {
+          family: '',
+          genus: '',
+          zw_name: '',
+          ld_name: ''
         }
       },
 
-      tjxm_record:{
+      tjxm_record: {
         t_id: 0,
         type: '生长势分析',
         username: '',
@@ -363,11 +363,11 @@ export default {
         chlorophyll: 0, // 叶片叶绿素含量
         Fo: 0,
         Fm: 0,
-        photosynthetic:0,//Fo Fm计算
+        photosynthetic: 0, // Fo Fm计算
         pic_path: [],
         update_time: '',
         tree_code: '',
-        investigate_username:'',
+        investigate_username: '',
         dc_unit: ''
       },
 
@@ -378,213 +378,210 @@ export default {
         investigate_username: [{ required: true, trigger: 'change', message: '请选择调查人姓名' }],
         dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
-        Fo: [{validator: checkDecimal, isNegative:false ,maxValue: 10000, decimal: 5, trigger: 'blur'}],
-        chlorophyll: [{validator: checkDecimal, isNegative:false ,maxValue: 100, decimal: 3, trigger: 'blur'}],
-        Fm: [{validator: checkDecimal, isNegative:false ,maxValue: 10000, decimal: 5, trigger: 'blur'}]
+        Fo: [{ validator: checkDecimal, isNegative: false, maxValue: 10000, decimal: 5, trigger: 'blur' }],
+        chlorophyll: [{ validator: checkDecimal, isNegative: false, maxValue: 100, decimal: 3, trigger: 'blur' }],
+        Fm: [{ validator: checkDecimal, isNegative: false, maxValue: 10000, decimal: 5, trigger: 'blur' }]
       }
     }
   },
-  created() {
+  created () {
     this.fetchTreeBasicData()
     this.fetchData()
     this.InitIndex()
   },
   methods: {
-    InitIndex(){
-      this.timeLineList.forEach((item,index)=>{
-        //执行代码
-        if(item.type === this.tjxm_record.type_yw){
-          console.log('index',index)
+    InitIndex () {
+      this.timeLineList.forEach((item, index) => {
+        // 执行代码
+        if (item.type === this.tjxm_record.type_yw) {
+          console.log('index', index)
           this.timeIndex = index
         }
       })
     },
 
-    GetUnits(){
-      queryUnits().then(res=>{
+    GetUnits () {
+      queryUnits().then(res => {
         this.dcUnits = res.data.units
       })
     },
-    onDcUnitSelectQueryChange(value){
-      queryUsers({unit: value, is_dc: true}).then(res=>{
+    onDcUnitSelectQueryChange (value) {
+      queryUsers({ unit: value, is_dc: true }).then(res => {
         this.dcUsers = res.data.users
       })
     },
-    onDcUserSelectQueryChange(value){
-      queryUsers({name_like: value, is_dc: true, unit: this.GrowthVigor.dc_unit}).then(res=>{
+    onDcUserSelectQueryChange (value) {
+      queryUsers({ name_like: value, is_dc: true, unit: this.GrowthVigor.dc_unit }).then(res => {
         this.dcUsers = res.data.users
       })
     },
 
-    Show(item){
-      console.log('^^^',item)
+    Show (item) {
+      console.log('^^^', item)
 
       // /survey/update/BasicInformation/110131B03
-      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+      this.$router.push({ path: item.path_to + `${this.tree_code}` })
     },
-    changeActive(index) {
+    changeActive (index) {
       this.timeIndex = index;
     },
 
-    fetchData(){
+    fetchData () {
       this.dcUsers = []
       this.dcUnits = []
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'GrowthVigor'}).then((record=>{
-        if(record.data.total!==0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'GrowthVigor' }).then(record => {
+        if (record.data.total !== 0) {
           this.isShow = false
           this.isSubmit = true
           this.tjxm_record = record.data.tjxm_records[0]
 
-          getGrowthVigorById(this.tjxm_record.t_id).then((res=>{
+          getGrowthVigorById(this.tjxm_record.t_id).then(res => {
             this.GrowthVigor = res.data.growth_vigor
-            this.dcUnits.push({'unit': res.data.growth_vigor.dc_unit})
+            this.dcUnits.push({ 'unit': res.data.growth_vigor.dc_unit })
             this.dcUsers.push(res.data.growth_vigor.dc_user)
             this.fetchPic()
-          }))
-        }else {
-          this.isShow =true
+          })
+        } else {
+          this.isShow = true
           this.isSubmit = false
-          queryUnits().then(res=>{
+          queryUnits().then(res => {
             this.dcUnits = res.data.units
           })
         }
-      }))
+      })
     },
-    fetchPic(){
-      this.PicUrlList=[]
-      if(this.GrowthVigor.pic_path.length!==0) {
+    fetchPic () {
+      this.PicUrlList = []
+      if (this.GrowthVigor.pic_path.length !== 0) {
         this.GrowthVigor.pic_path.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList.push(resp.data)
-          }))
+          })
         })
       }
     },
 
-    Update(){
+    Update () {
       this.$refs.GrowthVigor_form.validate((valid) => {
         console.log(valid)
         if (valid) {
           this.GrowthVigor.update_time = dateToString(this.GrowthVigor.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.GrowthVigor.investigate_username
-          this.GrowthVigor.tree_code =this.tree_code
-          if(this.GrowthVigor.shoot_type === ''){
-            this.GrowthVigor.shoot=''
+          this.GrowthVigor.tree_code = this.tree_code
+          if (this.GrowthVigor.shoot_type === '') {
+            this.GrowthVigor.shoot = ''
           }
           console.error(this.GrowthVigor)
-          updateGrowthVigor(this.GrowthVigor.id,this.GrowthVigor).then((res=>{
-            if(res.data.code === 200 ){
-              updateTjxmRecord(this.GrowthVigor.id,this.tjxm_record).then((record=>{
-                if(res.data.code === 200 ){
-                  if(this.tjxm_record.status === '已完成') {
+          updateGrowthVigor(this.GrowthVigor.id, this.GrowthVigor).then(res => {
+            if (res.data.code === 200) {
+              updateTjxmRecord(this.GrowthVigor.id, this.tjxm_record).then(record => {
+                if (res.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('修改提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('修改保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成') {
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.error('修改提交失败')
-                  }else {
+                  } else {
                     this.$Message.error('修改保存失败')
                   }
                 }
-              }))
+              })
             }
-          }))
+          })
         } else {
           this.$Message.error('请填写完整信息')
         }
       })
     },
 
-    SubmitUpdate(){
+    SubmitUpdate () {
       this.tjxm_record.status = '已完成'
       this.Update()
     },
 
-    okNext(){
+    okNext () {
       this.showNextPageModal = false
       this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
-
     },
-    cancelNext(){
+    cancelNext () {
       this.showNextPageModal = false
     },
-    NextPage(){
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Protect'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+    NextPage () {
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'Protect' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/Protect/${this.tree_code}` })
-           this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
-        }else {
+          this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
+        } else {
           this.showNextPageModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
           // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
         }
-      }))
+      })
     },
-    okPrevious(){
+    okPrevious () {
       this.showPreviousPageModal = false
       this.$router.push({ path: `/survey/environment/${this.tree_code}` })
-
     },
-    cancelPrevious(){
+    cancelPrevious () {
       this.showPreviousPageModal = false
     },
     PreviousPage () {
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'environment' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
           this.$router.push({ path: `/survey/environment/${this.tree_code}` })
-        }else {
+        } else {
           this.showPreviousPageModal = true
         }
-      }))
+      })
     },
 
-    fetchTreeBasicData(){
-      getOneTreeBaseInfo(this.tree_code).then((res => {
+    fetchTreeBasicData () {
+      getOneTreeBaseInfo(this.tree_code).then(res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
-      }))
+      })
     },
 
-
-    TiJiao(){
+    TiJiao () {
       this.$refs.GrowthVigor_form.validate((valid) => {
         console.log(valid)
         if (valid) {
           this.GrowthVigor.update_time = dateToString(this.GrowthVigor.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.GrowthVigor.investigate_username
-          this.GrowthVigor.tree_code =this.tree_code
-          if(this.GrowthVigor.shoot_type === ''){
-            this.GrowthVigor.shoot=''
+          this.GrowthVigor.tree_code = this.tree_code
+          if (this.GrowthVigor.shoot_type === '') {
+            this.GrowthVigor.shoot = ''
           }
           console.error(this.GrowthVigor)
           AddGpAnalysis(this.GrowthVigor).then(res => {
-            getNewGrowthVigor(this.tree_code).then((resp=>{
-              this.tjxm_record.t_id =resp.data.new_growth_vigor.id
-              postTjxmRecord(this.tjxm_record).then((record=>{
-                if(record.data.code ===200){
-                  if(this.tjxm_record.status === '已完成'){
+            getNewGrowthVigor(this.tree_code).then(resp => {
+              this.tjxm_record.t_id = resp.data.new_growth_vigor.id
+              postTjxmRecord(this.tjxm_record).then(record => {
+                if (record.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成'){
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交失败')
-                  }else {
+                  } else {
                     this.$Message.success('保存失败')
                   }
                 }
-              }))
-            }))
-            console.log('####',res)
+              })
+            })
+            console.log('####', res)
           })
         } else {
           this.$Message.error('请填写完整信息')
@@ -611,7 +608,7 @@ export default {
     },
     // 特征照片
     handleView (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible = true
     },
     handleRemoveList (index) {
@@ -623,9 +620,9 @@ export default {
       if (res.code === 500) {
         this.GrowthVigor.pic_path.push(res.path)
         this.i++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList.push(resp.data)
-        }))
+        })
       }
     },
   }

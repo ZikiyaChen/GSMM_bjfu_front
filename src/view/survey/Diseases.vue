@@ -481,7 +481,7 @@
 </template>
 
 <script>
-import {damageList, PathToList} from "@/view/survey/options";
+import { damageList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
   AddBchAnalysis,
@@ -492,13 +492,13 @@ import {
   postTjxmRecord,
   queryTjxmRecord, updateDamage, updateDiseases, updateTjxmRecord
 } from "@/api/table"
-import {ShowPic} from "@/api/upload";
+import { ShowPic } from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
-import {queryUnits, queryUsers} from "@/api/user";
+import { queryUnits, queryUsers } from "@/api/user";
 
 export default {
   name: "Diseases",
-  components: {Float_bar},
+  components: { Float_bar },
   data () {
     return {
       timeIndex: 0,
@@ -536,16 +536,16 @@ export default {
       i_branch: 0,
       PicUrlList_branch: [],
 
-      TreeInformation:{
-        Base:{
-          family:'',
-          genus:'',
-          zw_name:'',
-          ld_name:''
+      TreeInformation: {
+        Base: {
+          family: '',
+          genus: '',
+          zw_name: '',
+          ld_name: ''
         }
       },
 
-      tjxm_record:{
+      tjxm_record: {
         t_id: 0,
         type: '病虫害情况分析',
         username: '',
@@ -604,140 +604,138 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.fetchTreeBasicData()
     this.fetchData()
     this.InitIndex()
   },
   methods: {
-    InitIndex(){
-      this.timeLineList.forEach((item,index)=>{
-        //执行代码
-        if(item.type === this.tjxm_record.type_yw){
-          console.log('index',index)
+    InitIndex () {
+      this.timeLineList.forEach((item, index) => {
+        // 执行代码
+        if (item.type === this.tjxm_record.type_yw) {
+          console.log('index', index)
           this.timeIndex = index
         }
       })
     },
-    Show(item){
-      console.log('^^^',item)
+    Show (item) {
+      console.log('^^^', item)
 
       // /survey/update/BasicInformation/110131B03
-      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+      this.$router.push({ path: item.path_to + `${this.tree_code}` })
     },
-    changeActive(index) {
+    changeActive (index) {
       this.timeIndex = index;
     },
 
-    okPrevious(){
+    okPrevious () {
       this.showPreviousPageModal = false
       this.$router.push({ path: `/survey/Incline/${this.tree_code}` })
-
     },
-    cancelPrevious(){
+    cancelPrevious () {
       this.showPreviousPageModal = false
     },
     PreviousPage () {
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Incline'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'Incline' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
           this.$router.push({ path: `/survey/Incline/${this.tree_code}` })
-        }else {
+        } else {
           this.showPreviousPageModal = true
         }
-      }))
+      })
     },
 
-
-    fetchTreeBasicData(){
-      getOneTreeBaseInfo(this.tree_code).then((res => {
+    fetchTreeBasicData () {
+      getOneTreeBaseInfo(this.tree_code).then(res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
-      }))
+      })
     },
-    GetUnits(){
-      queryUnits().then(res=>{
+    GetUnits () {
+      queryUnits().then(res => {
         this.dcUnits = res.data.units
       })
     },
-    onDcUnitSelectQueryChange(value){
-      queryUsers({unit: value, is_dc: true}).then(res=>{
+    onDcUnitSelectQueryChange (value) {
+      queryUsers({ unit: value, is_dc: true }).then(res => {
         this.dcUsers = res.data.users
       })
     },
-    onDcUserSelectQueryChange(value){
-      queryUsers({name_like: value, is_dc: true, unit: this.Diseases.dc_unit}).then(res=>{
+    onDcUserSelectQueryChange (value) {
+      queryUsers({ name_like: value, is_dc: true, unit: this.Diseases.dc_unit }).then(res => {
         this.dcUsers = res.data.users
       })
     },
-    fetchData(){
+    fetchData () {
       this.dcUnits = []
       this.dcUsers = []
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Diseases'}).then((record=>{
-        if(record.data.total!==0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'Diseases' }).then(record => {
+        if (record.data.total !== 0) {
           this.isShow = false
           this.isSubmit = true
           this.tjxm_record = record.data.tjxm_records[0]
-          getDiseases({'id':this.tjxm_record.t_id}).then((res=>{
+          getDiseases({ 'id': this.tjxm_record.t_id }).then(res => {
             this.Diseases = res.data.tree_Bch
             this.dcUsers.push(res.data.tree_Bch.dc_user)
-            this.dcUnits.push({'unit': res.data.tree_Bch.dc_unit})
+            this.dcUnits.push({ 'unit': res.data.tree_Bch.dc_unit })
             this.fetchPic()
-          }))
-        }else {
-          this.isShow =true
+          })
+        } else {
+          this.isShow = true
           this.isSubmit = false
-          queryUnits().then(res=>{
+          queryUnits().then(res => {
             this.dcUnits = res.data.units
           })
         }
-      }))
+      })
     },
-    fetchPic(){
-      this.PicUrlList_base=[]
-      this.PicUrlList_trunk=[]
-      this.PicUrlList_ske=[]
-      this.PicUrlList_blade=[]
-      this.PicUrlList_branch=[]
+    fetchPic () {
+      this.PicUrlList_base = []
+      this.PicUrlList_trunk = []
+      this.PicUrlList_ske = []
+      this.PicUrlList_blade = []
+      this.PicUrlList_branch = []
 
-      if(this.Diseases.base_pic.length!==0) {
+      if (this.Diseases.base_pic.length !== 0) {
         this.Diseases.base_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_base.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Diseases.trunk_pic.length!==0) {
+      if (this.Diseases.trunk_pic.length !== 0) {
         this.Diseases.trunk_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_trunk.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Diseases.ske_pic.length!==0) {
+      if (this.Diseases.ske_pic.length !== 0) {
         this.Diseases.ske_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_ske.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Diseases.blade_pic.length!==0) {
+      if (this.Diseases.blade_pic.length !== 0) {
         this.Diseases.blade_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_blade.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Diseases.branch_pic.length!==0) {
+      if (this.Diseases.branch_pic.length !== 0) {
         this.Diseases.branch_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_branch.push(resp.data)
-          }))
+          })
         })
       }
-    },//*****
+    }, //* ****
 
-    TiJiao(){
+    TiJiao () {
       this.Diseases.tree_code = this.tree_code
       this.$refs.Diseases_form.validate((valid) => {
         console.log(valid)
@@ -745,31 +743,30 @@ export default {
           this.Diseases.update_time = dateToString(this.Diseases.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.Diseases.investigate_username
           AddBchAnalysis(this.Diseases).then(res => {
-            getDiseases({'tree_code':this.tree_code}).then((resp=>{
-              this.tjxm_record.t_id =resp.data.tree_Bch.id
-              postTjxmRecord(this.tjxm_record).then((record=>{
-                if(record.data.code ===200){
-                  if(this.tjxm_record.status === '已完成'){
+            getDiseases({ 'tree_code': this.tree_code }).then(resp => {
+              this.tjxm_record.t_id = resp.data.tree_Bch.id
+              postTjxmRecord(this.tjxm_record).then(record => {
+                if (record.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成'){
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交失败')
-                  }else {
+                  } else {
                     this.$Message.success('保存失败')
                   }
                 }
-              }))
-            }))
-            console.log('####',res)
+              })
+            })
+            console.log('####', res)
           }).catch(err => {
             console.log(err)
           })
-
         } else {
           this.$Message.error('请填写完整信息')
         }
@@ -786,41 +783,40 @@ export default {
       this.TiJiao()
     },
 
-    Update(){
+    Update () {
       this.Diseases.tree_code = this.tree_code
       this.$refs.Diseases_form.validate((valid) => {
-
         if (valid) {
           this.Diseases.update_time = dateToString(this.Diseases.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.Diseases.investigate_username
-          updateDiseases(this.Diseases.id,this.Diseases).then((res=>{
-            if(res.data.code === 200 ){
-              updateTjxmRecord(this.Diseases.id,this.tjxm_record).then((record=>{
-                if(res.data.code === 200 ){
-                  if(this.tjxm_record.status === '已完成') {
+          updateDiseases(this.Diseases.id, this.Diseases).then(res => {
+            if (res.data.code === 200) {
+              updateTjxmRecord(this.Diseases.id, this.tjxm_record).then(record => {
+                if (res.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('修改提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('修改保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成') {
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.error('修改提交失败')
-                  }else {
+                  } else {
                     this.$Message.error('修改保存失败')
                   }
                 }
-              }))
+              })
             }
-          }))
+          })
         } else {
           this.$Message.error('请填写完整信息')
         }
       })
     },
 
-    SubmitUpdate(){
+    SubmitUpdate () {
       this.tjxm_record.status = '已完成'
       this.Update()
     },
@@ -833,7 +829,7 @@ export default {
       })
     },
     handleView_base (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_base = true
     },
     handleRemoveList_base (index) {
@@ -845,15 +841,15 @@ export default {
       if (res.code === 500) {
         this.Diseases.base_pic.push(res.path)
         this.i_base++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_base.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片trunk
     handleView_trunk (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_trunk = true
     },
     handleRemoveList_trunk (index) {
@@ -865,15 +861,15 @@ export default {
       if (res.code === 500) {
         this.Diseases.trunk_pic.push(res.path)
         this.i_trunk++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_trunk.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片ske
     handleView_ske (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_ske = true
     },
     handleRemoveList_ske (index) {
@@ -885,15 +881,15 @@ export default {
       if (res.code === 500) {
         this.Diseases.ske_pic.push(res.path)
         this.i_ske++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_ske.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片blade
     handleView_blade (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_blade = true
     },
     handleRemoveList_blade (index) {
@@ -905,15 +901,15 @@ export default {
       if (res.code === 500) {
         this.Diseases.blade_pic.push(res.path)
         this.i_blade++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_blade.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片branch
     handleView_branch (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_branch = true
     },
     handleRemoveList_branch (index) {
@@ -925,9 +921,9 @@ export default {
       if (res.code === 500) {
         this.Diseases.branch_pic.push(res.path)
         this.i_branch++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_branch.push(resp.data)
-        }))
+        })
       }
     }
   }

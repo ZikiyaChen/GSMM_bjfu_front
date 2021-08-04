@@ -116,7 +116,7 @@ export default [
     meta: {
       title: '名木古树调查建档',
       icon: 'ios-book',
-      access: ['超级管理员','单位管理员', '调查人员']
+      access: ['超级管理员', '单位管理员', '调查人员']
     },
     component: Main,
     children: [
@@ -126,7 +126,7 @@ export default [
         meta: {
           icon: 'ios-document',
           title: '名木古树信息',
-          access: ['超级管理员','单位管理员', '调查人员']
+          access: ['超级管理员', '单位管理员', '调查人员']
         },
         component: () => import('@/view/survey/base_survey.vue')
       },
@@ -395,7 +395,7 @@ export default [
           title: '个人信息-调整',
           hideInBread: true,
           hideInMenu: true,
-          access: ['超级管理员', '单位管理员', '养护人员','调查人员']
+          access: ['超级管理员', '单位管理员', '养护人员', '调查人员']
         },
         component: () => import('@/view/Userinfo/userinfo')
       }

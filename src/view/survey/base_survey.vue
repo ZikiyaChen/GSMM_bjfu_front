@@ -67,17 +67,17 @@
 </template>
 
 <script>
-import {deleteOneTree, queryFamilyTypes, queryTreeBasicProperty} from '@/api/table'
-import {queryUsers} from "@/api/user";
-import {getToken, showByAccess} from "@/libs/util";
+import { deleteOneTree, queryFamilyTypes, queryTreeBasicProperty } from '@/api/table'
+import { queryUsers } from "@/api/user";
+import { getToken, showByAccess } from "@/libs/util";
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
 import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
 import name from "@/view/tools-methods/name.json"
-import {ownerList} from "@/view/survey/right_base_options";
+import { ownerList } from "@/view/survey/right_base_options";
 
 export default {
   name: "base_survey",
-  components:{RightDeleteTree, tjxm_record_extend_table},
+  components: { RightDeleteTree, tjxm_record_extend_table },
   data () {
     return {
       selected_tree_code: undefined,
@@ -99,18 +99,18 @@ export default {
         _page: 1,
         _per_page: 10
       }, // 分页
-      trees_basic_property:{
+      trees_basic_property: {
         tree_code: undefined,
         family: undefined,
         genus: undefined,
         zw_name: undefined,
         ld_name: undefined,
 
-        dynamic_property:{
+        dynamic_property: {
           real_age: undefined,
           investigate_time: undefined
         },
-        geo_property:{
+        geo_property: {
           longitude: undefined,
           latitude: undefined
         },
@@ -263,7 +263,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    console.log('pp',params.row)
+                    console.log('pp', params.row)
                     this.$router.push({ path: `/survey/update/BasicInformation/${params.row.tree_code}` })
                   }
                 }
@@ -275,7 +275,7 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['超级管理员','单位管理员']
+                  value: ['超级管理员', '单位管理员']
                 }],
                 style: {
                   marginRight: '2px'
@@ -283,7 +283,7 @@ export default {
                 on: {
                   click: () => {
                     this.selected_tree_code = params.row.tree_code
-                    this.showDeleteModal=true
+                    this.showDeleteModal = true
                   }
                 }
               }, '删除')
@@ -292,7 +292,7 @@ export default {
         }
       ],
 
-     tableData: [],
+      tableData: [],
 
       codeList: [
         {
@@ -325,34 +325,34 @@ export default {
       ]
     }
   },
-  methods :{
-    ok(tree_code){
-      console.log('###',tree_code)
-      deleteOneTree(tree_code).then((res=>{
-        if(res.data.code === 200){
+  methods: {
+    ok (tree_code) {
+      console.log('###', tree_code)
+      deleteOneTree(tree_code).then(res => {
+        if (res.data.code === 200) {
           this.$Message.success('该古树删除成功')
           this.fetchData()
-        }else {
+        } else {
           this.$Message.error('该古树删除失败')
         }
-      }))
-      this.showDeleteModal=false
+      })
+      this.showDeleteModal = false
     },
-    cancel(){
-      this.showDeleteModal =false
+    cancel () {
+      this.showDeleteModal = false
     },
     fetchData: function () {
       // 数据表发生变化请求数据
 
-      let args = {...this.query, ...this.pages}
+      let args = { ...this.query, ...this.pages }
 
       return queryTreeBasicProperty(args).then((resp) => {
         this.tableData = resp.data.trees_basic_property
         this.total = resp.data.total
       })
     },
-    onSearch() {
-      this.pages._page=1
+    onSearch () {
+      this.pages._page = 1
       this.fetchData()
     },
     onPageChange (page) {
@@ -361,31 +361,31 @@ export default {
       this.fetchData()
     },
 
-    JsonChangeToOptions(){
-      let options=name.contents
-      let keArr=[]
-      let shuArr=[]
-      let nameArr=[]
-      for(let [index, elem] of options.entries()){
-       if(!keArr.includes(elem.ke)){
-         keArr.push(elem.ke)
-         this.KeList.push({ fname: elem.ke})
-       }
-       if(!shuArr.includes(elem.shu)){
-         shuArr.push(elem.shu)
-         this.ShuList.push({ gname: elem.shu})
-       }
-       if(!nameArr.includes(elem.name)){
-         nameArr.push(elem.name)
-         this.NameList.push({ name: elem.name})
-       }
-     }
-      console.log('###KeList',this.KeList)
-      console.log('###ShuList',this.ShuList)
-      console.log('###NameList',this.NameList)
+    JsonChangeToOptions () {
+      let options = name.contents
+      let keArr = []
+      let shuArr = []
+      let nameArr = []
+      for (let [index, elem] of options.entries()) {
+        if (!keArr.includes(elem.ke)) {
+          keArr.push(elem.ke)
+          this.KeList.push({ fname: elem.ke })
+        }
+        if (!shuArr.includes(elem.shu)) {
+          shuArr.push(elem.shu)
+          this.ShuList.push({ gname: elem.shu })
+        }
+        if (!nameArr.includes(elem.name)) {
+          nameArr.push(elem.name)
+          this.NameList.push({ name: elem.name })
+        }
+      }
+      console.log('###KeList', this.KeList)
+      console.log('###ShuList', this.ShuList)
+      console.log('###NameList', this.NameList)
     }
   },
-  created() {
+  created () {
     queryTreeBasicProperty({ ...this.pages, ...this.query }).then((resp) => {
       this.tableData = resp.data.trees_basic_property
       this.total = resp.data.total
@@ -394,10 +394,6 @@ export default {
     //   this.FamilyList = res.data.species_types
     // })
     this.JsonChangeToOptions()
-
-
-
-
   }
 
 }

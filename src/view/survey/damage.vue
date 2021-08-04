@@ -585,7 +585,7 @@
 </template>
 
 <script>
-import {damageList, PathToList} from "@/view/survey/options";
+import { damageList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
   AddFzbhAnalysis, AddGpAnalysis,
@@ -595,13 +595,13 @@ import {
   getOneTreeBaseInfo, postTjxmRecord,
   queryTjxmRecord, updateDamage, updateGrowthVigor, updateTjxmRecord
 } from "@/api/table";
-import {ShowPic} from "@/api/upload";
+import { ShowPic } from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
-import {queryUnits, queryUsers} from "@/api/user";
+import { queryUnits, queryUsers } from "@/api/user";
 
 export default {
   name: "damage",
-  components: {Float_bar},
+  components: { Float_bar },
   data () {
     return {
       timeIndex: 0,
@@ -618,16 +618,16 @@ export default {
 
       dcUnits: [],
       dcUsers: [],
-      TreeInformation:{
-        Base:{
-          family:'',
-          genus:'',
-          zw_name:'',
-          ld_name:''
+      TreeInformation: {
+        Base: {
+          family: '',
+          genus: '',
+          zw_name: '',
+          ld_name: ''
         }
       },
 
-      tjxm_record:{
+      tjxm_record: {
         t_id: 0,
         type: '树体损伤情况评估',
         username: '',
@@ -717,227 +717,225 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.fetchTreeBasicData()
     this.fetchData()
     this.InitIndex()
   },
   methods: {
-    InitIndex(){
-      this.timeLineList.forEach((item,index)=>{
-        //执行代码
-        if(item.type === this.tjxm_record.type_yw){
-          console.log('index',index)
+    InitIndex () {
+      this.timeLineList.forEach((item, index) => {
+        // 执行代码
+        if (item.type === this.tjxm_record.type_yw) {
+          console.log('index', index)
           this.timeIndex = index
         }
       })
     },
-    Show(item){
-      console.log('^^^',item)
+    Show (item) {
+      console.log('^^^', item)
 
       // /survey/update/BasicInformation/110131B03
-      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+      this.$router.push({ path: item.path_to + `${this.tree_code}` })
     },
-    GetUnits(){
-      queryUnits().then(res=>{
+    GetUnits () {
+      queryUnits().then(res => {
         this.dcUnits = res.data.units
       })
     },
-    onDcUnitSelectQueryChange(value){
-      queryUsers({unit: value, is_dc: true}).then(res=>{
+    onDcUnitSelectQueryChange (value) {
+      queryUsers({ unit: value, is_dc: true }).then(res => {
         this.dcUsers = res.data.users
       })
     },
-    onDcUserSelectQueryChange(value){
-      queryUsers({name_like: value, is_dc: true, unit: this.Damage.dc_unit}).then(res=>{
+    onDcUserSelectQueryChange (value) {
+      queryUsers({ name_like: value, is_dc: true, unit: this.Damage.dc_unit }).then(res => {
         this.dcUsers = res.data.users
       })
     },
-    changeActive(index) {
+    changeActive (index) {
       this.timeIndex = index;
     },
 
-    fetchTreeBasicData(){
-      getOneTreeBaseInfo(this.tree_code).then((res => {
+    fetchTreeBasicData () {
+      getOneTreeBaseInfo(this.tree_code).then(res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
-      }))
+      })
     },
-    fetchData(){
+    fetchData () {
       this.dcUnits = []
       this.dcUsers = []
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'damage'}).then((record=>{
-        if(record.data.total!==0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'damage' }).then(record => {
+        if (record.data.total !== 0) {
           this.isShow = false
           this.isSubmit = true
           this.tjxm_record = record.data.tjxm_records[0]
-          getDamage({'id':this.tjxm_record.t_id}).then((res=>{
+          getDamage({ 'id': this.tjxm_record.t_id }).then(res => {
             this.Damage = res.data.tree_damage
-            this.dcUnits.push({'unit': res.data.tree_damage.dc_unit})
+            this.dcUnits.push({ 'unit': res.data.tree_damage.dc_unit })
             this.dcUsers.push(res.data.tree_damage.dc_user)
             this.fetchPic()
-          }))
-        }else {
-          this.isShow =true
+          })
+        } else {
+          this.isShow = true
           this.isSubmit = false
-          queryUnits().then(res=>{
+          queryUnits().then(res => {
             this.dcUnits = res.data.units
           })
         }
-      }))
+      })
     },
-    fetchPic(){
-      this.PicUrlList_base1=[]
-      this.PicUrlList_base2=[]
-      this.PicUrlList_base3=[]
-      this.PicUrlList_trunk1=[]
-      this.PicUrlList_trunk2=[]
-      this.PicUrlList_trunk3=[]
-      this.PicUrlList_ske1=[]
-      this.PicUrlList_ske2=[]
-      this.PicUrlList_ske3=[]
-      if(this.Damage.pic_base1.length!==0) {
+    fetchPic () {
+      this.PicUrlList_base1 = []
+      this.PicUrlList_base2 = []
+      this.PicUrlList_base3 = []
+      this.PicUrlList_trunk1 = []
+      this.PicUrlList_trunk2 = []
+      this.PicUrlList_trunk3 = []
+      this.PicUrlList_ske1 = []
+      this.PicUrlList_ske2 = []
+      this.PicUrlList_ske3 = []
+      if (this.Damage.pic_base1.length !== 0) {
         this.Damage.pic_base1.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_base1.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_base2.length!==0) {
+      if (this.Damage.pic_base2.length !== 0) {
         this.Damage.pic_base2.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_base2.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_base3.length!==0) {
+      if (this.Damage.pic_base3.length !== 0) {
         this.Damage.pic_base3.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_base3.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_trunk1.length!==0) {
+      if (this.Damage.pic_trunk1.length !== 0) {
         this.Damage.pic_trunk1.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_trunk1.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_trunk2.length!==0) {
+      if (this.Damage.pic_trunk2.length !== 0) {
         this.Damage.pic_trunk2.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_trunk2.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_trunk3.length!==0) {
+      if (this.Damage.pic_trunk3.length !== 0) {
         this.Damage.pic_trunk3.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_trunk3.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_ske1.length!==0) {
+      if (this.Damage.pic_ske1.length !== 0) {
         this.Damage.pic_ske1.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_ske1.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_ske2.length!==0) {
+      if (this.Damage.pic_ske2.length !== 0) {
         this.Damage.pic_ske2.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_ske2.push(resp.data)
-          }))
+          })
         })
       }
-      if(this.Damage.pic_ske3.length!==0) {
+      if (this.Damage.pic_ske3.length !== 0) {
         this.Damage.pic_ske3.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList_ske3.push(resp.data)
-          }))
+          })
         })
       }
-    },//*****
+    }, //* ****
 
-    Update(){
+    Update () {
       this.$refs.damage_form.validate((valid) => {
         console.log(valid)
         this.Damage.tree_code = this.tree_code
         if (valid) {
           this.Damage.update_time = dateToString(this.Damage.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.Damage.investigate_username
-          updateDamage(this.Damage.id,this.Damage).then((res=>{
-            if(res.data.code === 200 ){
-              updateTjxmRecord(this.Damage.id,this.tjxm_record).then((record=>{
-                if(res.data.code === 200 ){
-                  if(this.tjxm_record.status === '已完成') {
+          updateDamage(this.Damage.id, this.Damage).then(res => {
+            if (res.data.code === 200) {
+              updateTjxmRecord(this.Damage.id, this.tjxm_record).then(record => {
+                if (res.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('修改提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('修改保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成') {
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.error('修改提交失败')
-                  }else {
+                  } else {
                     this.$Message.error('修改保存失败')
                   }
                 }
-              }))
+              })
             }
-          }))
+          })
         } else {
           this.$Message.error('请填写完整信息')
         }
       })
     },
 
-    SubmitUpdate(){
+    SubmitUpdate () {
       this.tjxm_record.status = '已完成'
       this.Update()
     },
 
-    okNext(){
+    okNext () {
       this.showNextPageModal = false
       this.$router.push({ path: `/survey/Incline/${this.tree_code}` })
-
     },
-    cancelNext(){
+    cancelNext () {
       this.showNextPageModal = false
     },
-    NextPage(){
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Incline'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+    NextPage () {
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'Incline' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/Protect/${this.tree_code}` })
           this.$router.push({ path: `/survey/damage/${this.tree_code}` })
-        }else {
+        } else {
           this.showNextPageModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
           // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
         }
-      }))
+      })
     },
-    okPrevious(){
+    okPrevious () {
       this.showPreviousPageModal = false
       this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
-
     },
-    cancelPrevious(){
+    cancelPrevious () {
       this.showPreviousPageModal = false
     },
     PreviousPage () {
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Protect'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'Protect' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/environment/${this.tree_code}` })
           this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
-        }else {
+        } else {
           this.showPreviousPageModal = true
         }
-      }))
+      })
     },
     // NextPage () {
     //   this.$router.push({ path: `/survey/Incline/${this.tree_code}` })
@@ -946,8 +944,7 @@ export default {
     //   this.$router.push({ path: `/survey/Protect/${this.tree_code}` })
     // },
 
-
-    TiJiao(){
+    TiJiao () {
       this.Damage.tree_code = this.tree_code
       this.$refs.damage_form.validate((valid) => {
         console.log(valid)
@@ -955,31 +952,30 @@ export default {
           this.Damage.update_time = dateToString(this.Damage.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.Damage.investigate_username
           AddStssAnalysis(this.Damage).then(res => {
-            getDamage({'tree_code':this.tree_code}).then((resp=>{
-              this.tjxm_record.t_id =resp.data.tree_damage.id
-              postTjxmRecord(this.tjxm_record).then((record=>{
-                if(record.data.code ===200){
-                  if(this.tjxm_record.status === '已完成'){
+            getDamage({ 'tree_code': this.tree_code }).then(resp => {
+              this.tjxm_record.t_id = resp.data.tree_damage.id
+              postTjxmRecord(this.tjxm_record).then(record => {
+                if (record.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成'){
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交失败')
-                  }else {
+                  } else {
                     this.$Message.success('保存失败')
                   }
                 }
-              }))
-            }))
-            console.log('####',res)
+              })
+            })
+            console.log('####', res)
           }).catch(err => {
             console.log(err)
           })
-
         } else {
           this.$Message.error('请填写完整信息')
         }
@@ -989,7 +985,6 @@ export default {
       this.tjxm_record.status = '已完成'
       this.TiJiao()
     },
-
 
     Save: function () {
       // this.changeLoading()
@@ -1005,7 +1000,7 @@ export default {
     },
     // 特征照片base1
     handleView_base1 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_base1 = true
     },
     handleRemoveList_base1 (index) {
@@ -1017,15 +1012,15 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_base1.push(res.path)
         this.i_base1++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_base1.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片base2
     handleView_base2 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_base2 = true
     },
     handleRemoveList_base2 (index) {
@@ -1037,15 +1032,15 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_base2.push(res.path)
         this.i_base2++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_base2.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片base3
     handleView_base3 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_base3 = true
     },
     handleRemoveList_base3 (index) {
@@ -1057,15 +1052,15 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_base3.push(res.path)
         this.i_base3++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_base3.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片trunk1
     handleView_trunk1 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_t1 = true
     },
     handleRemoveList_trunk1 (index) {
@@ -1077,15 +1072,15 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_trunk1.push(res.path)
         this.i_trunk1++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_trunk1.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片trunk2
     handleView_trunk2 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_t2 = true
     },
     handleRemoveList_trunk2 (index) {
@@ -1097,15 +1092,15 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_trunk2.push(res.path)
         this.i_trunk2++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_trunk2.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片trunk3
     handleView_trunk3 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_t3 = true
     },
     handleRemoveList_trunk3 (index) {
@@ -1117,15 +1112,15 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_trunk3.push(res.path)
         this.i_trunk3++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_trunk3.push(resp.data)
-        }))
+        })
       }
     },
 
     // 特征照片ske1
     handleView_ske1 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_s1 = true
     },
     handleRemoveList_ske1 (index) {
@@ -1137,14 +1132,14 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_ske1.push(res.path)
         this.i_ske1++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_ske1.push(resp.data)
-        }))
+        })
       }
     },
     // 特征照片ske2
     handleView_ske2 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_s2 = true
     },
     handleRemoveList_ske2 (index) {
@@ -1156,14 +1151,14 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_ske2.push(res.path)
         this.i_ske2++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_ske2.push(resp.data)
-        }))
+        })
       }
     },
     // 特征照片ske3
     handleView_ske3 (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_s3 = true
     },
     handleRemoveList_ske3 (index) {
@@ -1175,15 +1170,14 @@ export default {
       if (res.code === 500) {
         this.Damage.pic_ske3.push(res.path)
         this.i_ske3++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList_ske3.push(resp.data)
-        }))
+        })
       }
     },
   }
 }
 </script>
-
 
 <style scoped>
 .ivu-radio-wrapper {
