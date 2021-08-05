@@ -13,9 +13,15 @@
         <Row>
           <Col span="24">
             <Select
+              :default-label="inspection.model"
               v-model="inspection.model"
               @on-change="handleInspectionChange">
-              <Option v-for="item in inspection.qualities" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option
+                v-for="item in inspection.qualities"
+                :value="item.value"
+                :key="item.value">
+                {{ item.label }}
+              </Option>
             </Select>
           </Col>
         </Row>
@@ -26,6 +32,7 @@
         <Row>
           <Col span="24">
             <Select
+              :default-label="growthPotential.model"
               v-model="growthPotential.model"
               @on-change="handleGrowthPotentialChange">
               <Option v-for="item in growthPotential.status"
@@ -42,6 +49,7 @@
       <FormItem label="生长状态描述">
         <Col span="4">
           <Select
+            :default-label="growthStatus.model"
             v-model="growthStatus.model"
             @on-change="handleFoldingBranchesChange">
             <Option v-for="item in growthStatus.foldingBranches"
@@ -96,26 +104,33 @@
 
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
+import { mapState } from "vuex";
 
 export default {
   name: 'TreeInspection',
   components: {
     BasicForm
   },
+  computed: {
+    ...mapState('maintenanceForm', {
+      showFlag: state => state.showFlag,
+      otherFormData: state => state.otherFormData
+    })
+  },
   data () {
     return {
       inspection: {
-        modal: '',
+        model: '',
         qualities: ['日常巡查', '施工影响', '物候期巡视'],
         qualitiesStr: ''
       },
       growthPotential: {
-        modal: '',
+        model: '',
         status: ['正常', '衰弱', '濒危'],
         statusStr: ''
       },
       growthStatus: {
-        model: '',
+        model: [],
         foldingBranches: ['是', '否'], // 折枝
         foldingBranchesInt: 0,
         direction: '',
@@ -161,7 +176,7 @@ export default {
     }
   },
 
-  beforeMount () {
+  created () {
     const initializeInspectionQualities = () => {
       this.inspection.qualities = this.inspection.qualities.map(item => {
         return {
@@ -191,6 +206,22 @@ export default {
       })
     }
     initializeFoldingBranches()
+
+    const initializeTypicalData = () => {
+      if (this.showFlag) {
+        this.inspection.model = this.otherFormData.inspection
+        this.growthPotential.model = this.otherFormData.growthPotential
+        this.growthStatus.model = this.otherFormData.foldingBranches
+        this.growthStatus.direction = this.otherFormData.direction
+        this.growthStatus.length = this.otherFormData.length
+        this.growthStatus.diameter = this.otherFormData.diameter
+        this.growthStatus.surroundings = this.otherFormData.surroundings
+        this.growthStatus.growStatus = this.otherFormData.growStatus
+        this.constructionImpact = this.otherFormData.constructionImpact
+        this.waitingPeriod = this.otherFormData.waitingPeriod
+      }
+    }
+    initializeTypicalData()
   }
 
 }

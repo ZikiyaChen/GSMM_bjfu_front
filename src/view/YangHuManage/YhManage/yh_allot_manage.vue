@@ -1,9 +1,16 @@
 <template>
   <div>
+    <task-assignment></task-assignment>
     <Card>
       <h1>养护任务分配---只显示分配的工单</h1>
-      <Table stripe :columns="columns" :data="data" border></Table>
       <br>
+      <Table stripe :columns="columns" :data="data" border></Table>
+      <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+          <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+        </div>
+      </div>
+
     </Card>
   </div>
 </template>
@@ -12,9 +19,15 @@
 import { getUserInfo } from "@/api/user";
 import { queryYhAllots } from "@/api/yh_manage";
 import yh_record_extend_table from "@/view/YangHuManage/components/yh_record_extend_table";
+import TaskAssignment from "@/view/YangHuManage/YhManage/componnets/TaskAssignment";
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: "yh_allot_manage",
+  components: {
+    TaskAssignment
+  },
+  mixins: [UserMixin],
   data () {
     return {
       query: {
@@ -27,7 +40,6 @@ export default {
       }, // 分页
       data: [],
       total: 0,
-      current_user: {},
 
       columns: [
         {
@@ -76,10 +88,10 @@ export default {
           }
         },
         {
-          title: '养护小组',
+          title: '养护单位',
           align: "center",
           render: function (h, params) {
-            return h('span', params.row.group_name)
+            return h('span', params.row.unit)
           }
         },
         {
@@ -169,21 +181,19 @@ export default {
     }
   },
   methods: {
+    onPageChange (page) {
+      // 分页变化
+      this.pages._page = page
+      this.fetchData()
+    },
     fetchData () {
-      getUserInfo().then(res => {
-        this.current_user = res.data.current_user
-
-        if (this.current_user['role_names'].includes('养护组长')) {
-          this.query.group_name = this.current_user.group_info['group_name']
-        }
-
-        let args = { ...this.query, ...this.pages }
-        queryYhAllots(args).then(resp => {
-          this.data = resp.data.yh_allots
-          this.total = resp.data.total
-        })
+      let args = { ...this.query, ...this.pages }
+      queryYhAllots(args).then(resp => {
+        this.data = resp.data.yh_allots
+        this.total = resp.data.total
       })
     }
+
   },
   mounted () {
     this.fetchData()

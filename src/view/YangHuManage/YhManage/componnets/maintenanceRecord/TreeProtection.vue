@@ -12,8 +12,10 @@
         <FormItem label="措施性质">
           <Row>
             <Col span="24">
-              <Select v-model="measureQuality.model"
-                      @on-change="handleMeasureQualityChange">
+              <Select
+                :default-label="measureQuality.model"
+                v-model="measureQuality.model"
+                @on-change="handleMeasureQualityChange">
                 <Option v-for="item in measureQuality.content"
                         :value="item.value"
                         :key="item.value">
@@ -28,9 +30,11 @@
       <FormItem label="保护措施项目名称" slot="other">
         <Row>
           <Col span="24">
-            <Select v-model="protectionMeasure.model"
-                    multiple
-                    @on-change="handleProtectionMeasureChange">
+            <Select
+              multiple
+              v-model="protectionMeasure.model"
+              :default-label="protectionMeasure.model"
+              @on-change="handleProtectionMeasureChange">
               <Option v-for="item in protectionMeasure.projects"
                       :value="item.value"
                       :key="item.value">
@@ -43,9 +47,11 @@
       <FormItem label="处理方法" slot="other">
         <Row>
           <Col span="24">
-            <Select v-model="handleMethod.model"
-                    multiple
-                    @on-change="handleMethodChange">
+            <Select
+              multiple
+              v-model="handleMethod.model"
+              :default-label="handleMethod.model"
+              @on-change="handleMethodChange">
               <Option v-for="item in handleMethod.methods"
                       :value="item.value"
                       :key="item.value">
@@ -62,26 +68,33 @@
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
 import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+import { mapState } from "vuex";
 
 export default {
   name: 'TreeProtection',
   components: {
     BasicForm
   },
+  computed: {
+    ...mapState('maintenanceForm', {
+      showFlag: state => state.showFlag,
+      otherFormData: state => state.otherFormData
+    })
+  },
   data () {
     return {
       measureQuality: {
-        modal: '',
+        model: '',
         content: ['日常维护', '单项工程'],
         contentStr: ''
       },
       protectionMeasure: {
-        model: '',
+        model: [],
         projects: [],
         projectsStr: ''
       },
       handleMethod: {
-        model: '',
+        model: [],
         methods: [],
         methodsStr: ''
       }
@@ -106,12 +119,13 @@ export default {
         project: this.protectionMeasure.projectsStr,
         method: this.handleMethod.methodsStr
       }
+      console.log()
       const result = Object.assign({}, temp, data)
       this.$emit('cancelOrConfirm', 'confirm', result)
     }
 
   },
-  beforeMount () {
+  created () {
     const initializeMeasureQuality = () => {
       this.measureQuality.content = this.measureQuality.content.map(item => {
         return {
@@ -148,6 +162,15 @@ export default {
       })
     }
     initializeHandleMethod()
+
+    const initializeTypicalData = () => {
+      if (this.showFlag) {
+        this.measureQuality.model = this.otherFormData.contentStr
+        this.protectionMeasure.model = this.otherFormData.projects
+        this.handleMethod.model = this.otherFormData.methods
+      }
+    }
+    initializeTypicalData()
   }
 }
 

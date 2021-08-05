@@ -24,24 +24,24 @@
       <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
         <h4>古树基本信息</h4>
         <Row>
-          <Col  span="5" offset="3">
+          <Col  span="6" offset="2">
             <FormItem label="古树编号">
               <Input disabled  v-model="tree_code" class="TextColor"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="5" offset="3">
+          <Col span="6" offset="2">
             <FormItem label="科" prop="Base.family">
               <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
             </FormItem>
           </Col>
-          <Col span="5" >
+          <Col span="6" >
             <FormItem label="属" prop="Base.genus">
               <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
             </FormItem>
           </Col>
-          <Col span="5" >
+          <Col span="6" >
             <FormItem label="中文名" prop="Base.zw_name">
               <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
             </FormItem>
@@ -49,12 +49,12 @@
         </Row>
 
         <Row>
-          <Col span="5" offset="3">
+          <Col span="6" offset="2">
             <FormItem label="拉丁名" prop="Base.ld_name">
               <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
             </FormItem>
           </Col>
-          <Col span="5">
+          <Col span="6">
             <FormItem label="俗名" prop="Base.bm_name">
               <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
               </Input>
@@ -66,14 +66,27 @@
       <h4>已采取复壮保护措施情况与分析</h4>
       <Form :label-width="198" label-position="right"  ref="protect_form" :model="Protect" :rules="ruleValidate" inline>
         <Row>
-          <Col span="9" offset="2">
-            <FormItem label="调查人" prop="investigate_username">
-              <Input v-model="Protect.investigate_username" placeholder="请输入调查人姓名"></Input>
+          <Col span="9" offset="1">
+            <FormItem label="调查单位" prop="dc_unit">
+              <Select v-model="Protect.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
+                      @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span="9">
             <FormItem label="调查时间" prop="update_time">
               <DatePicker v-model="Protect.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="9" offset="1">
+            <FormItem label="调查人" prop="investigate_username">
+              <Select v-model="Protect.investigate_username" placeholder="名字" filterable
+                      @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+              </Select>
             </FormItem>
           </Col>
         </Row>
@@ -437,7 +450,7 @@
           </Row>
         </div>
       </Form>
-      <float_bar  v-role="['管理员','调查组长','调查人员']">
+      <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center" v-show="isShow">
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
         <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
@@ -497,11 +510,12 @@ import {
   queryTjxmRecord, updateGrowthVigor, updateProtect, updateTjxmRecord
 } from "@/api/table";
 import Float_bar from "_c/FloatBar/float_bar";
-import {ShowPic} from "@/api/upload";
+import { ShowPic } from "@/api/upload";
+import { queryUnits, queryUsers } from "@/api/user";
 
 export default {
   name: "Protect",
-  components: {Float_bar},
+  components: { Float_bar },
   data () {
     return {
       timeIndex: 0,
@@ -509,16 +523,18 @@ export default {
 
       isShow: false,
       isSubmit: false,
-      TreeInformation:{
-        Base:{
-          family:'',
-          genus:'',
-          zw_name:'',
-          ld_name:''
+      TreeInformation: {
+        Base: {
+          family: '',
+          genus: '',
+          zw_name: '',
+          ld_name: ''
         }
       },
+      dcUnits: [],
+      dcUsers: [],
 
-      tjxm_record:{
+      tjxm_record: {
         t_id: 0,
         type: '已采取复壮保护措施情况与分析',
         username: '',
@@ -526,8 +542,8 @@ export default {
         type_yw: 'Protect',
         time: ''
       },
-      showNextPageModal:false,
-      showPreviousPageModal:false,
+      showNextPageModal: false,
+      showPreviousPageModal: false,
       tree_code: this.$route.params.tree_code,
       ProtectList: protectList,
       SoilImproveList: soil_improveList,
@@ -595,7 +611,8 @@ export default {
         pic: [], // 特征照片
         update_time: '',
         tree_code: '',
-        investigate_username:''
+        investigate_username: '',
+        dc_unit: ''
       },
       ruleValidate: {
         protect: [{ required: true, message: '请选择' }],
@@ -603,145 +620,167 @@ export default {
         is_block: [{ required: true, message: '请选择' }],
         is_support: [{ required: true, message: '请选择' }],
         has_ditch: [{ required: true, message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'blur', message: '请填写调查人姓名' }],
+        investigate_username: [{ required: true, trigger: 'change', message: '请选择调查人姓名' }],
+        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
         update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
       }
     }
   },
-  created() {
+  created () {
     this.fetchTreeBasicData()
     this.fetchData()
     this.InitIndex()
   },
   methods: {
-    InitIndex(){
-      this.timeLineList.forEach((item,index)=>{
-        //执行代码
-        if(item.type === this.tjxm_record.type_yw){
-          console.log('index',index)
+    InitIndex () {
+      this.timeLineList.forEach((item, index) => {
+        // 执行代码
+        if (item.type === this.tjxm_record.type_yw) {
+          console.log('index', index)
           this.timeIndex = index
         }
       })
     },
-    Show(item){
-      console.log('^^^',item)
+    GetUnits () {
+      queryUnits().then(res => {
+        this.dcUnits = res.data.units
+      })
+    },
+    onDcUnitSelectQueryChange (value) {
+      queryUsers({ unit: value, is_dc: true }).then(res => {
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange (value) {
+      queryUsers({ name_like: value, is_dc: true, unit: this.Protect.dc_unit }).then(res => {
+        this.dcUsers = res.data.users
+      })
+    },
+
+    Show (item) {
+      console.log('^^^', item)
 
       // /survey/update/BasicInformation/110131B03
-      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+      this.$router.push({ path: item.path_to + `${this.tree_code}` })
     },
-    changeActive(index) {
+    changeActive (index) {
       this.timeIndex = index;
     },
 
-    fetchData(){
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'Protect'}).then((record=>{
-        if(record.data.total!==0){
+    fetchData () {
+      this.dcUnits = []
+      this.dcUsers = []
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'Protect' }).then(record => {
+        if (record.data.total !== 0) {
           this.isShow = false
-          this.isSubmit= true
+          this.isSubmit = true
           this.tjxm_record = record.data.tjxm_records[0]
-          getProtect_By_id(this.tjxm_record.t_id).then((res=>{
+          getProtect_By_id(this.tjxm_record.t_id).then(res => {
             this.Protect = res.data.new_Fzbh
+            this.dcUnits.push({ 'unit': res.data.new_Fzbh.dc_unit })
+            this.dcUsers.push(res.data.new_Fzbh.dc_user)
             this.fetchPic()
-          }))
-        }else {
+          })
+        } else {
           this.isShow = true
-          this.isSubmit= false
+          this.isSubmit = false
+          queryUnits().then(res => {
+            this.dcUnits = res.data.units
+          })
         }
-      }))
+      })
     },
-    fetchPic(){
-      this.PicUrlList=[]
-      if(this.Protect.pic.length!==0) {
+    fetchPic () {
+      this.PicUrlList = []
+      if (this.Protect.pic.length !== 0) {
         this.Protect.pic.forEach((pic_name) => {
-          ShowPic(pic_name).then((resp => {
+          ShowPic(pic_name).then(resp => {
             this.PicUrlList.push(resp.data)
-          }))
+          })
         })
       }
     },
 
-    okNext(){
+    okNext () {
       this.showNextPageModal = false
       this.$router.push({ path: `/survey/damage/${this.tree_code}` })
-
     },
-    cancelNext(){
+    cancelNext () {
       this.showNextPageModal = false
     },
-    NextPage(){
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'damage'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+    NextPage () {
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'damage' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/damage/${this.tree_code}` })
           this.$router.push({ path: `/survey/damage/${this.tree_code}` })
-        }else {
+        } else {
           this.showNextPageModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
           // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
         }
-      }))
+      })
     },
-    okPrevious(){
+    okPrevious () {
       this.showPreviousPageModal = false
       this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
-
     },
-    cancelPrevious(){
+    cancelPrevious () {
       this.showPreviousPageModal = false
     },
     PreviousPage () {
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'GrowthVigor'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'GrowthVigor' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/GrowthVigor/${this.tree_code}` })
           this.$router.push({ path: `/survey/GrowthVigor/${this.tree_code}` })
-        }else {
+        } else {
           this.showPreviousPageModal = true
         }
-      }))
+      })
     },
-    fetchTreeBasicData(){
-      getOneTreeBaseInfo(this.tree_code).then((res => {
+    fetchTreeBasicData () {
+      getOneTreeBaseInfo(this.tree_code).then(res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
-      }))
+      })
     },
     Tree () {
       console.log(11, this.tree_code)
       console.log(typeof (this.tree_code))
     },
-    TiJiao(){
+    TiJiao () {
       this.$refs.protect_form.validate((valid) => {
         console.log(valid)
         if (valid) {
           this.Protect.update_time = dateToString(this.Protect.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.Protect.investigate_username
-          this.Protect.tree_code =this.tree_code
+          this.Protect.tree_code = this.tree_code
           // if(this.GrowthVigor.shoot_type === ''){
           //   this.GrowthVigor.shoot=''
           // }
           console.error(this.Protect)
           AddFzbhAnalysis(this.Protect).then(res => {
-            getNewProtect(this.tree_code).then((resp=>{
-              this.tjxm_record.t_id =resp.data.new_Fzbh.id
-              postTjxmRecord(this.tjxm_record).then((record=>{
-                if(record.data.code ===200){
-                  if(this.tjxm_record.status === '已完成'){
+            getNewProtect(this.tree_code).then(resp => {
+              this.tjxm_record.t_id = resp.data.new_Fzbh.id
+              postTjxmRecord(this.tjxm_record).then(record => {
+                if (record.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成'){
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('提交失败')
-                  }else {
+                  } else {
                     this.$Message.success('保存失败')
                   }
                 }
-              }))
-            }))
-            console.log('####',res)
+              })
+            })
+            console.log('####', res)
           }).catch(err => {
             console.log(err)
           })
@@ -750,7 +789,7 @@ export default {
         }
       })
     },
-    Submit() {
+    Submit () {
       this.tjxm_record.status = '已完成'
       this.TiJiao()
       // this.Protect.tree_code = this.tree_code
@@ -760,7 +799,7 @@ export default {
       //   console.log(err)
       // })
     },
-    Save() {
+    Save () {
       this.tjxm_record.status = '待提交'
       this.TiJiao()
       // this.changeLoading()
@@ -775,40 +814,40 @@ export default {
       //   }
       // })
     },
-    Update(){
+    Update () {
       this.$refs.protect_form.validate((valid) => {
         console.log(valid)
         if (valid) {
           this.Protect.update_time = dateToString(this.Protect.update_time, 'yyyy-MM-dd hh:mm:ss')
           this.tjxm_record.username = this.Protect.investigate_username
-          this.Protect.tree_code =this.tree_code
-          updateProtect(this.Protect.id,this.Protect).then((res=>{
-            if(res.data.code === 200 ){
-              updateTjxmRecord(this.Protect.id,this.tjxm_record).then((record=>{
-                if(res.data.code === 200 ){
-                  if(this.tjxm_record.status === '已完成') {
+          this.Protect.tree_code = this.tree_code
+          updateProtect(this.Protect.id, this.Protect).then(res => {
+            if (res.data.code === 200) {
+              updateTjxmRecord(this.Protect.id, this.tjxm_record).then(record => {
+                if (res.data.code === 200) {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('修改提交成功')
                     this.fetchData()
-                  }else {
+                  } else {
                     this.$Message.success('修改保存成功')
                     this.fetchData()
                   }
-                }else {
-                  if(this.tjxm_record.status === '已完成') {
+                } else {
+                  if (this.tjxm_record.status === '已完成') {
                     this.$Message.error('修改提交失败')
-                  }else {
+                  } else {
                     this.$Message.error('修改保存失败')
                   }
                 }
-              }))
+              })
             }
-          }))
+          })
         } else {
           this.$Message.error('请填写完整信息')
         }
       })
     },
-    SubmitUpdate(){
+    SubmitUpdate () {
       this.tjxm_record.status = '已完成'
       this.Update()
     },
@@ -821,7 +860,7 @@ export default {
     },
     // 特征照片
     handleView (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible = true
     },
     handleRemoveList (index) {
@@ -833,9 +872,9 @@ export default {
       if (res.code === 500) {
         this.Protect.pic.push(res.path)
         this.i++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList.push(resp.data)
-        }))
+        })
       }
     },
   }

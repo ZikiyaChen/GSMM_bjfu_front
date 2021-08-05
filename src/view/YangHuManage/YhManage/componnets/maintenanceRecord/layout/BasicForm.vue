@@ -15,7 +15,7 @@
         </Row>
 
         <FormItem label="天气" prop="weatherInfo">
-          <Input readonly v-model="maintenanceInfo.weatherInfo"></Input>
+            <Input readonly v-model="maintenanceInfo.weatherInfo"></Input>
         </FormItem>
 
         <FormItem label="日期" prop="date">
@@ -23,6 +23,7 @@
             <Col span="24">
               <DatePicker
                 ref="datePicker"
+                @on-change="handleDateChange"
                 :value="maintenanceInfo.date"
                 format="yyyy年MM月dd日"
                 type="date"
@@ -43,20 +44,38 @@
         <FormItem label="古树树号" prop="treeNumber">
           <Row>
             <Col span="4">
-              <Input v-model="maintenanceInfo.treeNumber.prefix" style="text-align: center" disabled></Input>
+              <Input v-model="maintenanceInfo.treeNumber.prefix" style="text-align: center" readonly></Input>
             </Col>
             <Col span="20">
               <Select
-                v-model="maintenanceInfo.treeNumber.model"
+                v-if="!showFlag"
                 multiple
                 filterable
+                v-model="maintenanceInfo.treeNumber.model"
+                :default-label="maintenanceInfo.treeNumber.model"
                 @on-change="treeNumberOptionChange"
                 :remote-method="treeNumberRemoteMethod"
                 :loading="maintenanceInfo.treeNumber.loading">
-                <Option v-for="(option, index) in maintenanceInfo.treeNumber.options"
-                        :value="option.value"
-                        :key="index">
-                  {{ option.label }}
+                <Option
+                  v-for="(option, index) in maintenanceInfo.treeNumber.options"
+                  :value="option.value"
+                  :key="index">
+                  {{option.label}}
+                </Option>
+              </Select>
+              <Select
+                v-else
+                filterable
+                v-model="maintenanceInfo.treeNumber.model1"
+                :default-label="maintenanceInfo.treeNumber.model1"
+                @on-change="treeNumberOptionChangeSingle"
+                :remote-method="treeNumberRemoteMethod"
+                :loading="maintenanceInfo.treeNumber.loading">
+                <Option
+                  v-for="(option, index) in maintenanceInfo.treeNumber.options"
+                  :value="option.value"
+                  :label="option.label"
+                  :key="index">
                 </Option>
               </Select>
             </Col>
@@ -93,7 +112,6 @@ import { getCurrentWeather } from "@/api/yh_manage";
 import { queryTreeBasicProperty } from "@/api/table";
 import { getUserInfo } from "@/api/user";
 import { mapState } from "vuex";
-
 export default {
   name: 'BasicForm',
   props: {
@@ -105,11 +123,14 @@ export default {
   computed: {
     ...mapState('maintenanceForm', {
       loading: state => state.loading,
-    })
+      basicFormData: state => state.basicFormData,
+      otherFormData: state => state.otherFormData,
+      showFlag: state => state.showFlag
+    }),
   },
   data () {
     return {
-      treesCode: [],
+      flag: 1,
       weatherInfo: {
         city: '',
         wea: '',
@@ -133,7 +154,8 @@ export default {
         note: '',
         treeSpeciesInfo: '',
         treeNumber: {
-          model: '',
+          model1: '',
+          model: [],
           loading: false,
           list: [],
           options: [],
@@ -142,7 +164,6 @@ export default {
       },
     }
   },
-
   methods: {
     treeNumberRemoteMethod (query) {
       if (query !== '') {
@@ -156,99 +177,143 @@ export default {
             }
           })
           this.maintenanceInfo.treeNumber.options = list.filter(item => item.label.indexOf(query) > -1)
-        }, 200)
+        })
       } else {
         this.maintenanceInfo.treeNumber.options = []
       }
     },
-
-    treeNumberOptionChange (option) {
+    treeNumberOptionChange (options) {
       let treeSpeciesArray = []
-      this.treesCode.length = 0
-      for (let item of option) {
+      for (let item of options) {
         for (let property of this.treesBasicProperty) {
           if (property.tree_code.indexOf(item) > -1) {
             treeSpeciesArray.push(property.zw_name)
-            this.treesCode.push(property.tree_code)
           }
         }
       }
       this.maintenanceInfo.treeSpeciesInfo = treeSpeciesArray.join(', ')
     },
+    treeNumberOptionChangeSingle (option) {
+      for (let property of this.treesBasicProperty) {
+        if (property.tree_code.indexOf(option) > -1) {
+          this.maintenanceInfo.treeSpeciesInfo = property.zw_name
+        }
+      }
+    },
     handleConfirm () {
       const temp = {
-        trees: this.treesCode,
+        // trees: tempTrees,
         actual_time: this.maintenanceInfo.date,
         yh_username: this.maintenanceInfo.userName,
         growth_place: this.maintenanceInfo.location,
         note: this.maintenanceInfo.note,
         state: ''
       }
-      // 传给上一个组件后，记得清空
+      if (this.showFlag) {
+        temp.tree_code = this.maintenanceInfo.treeNumber.model1
+      } else {
+        temp.trees = this.maintenanceInfo.treeNumber.model
+      }
+
       let data = Object.assign({}, temp, this.weatherInfo)
+      // console.log('basicFormData', data)
       this.$emit('basicConfirm', data)
     },
     handleCancel () {
       this.$emit('basicCancel')
     },
+    handleDateChange (date) {
+      date = date.replace('年', '-').replace('月', '-').replace('日', '')
+      this.maintenanceInfo.date = date
+    },
+    monitorWindowChange () {
+      this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
+    }
   },
-  beforeMount () {
+  created () {
     const initializeWeatherInfo = () => {
-      getCurrentWeather('北京').then(message => {
-        this.weatherInfo.city = message.data.city
-        this.weatherInfo.wea = message.data.wea
-        this.weatherInfo.tem = message.data.tem
-        this.weatherInfo.tem1 = message.data.tem1
-        this.weatherInfo.tem2 = message.data.tem2
-        this.weatherInfo.humidity = message.data.humidity
-        this.weatherInfo.win = message.data.win
-        this.weatherInfo.win_speed = message.data.win_speed
-        this.weatherInfo.air_level = message.data.air_level
-        this.weatherInfo.alarm_type = message.data.alarm.alarm_type === '' ? '无预警' : message.data.alarm.alarm_type
-        this.weatherInfo.alarm_level = message.data.alarm.alarm_level === '' ? '无预警等级' : message.data.alarm.alarm_level
-        this.maintenanceInfo.weatherInfo = `当前城市：${this.weatherInfo.city}，天气情况：${this.weatherInfo.wea}，温度：${this.weatherInfo.tem}，最高温度：${this.weatherInfo.tem1}，最低温度：${this.weatherInfo.tem2}，湿度：${this.weatherInfo.humidity}，风力：${this.weatherInfo.win_speed}，空气质量：${this.weatherInfo.air_level}，预警：${this.weatherInfo.alarm_type}`
-      })
+      if (this.showFlag) {
+        this.maintenanceInfo.weatherInfo = this.basicFormData.weatherInfoStr
+        this.weatherInfo = this.basicFormData.weatherInfo
+      } else {
+        getCurrentWeather('北京').then(message => {
+          this.weatherInfo.city = message.data.city
+          this.weatherInfo.wea = message.data.wea
+          this.weatherInfo.tem = message.data.tem
+          this.weatherInfo.tem1 = message.data.tem1
+          this.weatherInfo.tem2 = message.data.tem2
+          this.weatherInfo.humidity = message.data.humidity
+          this.weatherInfo.win = message.data.win
+          this.weatherInfo.win_speed = message.data.win_speed
+          this.weatherInfo.air_level = message.data.air_level
+          this.weatherInfo.alarm_type = message.data.alarm.alarm_type === '' ? '无预警' : message.data.alarm.alarm_type
+          this.weatherInfo.alarm_level = message.data.alarm.alarm_level === '' ? '无预警等级' : message.data.alarm.alarm_level
+          this.maintenanceInfo.weatherInfo = `当前城市：${this.weatherInfo.city}，天气情况：${this.weatherInfo.wea}，温度：${this.weatherInfo.tem}，最高温度：${this.weatherInfo.tem1}，最低温度：${this.weatherInfo.tem2}，湿度：${this.weatherInfo.humidity}，风力：${this.weatherInfo.win_speed}，空气质量：${this.weatherInfo.air_level}，预警：${this.weatherInfo.alarm_type}`
+        })
+      }
     }
     initializeWeatherInfo()
 
     const initializeDateInfo = () => {
-      let dateInfo = new Date()
-      this.maintenanceInfo.date = `${dateInfo.getFullYear()}-${dateInfo.getMonth() + 1}-${dateInfo.getDate()}`
+      if (this.showFlag) {
+        this.maintenanceInfo.date = this.basicFormData.date
+      } else {
+        let dateInfo = new Date()
+        this.maintenanceInfo.date = `${dateInfo.getFullYear()}-${dateInfo.getMonth() + 1}-${dateInfo.getDate()}`
+      }
     }
     initializeDateInfo()
 
     const initializeTreeNumberList = () => {
+      if (this.showFlag) {
+        this.maintenanceInfo.treeNumber.model1 = this.basicFormData.treeNumber
+      }
       queryTreeBasicProperty().then(message => {
         this.treesBasicProperty = message.data.trees_basic_property
-        this.maintenanceInfo.treeNumber.list = this.treesBasicProperty.map((item) => {
+        this.maintenanceInfo.treeNumber.list = this.treesBasicProperty.map(item => {
           return item.tree_code
         })
+        if (this.showFlag) {
+          this.maintenanceInfo.treeNumber.options = this.maintenanceInfo.treeNumber.list.map(item => {
+            return {
+              label: item,
+              value: item
+            }
+          })
+        }
       })
     }
     initializeTreeNumberList()
-
     const getUserName = () => {
-      getUserInfo().then(message => {
-        this.maintenanceInfo.userName = message.data.current_user.username
-        this.maintenanceInfo.registerName = message.data.current_user.name
-      })
+      if (!this.showFlag) {
+        getUserInfo().then(message => {
+          this.maintenanceInfo.userName = message.data.current_user.username
+          this.maintenanceInfo.registerName = message.data.current_user.name
+        })
+      }
     }
     getUserName()
-  },
-  mounted () {
-    window.onresize = () => {
-      this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
+
+    const initializeOtherInfo = () => {
+      if (this.showFlag) {
+        this.maintenanceInfo.userName = this.basicFormData.userName
+        this.maintenanceInfo.registerName = this.basicFormData.registerName
+        this.maintenanceInfo.treeSpeciesInfo = this.basicFormData.treeSpeciesInfo
+        this.maintenanceInfo.location = this.basicFormData.location
+        this.maintenanceInfo.note = this.basicFormData.note
+      }
     }
+    initializeOtherInfo()
   },
   updated () {
     this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
-    window.onresize = () => {
-      this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
-    }
+    window.addEventListener('resize', this.monitorWindowChange)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.monitorWindowChange)
   }
 }
 </script>
 
 <style scoped>
-
 </style>

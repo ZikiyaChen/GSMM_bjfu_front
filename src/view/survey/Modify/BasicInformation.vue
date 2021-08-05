@@ -24,24 +24,31 @@
         <Row>
           <Col span="9" offset="1">
             <FormItem label="古树编号" prop="tree_code">
-              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" style="width: 200px" disabled></Input>
+              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" style="width: 200px"></Input>
             </FormItem>
           </Col>
           <Col span="9">
-            <FormItem label="调查顺序号" prop="Dong.investigate_id">
-              <Input v-model="TreeInformation.Dong.investigate_id" placeholder="请输入调查顺序号" style="width: 200px"></Input>
+            <FormItem label="调查时间" prop="Dong.investigate_time">
+              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="datetime" placeholder="请选择日期" style="width: 200px"></DatePicker>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="9" offset="1">
             <FormItem label="管护单位" prop="Base.gh_unit">
-              <Input v-model="TreeInformation.Base.gh_unit" placeholder="请输入管护单位名称" style="width: 200px"></Input>
+              <Select v-model="TreeInformation.Base.gh_unit" placeholder="选择管护单位名称" filterable @on-clear="GetGhUnit"
+                      @on-query-change="onGhUnitSelectQueryChange" clearable style="width: 200px" >
+                <Option v-for="item in ghUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+              </Select>
             </FormItem>
           </Col>
+
           <Col span="9">
-            <FormItem label="调查时间" prop="Dong.investigate_time">
-              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+            <FormItem label="调查单位" prop="Base.gh_unit">
+              <Select v-model="TreeInformation.Base.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetDcUnit"
+                      @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+              </Select>
             </FormItem>
           </Col>
 
@@ -51,18 +58,20 @@
           <Col span="9"  offset="1">
             <FormItem label="管护人" prop="Base.gh_username">
               <Select v-model="TreeInformation.Base.gh_username" placeholder="名字" filterable
-                      @on-query-change="onUserSelectQueryChange" clearable style="width: 150px" >
+                      @on-query-change="onGhUserSelectQueryChange" clearable style="width: 200px">
                 <Option v-for="item in ghUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
               </Select>
-<!--              <Input v-model="TreeInformation.Base.gh_username" placeholder="请输入管护人姓名" style="width: 200px"></Input>-->
             </FormItem>
           </Col>
-          <Col span="9">
-              <FormItem label="调查人" prop="Dong.username">
-                <Input v-model="TreeInformation.Dong.username" placeholder="请输入调查人姓名" style="width: 200px"></Input>
-              </FormItem>
-          </Col>
 
+          <Col span="9">
+            <FormItem label="调查人" prop="Base.dc_username">
+              <Select v-model="TreeInformation.Base.dc_username" placeholder="名字" filterable
+                      @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
         </Row>
 
         <Row>
@@ -73,10 +82,8 @@
 
           </Col>
           <Col span="9">
-            <FormItem label="树高" prop="Dong.height">
-              <Input v-model="TreeInformation.Dong.height" placeholder="请输入树高" style="width: 160px">
-                <span slot="append">m</span>
-              </Input>
+            <FormItem label="调查顺序号" prop="Dong.investigate_id">
+              <Input v-model="TreeInformation.Dong.investigate_id" placeholder="请输入调查顺序号" style="width: 200px"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -90,9 +97,9 @@
 
           </Col>
           <Col span="9">
-            <FormItem label="胸围" prop="Dong.bust">
-              <Input v-model="TreeInformation.Dong.bust" placeholder="请输入古树的胸围" style="width: 160px">
-                <span slot="append">cm</span>
+            <FormItem label="树高" prop="Dong.height">
+              <Input v-model="TreeInformation.Dong.height" placeholder="请输入树高" style="width: 160px">
+                <span slot="append">m</span>
               </Input>
             </FormItem>
           </Col>
@@ -103,6 +110,13 @@
               <RadioGroup v-model="TreeInformation.Base.is_signed">
                 <Radio v-for="item in IsSignedList" :label="item.value" :key="item.value">{{item.label}}</Radio>
               </RadioGroup>
+            </FormItem>
+          </Col>
+          <Col span="9">
+            <FormItem label="胸围" prop="Dong.bust">
+              <Input v-model="TreeInformation.Dong.bust" placeholder="请输入古树的胸围" style="width: 160px">
+                <span slot="append">cm</span>
+              </Input>
             </FormItem>
           </Col>
         </Row>
@@ -523,7 +537,7 @@
         </Row>
 
       </Form>
-      <float_bar  v-role="['管理员','调查组长','调查人员']">
+      <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center">
         <Button  @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
         <Button  @click="Save" type="primary" style="margin-right: 30px">保存修改</Button>
@@ -557,8 +571,8 @@ import {
   updateBasic, updateDynamic, updateBrand, updateGeo, updatePic, updateTjxmRecord,
   getOneTjxmRecord, queryTreeBasicProperty, queryTjxmRecord
 } from "@/api/table";
-import {ShowPic} from "@/api/upload";
-import {dateToString, forEach} from "@/libs/tools";
+import { ShowPic } from "@/api/upload";
+import { dateToString, forEach } from "@/libs/tools";
 import name from "@/view/tools-methods/name.json"
 import {
   brand_rightList, conserve_statusList, g_environmentList, g_vigorList,
@@ -571,21 +585,24 @@ import {
   reasonList, yhfz_statusList
 } from "@/view/survey/right_base_options";
 import Float_bar from "_c/FloatBar/float_bar";
-import {checkLat, checkLon} from "@/view/tools-methods/someValidateRule";
-import {PathToList} from "@/view/survey/options";
-import {queryUsers} from "@/api/user";
+import { checkLat, checkLon } from "@/view/tools-methods/someValidateRule";
+import { PathToList } from "@/view/survey/options";
+import { queryUnits, queryUsers } from "@/api/user";
 
 export default {
   name: "BasicInformation",
-  components: {Float_bar},
-  data :function () {
+  components: { Float_bar },
+  data: function () {
     return {
       timeIndex: 0,
       timeLineList: PathToList,
 
       showModal: false,
-      options:[],
+      options: [],
       ghUsers: [],
+      dcUsers: [],
+      ghUnits: [],
+      dcUnits: [],
       tree_code: this.$route.params.tree_code,
       TreeInformation: {
         tree_code: undefined,
@@ -615,6 +632,9 @@ export default {
           jd_record: '', // 树种鉴定记载
           gh_unit: '', // 管护单位
           gh_username: '', // 管护人
+          dc_unit: '',
+          dc_username: '',
+          investigate_time: '',
           is_signed: 0, // 是否签订管护责任书
           tree_code: '1',
         },
@@ -653,7 +673,6 @@ export default {
           history_pic: [], // 古树历史信息图片
           conserve_status: [], // 保护现状
           yhfz_status: [], // 养护复壮现状
-          username: '', // 调查人
           investigate_time: '', // 调查日期
           tree_code: '1',
         },
@@ -677,7 +696,7 @@ export default {
 
       },
 
-      tjxm_record:{
+      tjxm_record: {
         id: 0,
         t_id: 0,
         type: '基本信息',
@@ -710,84 +729,101 @@ export default {
       visible_b: false,
       i_b: 0,
 
-      visible_h:false,
+      visible_h: false,
       i_h: 0,
       historyPicUrlList: [],
 
-      visible_p:false,
+      visible_p: false,
       i_p: 0,
       PicUrlList: [],
 
-
       ruleValidate: {
         tree_code: [{ required: true, message: '请输入古树编号' }],
-        'Dong.investigate_id': [{ required: true,  message: '请输入调查顺序号' }],
+        'Dong.investigate_id': [{ required: true, message: '请输入调查顺序号' }],
         'Base.zw_name': [{ required: true, message: '请选择中文名' }],
         'Base.ld_name': [{ required: true, message: '请选择拉丁名' }],
         'Base.treetype': [{ required: true, message: '请选择科属种' }],
         'Base.genus': [{ required: true, message: '请选择属' }],
         'Dong.investigate_time': [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
-        'Dong.conserve_status':[{required:true, message: '请选择保护现状'}],
-        'Dong.yhfz_status':[{required:true, message: '请选择养护复状现状'}],
-        'Base.dizhi': [{required:true, message: '请选择'}],
-        'Base.level': [{required:true, message: '请选择'}],
-        'Dong.username':[{required:true, message: '请填写',trigger:'blur'}],
-        'Position.longitude':[{required:true, validator: checkLon, message: '请填写经度(-180~180,小数限7位)',trigger:'blur'}],
-        'Position.latitude':[{required:true, validator: checkLat, message: '请填写纬度(-90~90,小数限7位)',trigger:'blur'}],
-        'Base.owner':[{required:true, message: '请选择'}],
-        'Base.gh_unit':[{required:true, message: '请填写',trigger:'blur'}],
-        'Base.gh_username':[{required:true, message: '请选择',trigger:'blur'}],
-        'Dong.real_age':[{required:true, message: '请填写'}],
-        'Dong.height':[{required:true, message: '请填写',trigger:'blur'}],
-        'Dong.bust':[{required:true, message: '请填写',trigger:'blur'}],
-        'Dong.g_vigor':[{required:true, message: '请选择'}],
+        'Dong.conserve_status': [{ required: true, message: '请选择保护现状' }],
+        'Dong.yhfz_status': [{ required: true, message: '请选择养护复状现状' }],
+        'Base.dizhi': [{ required: true, message: '请选择' }],
+        'Base.level': [{ required: true, message: '请选择' }],
+        'Position.longitude': [{ required: true, validator: checkLon, message: '请填写经度(-180~180,小数限7位)', trigger: 'blur' }],
+        'Position.latitude': [{ required: true, validator: checkLat, message: '请填写纬度(-90~90,小数限7位)', trigger: 'blur' }],
+        'Base.owner': [{ required: true, message: '请选择' }],
+        'Base.gh_unit': [{ required: true, message: '请填写', trigger: 'change' }],
+        'Base.gh_username': [{ required: true, message: '请选择', trigger: 'change' }],
+        'Base.dc_unit': [{ required: true, message: '请填写', trigger: 'change' }],
+        'Base.dc_username': [{ required: true, message: '请选择', trigger: 'change' }],
+        'Dong.real_age': [{ required: true, message: '请填写' }],
+        'Dong.height': [{ required: true, message: '请填写', trigger: 'blur' }],
+        'Dong.bust': [{ required: true, message: '请填写', trigger: 'blur' }],
+        'Dong.g_vigor': [{ required: true, message: '请选择' }],
       },
 
     }
   },
-  created() {
+  created () {
     this.DataTurn(name.contents)
-
   },
-  methods : {
-    onUserSelectQueryChange (value) {
-      let args={}
-      // ############非管理员才会出现在下拉框中
-      args = { name_like: value, is_admin: false }
-      queryUsers(args).then((resp) => {
-        this.ghUsers = resp.data.users
+  methods: {
+    GetGhUnit () {
+      queryUnits().then(res => {
+        this.ghUnits = res.data.units
       })
     },
-    InitIndex(){
-      this.timeLineList.forEach((item,index)=>{
-        //执行代码
-        if(item.type === this.tjxm_record.type_yw){
-          console.log('index',index)
+    GetDcUnit () {
+      queryUnits().then(res => {
+        this.dcUnits = res.data.units
+      })
+    },
+    onGhUnitSelectQueryChange (value) {
+      queryUsers({ unit: value, is_yh: true }).then(res => {
+        this.ghUsers = res.data.users
+      })
+    },
+    onGhUserSelectQueryChange (value) {
+      queryUsers({ name_like: value, is_yh: true, unit: this.TreeInformation.Base.gh_unit }).then(res => {
+        this.ghUsers = res.data.users
+      })
+    },
+    onDcUnitSelectQueryChange (value) {
+      queryUsers({ unit: value, is_dc: true }).then(res => {
+        this.dcUsers = res.data.users
+      })
+    },
+    onDcUserSelectQueryChange (value) {
+      queryUsers({ name_like: value, is_dc: true, unit: this.TreeInformation.Base.dc_unit }).then(res => {
+        this.dcUsers = res.data.users
+      })
+    },
+    InitIndex () {
+      this.timeLineList.forEach((item, index) => {
+        // 执行代码
+        if (item.type === this.tjxm_record.type_yw) {
+          console.log('index', index)
           this.timeIndex = index
         }
       })
     },
 
-    Show(item){
-      console.log('^^^',item)
-
-      // /survey/update/BasicInformation/110131B03
-      this.$router.push({ path: item.path_to+`${this.tree_code}` })
+    Show (item) {
+      this.$router.push({ path: item.path_to + `${this.tree_code}` })
     },
-    changeActive(index) {
+    changeActive (index) {
       this.timeIndex = index;
     },
 
-    //将json数据转成级联选择器种的data形式
-    DataTurn(data){
-      var option=[]
-      var keArr=[]
-      var shuArr=[]
-      var nameArr=[]
-      var shuIndex={}
+    // 将json数据转成级联选择器种的data形式
+    DataTurn (data) {
+      var option = []
+      var keArr = []
+      var shuArr = []
+      var nameArr = []
+      var shuIndex = {}
       for (let [index, elem] of data.entries()) {
-
-        if(!keArr.includes(elem.ke)){//如果该科第一次被遍历到，那么直接将科属种全部加入
+        if (!keArr.includes(elem.ke)) { // 如果该科第一次被遍历到，那么直接将科属种全部加入
           keArr.push(elem.ke)
           shuArr.push(elem.shu)
 
@@ -800,70 +836,62 @@ export default {
               children: [{
                 value: elem.name,
                 label: elem.name,
-                children: [{ value:elem.lading, label: elem.lading}]
+                children: [{ value: elem.lading, label: elem.lading }]
               }]
             }]
           })
 
-          shuIndex[elem.shu]=option[option.length-1].children.length -1
+          shuIndex[elem.shu] = option[option.length - 1].children.length - 1
+        } else { // 该科不是第一次被遍历到, 即已被加入
+          let i = keArr.indexOf(elem.ke);// 找到该科第一次被加入时的索引位置
 
-        }else {//该科不是第一次被遍历到, 即已被加入
-          let i=keArr.indexOf(elem.ke);// 找到该科第一次被加入时的索引位置
-
-
-          if(!shuArr.includes(elem.shu)){//该科的属没有被加入,把该属及种加入
+          if (!shuArr.includes(elem.shu)) { // 该科的属没有被加入,把该属及种加入
             shuArr.push(elem.shu)
             option[i].children.push({
               value: elem.shu,
               label: elem.shu,
-              children:[{
+              children: [{
                 value: elem.name,
                 label: elem.name,
                 children: [{ value: elem.lading, label: elem.lading }]
               }]
             })
 
-            shuIndex[elem.shu]=option[i].children.length -1
-
-          }else {//如果该属被加入了。
+            shuIndex[elem.shu] = option[i].children.length - 1
+          } else { // 如果该属被加入了。
             option[i].children[shuIndex[elem.shu]].children.push({
               value: elem.name,
               label: elem.name,
-              children: [{ value: elem.lading, label: elem.lading}]
+              children: [{ value: elem.lading, label: elem.lading }]
             })
-
           }
-
         }
       }
-      this.options=option
-
-
+      this.options = option
     },
-    ok(){
+    ok () {
       this.showModal = false
       this.$router.push({ path: `/survey/environment/${this.tree_code}` })
-
     },
-    cancel(){
+    cancel () {
       this.showModal = false
     },
-    NextPage(){
-      queryTjxmRecord({'tree_code':this.tree_code,'type_yw':'environment'}).then((res=>{
-        console.log('%%%%',res)
-        if(res.data.total !== 0){
+    NextPage () {
+      queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'environment' }).then(res => {
+        console.log('%%%%', res)
+        if (res.data.total !== 0) {
           this.$router.push({ path: `/survey/environment/${this.tree_code}` })
-        }else {
+        } else {
           this.showModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
           // this.$router.push({ path: `/survey/environment/${this.tree_code}` })
         }
-      }))
+      })
     },
 
-    //获取初始的科属种级联选择器中的值进行格式化
-    getTreeType(base){
-      let typelist=[base.family,base.genus,base.zw_name,base.ld_name]
+    // 获取初始的科属种级联选择器中的值进行格式化
+    getTreeType (base) {
+      let typelist = [base.family, base.genus, base.zw_name, base.ld_name]
       this.TreeInformation.Base.treetype = typelist
     },
 
@@ -885,7 +913,6 @@ export default {
     //     this.TreeInformation.Base.ld_name = res.data.class_types[0].ld_name
     //   }))
     // },
-
 
     // // 科属种的级联选择器的数据
     // fetchOptions(){
@@ -932,29 +959,29 @@ export default {
     //   }))
     // },
 
-    //更新省市区街道信息
+    // 更新省市区街道信息
     regionChange (data) {
       console.log(data)
-      if(data.province!==null){
+      if (data.province !== null) {
         this.TreeInformation.Base.province = data.province.value
         this.TreeInformation.Position.province_code = data.province.key
       }
-      if(data.city!==null){
+      if (data.city !== null) {
         this.TreeInformation.Base.city = data.city.value
         this.TreeInformation.Position.city_code = data.city.key
       }
-      if(data.area!==null){
+      if (data.area !== null) {
         this.TreeInformation.Base.area = data.area.value
         this.TreeInformation.Position.area_code = data.area.key
       }
-      if(data.town!==null){
+      if (data.town !== null) {
         this.TreeInformation.Base.town = data.town.value
         this.TreeInformation.Position.town_code = data.town.key
       }
       console.log(this.TreeInformation)
     },
 
-    NowTree_code() {
+    NowTree_code () {
       console.error(this.tree_code)
     },
 
@@ -964,7 +991,7 @@ export default {
         desc: '文件 ' + file.name + '太大,不能超过 2M.'
       })
     },
-    Save(){
+    Save () {
       this.$refs.Tree_form.validate((valid) => {
         console.log(valid)
         if (valid) {
@@ -974,107 +1001,104 @@ export default {
           this.TreeInformation.Base.ld_name = this.TreeInformation.Base.treetype[3]
           this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
           this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
-          this.tjxm_record.username = this.TreeInformation.Dong.username
-          this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
-          this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
+          this.tjxm_record.username = this.TreeInformation.Base.dc_username
+          this.TreeInformation.Brand.update_time = this.TreeInformation.Dong.investigate_time
+          this.TreeInformation.Pic.update_time = this.TreeInformation.Dong.investigate_time
           this.tjxm_record.status = '待提交'
 
-
-          updateBasic(this.tree_code, this.TreeInformation.Base).then((base=>{
-            if(base.data.code === 200){
-              console.log('base',base.data)
-              updateDynamic(this.TreeInformation.Dong.id,this.TreeInformation.Dong).then((dynamic=>{
-                if(dynamic.data.code === 200){
-                  updateGeo(this.TreeInformation.Position.id,this.TreeInformation.Position).then((geo=>{
-                    if(geo.data.code === 200){
-                      console.log('xxxxpic',this.TreeInformation.Pic.path)
-                      updatePic(this.TreeInformation.Pic.id,this.TreeInformation.Pic).then((pic=>{
-                        if(pic.data.code === 200){
-                          updateBrand(this.TreeInformation.Brand.id,this.TreeInformation.Brand).then((brand=>{
-                            if(brand.data.code === 200){
-                              updateTjxmRecord(this.TreeInformation.Base.id,this.tjxm_record).then((tjxm=>{
-                                if(tjxm.data.code === 200){
+          updateBasic(this.tree_code, this.TreeInformation.Base).then(base => {
+            if (base.data.code === 200) {
+              console.log('base', base.data)
+              updateDynamic(this.TreeInformation.Dong.id, this.TreeInformation.Dong).then(dynamic => {
+                if (dynamic.data.code === 200) {
+                  updateGeo(this.TreeInformation.Position.id, this.TreeInformation.Position).then(geo => {
+                    if (geo.data.code === 200) {
+                      console.log('xxxxpic', this.TreeInformation.Pic.path)
+                      updatePic(this.TreeInformation.Pic.id, this.TreeInformation.Pic).then(pic => {
+                        if (pic.data.code === 200) {
+                          updateBrand(this.TreeInformation.Brand.id, this.TreeInformation.Brand).then(brand => {
+                            if (brand.data.code === 200) {
+                              updateTjxmRecord(this.TreeInformation.Base.id, this.tjxm_record).then(tjxm => {
+                                if (tjxm.data.code === 200) {
                                   this.$Message.success('修改保存成功')
                                   // setTimeout(()=>{
                                   //   this.$router.push({ path: `/survey/base_survey` })
                                   // },200)
                                 }
-                              }))
+                              })
                             }
-                          }))
+                          })
                         }
-                      }))
+                      })
                     }
-                  }))
+                  })
                 }
-              }))
+              })
             }
-          }))
-
-        }else {
+          })
+        } else {
           this.$Message.error('请填写完整信息')
         }
       })
     },
     Submit: function () {
-
       this.$refs.Tree_form.validate((valid) => {
-          console.log(valid)
-          if (valid) {
-            this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
-            this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
-            this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
-            this.TreeInformation.Base.ld_name = this.TreeInformation.Base.treetype[3]
-            this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
-            this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
-            this.tjxm_record.username = this.TreeInformation.Dong.username
-            this.TreeInformation.Brand.update_time=this.TreeInformation.Dong.investigate_time
-            this.TreeInformation.Pic.update_time=this.TreeInformation.Dong.investigate_time
-            this.tjxm_record.status = '已完成'
+        console.log(valid)
+        if (valid) {
+          this.TreeInformation.Base.family = this.TreeInformation.Base.treetype[0]
+          this.TreeInformation.Base.genus = this.TreeInformation.Base.treetype[1]
+          this.TreeInformation.Base.zw_name = this.TreeInformation.Base.treetype[2]
+          this.TreeInformation.Base.ld_name = this.TreeInformation.Base.treetype[3]
+          this.TreeInformation.Dong.investigate_time = dateToString(this.TreeInformation.Dong.investigate_time, 'yyyy-MM-dd hh:mm:ss')
+          this.TreeInformation.Base.investigate_time = this.TreeInformation.Dong.investigate_time
+          this.tjxm_record.username = this.TreeInformation.Base.dc_username
+          this.TreeInformation.Brand.update_time = this.TreeInformation.Dong.investigate_time
+          this.TreeInformation.Pic.update_time = this.TreeInformation.Dong.investigate_time
+          this.tjxm_record.status = '已完成'
 
-
-            updateBasic(this.tree_code, this.TreeInformation.Base).then((base=>{
-              if(base.data.code === 200){
-                console.log('base',base.data)
-                updateDynamic(this.TreeInformation.Dong.id,this.TreeInformation.Dong).then((dynamic=>{
-                  if(dynamic.data.code === 200){
-                    updateGeo(this.TreeInformation.Position.id,this.TreeInformation.Position).then((geo=>{
-                      if(geo.data.code === 200){
-                        console.log('xxxxpic',this.TreeInformation.Pic.path)
-                        updatePic(this.TreeInformation.Pic.id,this.TreeInformation.Pic).then((pic=>{
-                          if(pic.data.code === 200){
-                            updateBrand(this.TreeInformation.Brand.id,this.TreeInformation.Brand).then((brand=>{
-                              if(brand.data.code === 200){
-                                updateTjxmRecord(this.TreeInformation.Base.id,this.tjxm_record).then((tjxm=>{
-                                  if(tjxm.data.code === 200){
-                                    this.$Message.success('修改提交成功')
-                                    // setTimeout(()=>{
-                                    //   this.$router.push({ path: `/survey/base_survey` })
-                                    // },200)
-                                  }
-                                }))
-                              }
-                            }))
-                          }
-                        }))
-                      }
-                    }))
-                  }
-                }))
-              }
-            }))
-
-          }else {
-            this.$Message.error('请填写完整信息')
-          }
+          updateBasic(this.tree_code, this.TreeInformation.Base).then(base => {
+            if (base.data.code === 200) {
+              console.log('base', base.data)
+              updateDynamic(this.TreeInformation.Dong.id, this.TreeInformation.Dong).then(dynamic => {
+                if (dynamic.data.code === 200) {
+                  updateGeo(this.TreeInformation.Position.id, this.TreeInformation.Position).then(geo => {
+                    if (geo.data.code === 200) {
+                      console.log('xxxxpic', this.TreeInformation.Pic.path)
+                      updatePic(this.TreeInformation.Pic.id, this.TreeInformation.Pic).then(pic => {
+                        if (pic.data.code === 200) {
+                          updateBrand(this.TreeInformation.Brand.id, this.TreeInformation.Brand).then(brand => {
+                            if (brand.data.code === 200) {
+                              updateTjxmRecord(this.TreeInformation.Base.id, this.tjxm_record).then(tjxm => {
+                                if (tjxm.data.code === 200) {
+                                  this.$Message.success('修改提交成功')
+                                  // setTimeout(()=>{
+                                  //   this.$router.push({ path: `/survey/base_survey` })
+                                  // },200)
+                                }
+                              })
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+            }
+          })
+        } else {
+          this.$Message.error('请填写完整信息')
+        }
       })
-
     },
 
-    fetchData(){
-      getOneTreeBaseInfo(this.tree_code).then((res => {
-
-        console.log('one_tree',res.data)
+    fetchData () {
+      this.dcUnits = []
+      this.dcUsers = []
+      this.ghUnits = []
+      this.ghUsers = []
+      getOneTreeBaseInfo(this.tree_code).then(res => {
+        console.log('one_tree', res.data)
         this.TreeInformation.Base = res.data.tree_basic_info.basic
         this.TreeInformation.tree_code = this.tree_code
         this.TreeInformation.Position = res.data.tree_basic_info.geo
@@ -1082,43 +1106,45 @@ export default {
         this.TreeInformation.Brand = res.data.tree_basic_info.brand
         this.TreeInformation.Dong = res.data.tree_basic_info.dynamic
         this.tjxm_record = res.data.tree_basic_info.record
-        console.log('record',this.tjxm_record)
+        console.log('record', this.tjxm_record)
         this.picTurnUrl()
         this.getTreeType(this.TreeInformation.Base)
         // 初始化管护人列表 ghUsers
         this.ghUsers.push(this.TreeInformation.Base.gh_user)
-      }))
-
+        this.dcUsers.push(this.TreeInformation.Base.dc_user)
+        this.ghUnits.push({ 'unit': this.TreeInformation.Base.gh_unit })
+        this.dcUnits.push({ 'unit': this.TreeInformation.Base.dc_unit })
+      })
     },
-    picTurnUrl(){
-      if(this.TreeInformation.Dong.history_pic.length!==0) {
+    picTurnUrl () {
+      if (this.TreeInformation.Dong.history_pic.length !== 0) {
         this.TreeInformation.Dong.history_pic.forEach((pic_name) => {
-            ShowPic(pic_name).then((resp => {
-              this.historyPicUrlList.push(resp.data)
-            }))
+          ShowPic(pic_name).then(resp => {
+            this.historyPicUrlList.push(resp.data)
+          })
         })
       }
 
-      if(this.TreeInformation.Brand.brand_pic.length!==0) {
+      if (this.TreeInformation.Brand.brand_pic.length !== 0) {
         this.TreeInformation.Brand.brand_pic.forEach((pic_name) => {
-            ShowPic(pic_name).then((resp => {
-              this.brandPicUrlList.push(resp.data)
-            }))
+          ShowPic(pic_name).then(resp => {
+            this.brandPicUrlList.push(resp.data)
+          })
         })
       }
 
-      if(this.TreeInformation.Pic.path.length!==0) {
+      if (this.TreeInformation.Pic.path.length !== 0) {
         this.TreeInformation.Pic.path.forEach((pic_name) => {
-            ShowPic(pic_name).then((resp => {
-              this.PicUrlList.push(resp.data)
-            }))
+          ShowPic(pic_name).then(resp => {
+            this.PicUrlList.push(resp.data)
+          })
         })
       }
     },
 
-    //文化历史照片
+    // 文化历史照片
     handleView_history (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_h = true
     },
     handleRemoveList_history (index) {
@@ -1130,15 +1156,15 @@ export default {
       if (res.code === 500) {
         this.TreeInformation.Dong.history_pic.push(res.path)
         this.i_h++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.historyPicUrlList.push(resp.data)
-        }))
+        })
       }
     },
 
-    //树牌照片
+    // 树牌照片
     handleView_brand (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_b = true
     },
     handleRemoveList_brand (index) {
@@ -1150,15 +1176,15 @@ export default {
       if (res.code === 500) {
         this.TreeInformation.Brand.brand_pic.push(res.path)
         this.i_b++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.brandPicUrlList.push(resp.data)
-        }))
+        })
       }
     },
 
-    //古树照片
+    // 古树照片
     handleView_pic (imageUrl) {
-      this.showImageUrl =  imageUrl
+      this.showImageUrl = imageUrl
       this.visible_p = true
     },
     handleRemoveList_pic (index) {
@@ -1170,26 +1196,24 @@ export default {
       if (res.code === 500) {
         this.TreeInformation.Pic.path.push(res.path)
         this.i_p++
-        ShowPic(res.path).then((resp=>{
+        ShowPic(res.path).then(resp => {
           this.PicUrlList.push(resp.data)
-          console.log('&&&&&&pic',this.TreeInformation.Pic.path)
-        }))
+          console.log('&&&&&&pic', this.TreeInformation.Pic.path)
+        })
       }
     },
   },
 
-  mounted:function (){
+  mounted: function () {
     this.fetchData()
     this.InitIndex()
-
     // this.fetchOptions()
 
     // setTimeout(()=>{
     //   this.getTreeType(this.TreeInformation.Base)
     //
     // },400)
-    console.log('******',this.TreeInformation.Base.treetype)
-
+    console.log('******', this.TreeInformation.Base.treetype)
   },
 
   // watch: {
