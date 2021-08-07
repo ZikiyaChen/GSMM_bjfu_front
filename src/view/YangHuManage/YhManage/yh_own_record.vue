@@ -1,12 +1,11 @@
 <template>
   <div>
-
     <Card>
       <h1>个人养护记录</h1>
-      <br>
-      <record-add></record-add>
+      <Divider />
+      <record-add @confirmSuccess="handleConfirmSuccess"></record-add>
       <Table stripe :columns="columns" :data="data" border></Table>
-      <div style="margin: 10px;overflow: hidden">
+      <div style="margin:   10px;overflow: hidden">
         <div style="float: right;">
           <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
         </div>
@@ -241,6 +240,9 @@ export default {
         this.data = res.data.yh_records
         this.total = res.data.total
       })
+    },
+    handleConfirmSuccess() {
+      this.fetchData()
     },
     onShowTreeYhHistoryModalOK () {
       this.showTreeYhHistory = false

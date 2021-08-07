@@ -109,7 +109,7 @@
 
 <script>
 import { getCurrentWeather } from "@/api/yh_manage";
-import { queryTreeBasicProperty } from "@/api/table";
+import {queryTreeBasic, queryTreeBasicProperty} from "@/api/table";
 import { getUserInfo } from "@/api/user";
 import { mapState } from "vuex";
 export default {
@@ -216,7 +216,6 @@ export default {
       }
 
       let data = Object.assign({}, temp, this.weatherInfo)
-      // console.log('basicFormData', data)
       this.$emit('basicConfirm', data)
     },
     handleCancel () {
@@ -268,8 +267,8 @@ export default {
       if (this.showFlag) {
         this.maintenanceInfo.treeNumber.model1 = this.basicFormData.treeNumber
       }
-      queryTreeBasicProperty().then(message => {
-        this.treesBasicProperty = message.data.trees_basic_property
+      queryTreeBasic().then(message => {
+        this.treesBasicProperty = message.data.basic
         this.maintenanceInfo.treeNumber.list = this.treesBasicProperty.map(item => {
           return item.tree_code
         })
@@ -280,6 +279,9 @@ export default {
               value: item
             }
           })
+        }
+        if(this.showFlag && !this.basicFormData.treeSpeciesInfo){
+          this.treeNumberOptionChangeSingle(this.basicFormData.treeNumber)
         }
       })
     }
@@ -305,9 +307,14 @@ export default {
     }
     initializeOtherInfo()
   },
+  beforeMount() {
+
+  },
+  mounted(){
+    window.addEventListener('resize', this.monitorWindowChange)
+  },
   updated () {
     this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
-    window.addEventListener('resize', this.monitorWindowChange)
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.monitorWindowChange)

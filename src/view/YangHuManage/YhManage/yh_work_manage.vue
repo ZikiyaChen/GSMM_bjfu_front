@@ -2,7 +2,7 @@
   <div>
     <Card>
       <h1>养护任务结果管理</h1>
-      <br>
+      <Divider />
       <Table stripe :columns="columns" :data="data" border></Table>
       <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
@@ -23,6 +23,11 @@
         @recordCancel="handleRecordCancel"
         @recordConfirm="handleRecordConfirm">
       </display-update-record>
+      <task-insert
+        v-if="taskInsert.show"
+        @insertCancel="handleInsertCancel"
+        @insertConfirm="handleInsertConfirm"
+        :content="taskInsert"></task-insert>
     </Card>
   </div>
 </template>
@@ -34,14 +39,24 @@ import { queryYhRecords } from "@/api/yh_manage";
 import UserMixin from "@/mixin/UserMixin";
 import TreeYhHistory from "@/view/YangHuManage/YhManage/componnets/TreeYhHistory";
 import DisplayUpdateRecord from "@/view/YangHuManage/YhManage/componnets/DisplayUpdateRecord";
+import TaskInsert from "@/view/YangHuManage/YhManage/componnets/TaskInsert";
+import {queryTreeBasicProperty} from "@/api/table";
 export default {
   name: "yh_work_manage",
-  components: { DisplayUpdateRecord, TreeYhHistory },
+  components: { DisplayUpdateRecord, TreeYhHistory, TaskInsert},
   mixins: [UserMixin],
 
   data () {
     let that = this
     return {
+      taskInsert: {
+        show: false,
+        treeNumber: '',
+        type: '',
+        allotOrder: '',
+        userName: '',
+        registerName: ''
+      },
       showRecord: false,
       recordType: '',
       id: -1, // yh_record中的id
@@ -188,6 +203,13 @@ export default {
                 },
                 on: {
                   click: () => {
+                    console.log(params.row)
+                    this.taskInsert.show = true
+                    this.taskInsert.type = params.row.yh_type
+                    this.taskInsert.allotOrder = params.row.allot_order
+                    this.taskInsert.treeNumber = params.row.tree_code
+                    this.taskInsert.userName = params.row.yh_user.username
+                    this.taskInsert.registerName = params.row.yh_user.name
                   }
                 }
               }, '填写'),
@@ -273,12 +295,20 @@ export default {
     },
     handleRecordConfirm () {
       this.showRecord = false
+      this.fetchData()
     },
     onPageChange (page) {
       // 分页变化
       this.pages._page = page
       this.fetchData()
     },
+    handleInsertConfirm() {
+      this.taskInsert.show = false
+      this.fetchData()
+    },
+    handleInsertCancel() {
+      this.taskInsert.show = false
+    }
   },
   created () {
     this.fetchData()

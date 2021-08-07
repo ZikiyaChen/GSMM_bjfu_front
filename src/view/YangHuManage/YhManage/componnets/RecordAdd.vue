@@ -148,6 +148,7 @@ export default {
       this.result.state = '已完成'
       insertRecordByTypeSelf(this.projectName, this.result).then(message => {
         if (message.status === 200) {
+          this.$emit('confirmSuccess')
           this.$Message.success('提交成功')
         } else {
           this.$Message.error('提交失败')
