@@ -46,9 +46,7 @@ export default {
       if (type === 'cancel') {
         this.$emit('recordCancel')
       } else if (type === 'confirm') {
-        console.log('maintenanceId: ', this.maintenanceId)
         result.state = '已完成'
-        console.log('result', result)
         updateSpecificRecord(this.id, result).then(message => {
           console.log(message)
           this.$emit('recordConfirm')

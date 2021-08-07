@@ -29,6 +29,7 @@ Vue.use(ViewUI, {
 })
 Vue.use(TreeTable)
 Vue.use(VOrgTree)
+
 /**
  * @description 注册admin内置插件
  */

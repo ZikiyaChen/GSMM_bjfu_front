@@ -44,7 +44,7 @@ export default {
     ...mapState('maintenanceForm', {
       dailyMaintenanceData: state => state.otherFormData,
       showFlag: state => state.showFlag
-    })
+    }),
   },
   data () {
     return {

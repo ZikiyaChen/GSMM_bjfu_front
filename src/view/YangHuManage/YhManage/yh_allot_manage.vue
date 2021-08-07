@@ -1,9 +1,17 @@
 <template>
   <div>
-    <task-assignment></task-assignment>
+    <Button
+      type="info"
+      @click="handleTaskAssignmentClick">
+      任务分配
+    </Button>
+    <task-assignment
+      v-if="showTaskModal"
+      :showTaskModal="showTaskModal"
+      @taskAssignmentCancel="handleTaskAssignmentClick"></task-assignment>
     <Card>
       <h1>养护任务分配---只显示分配的工单</h1>
-      <br>
+      <Divider />
       <Table stripe :columns="columns" :data="data" border></Table>
       <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
@@ -30,6 +38,7 @@ export default {
   mixins: [UserMixin],
   data () {
     return {
+      showTaskModal: false,
       query: {
         group_name: undefined
       },
@@ -184,7 +193,7 @@ export default {
     onPageChange (page) {
       // 分页变化
       this.pages._page = page
-      this.fetchData()
+
     },
     fetchData () {
       let args = { ...this.query, ...this.pages }
@@ -192,8 +201,11 @@ export default {
         this.data = resp.data.yh_allots
         this.total = resp.data.total
       })
+    },
+    handleTaskAssignmentClick() {
+      this.showTaskModal = !this.showTaskModal
+      this.fetchData()
     }
-
   },
   mounted () {
     this.fetchData()

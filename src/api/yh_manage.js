@@ -168,3 +168,10 @@ export const updateSpecificRecord = (id, data) => {
     data: data
   })
 }
+export const insertRecordByTypeAssignment = (type, id, data) => {
+  return axios.request({
+    url: `insert_record_by_type_fenpei/${type}/${id}`,
+    method: 'post',
+    data: data
+  })
+}

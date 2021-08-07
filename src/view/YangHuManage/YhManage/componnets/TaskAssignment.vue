@@ -1,12 +1,7 @@
 <template>
   <div>
-    <Button
-      type="info"
-      @click="handleTaskAssignmentClick">
-      任务分配
-    </Button>
     <Modal
-      v-model="taskModal"
+      :value="taskModal"
       title="任务分配"
       @on-ok="handleTaskConfirm"
       @on-cancel="handleTaskCancel">
@@ -72,15 +67,19 @@
 </template>
 
 <script>
-import { queryTreeBasicProperty } from "@/api/table";
+import {queryTreeBasic, queryTreeBasicProperty} from "@/api/table";
 import { insertMaintenanceAllot, queryYhOptions } from "@/api/yh_manage";
 import { queryGroupUsers, queryUnitUsers } from "@/api/user";
 
 export default {
   name: 'TaskAssignment',
+  props:{
+    showTaskModal: Boolean,
+    default: false
+  },
   data () {
     return {
-      taskModal: false,
+      taskModal: this.showTaskModal,
       treesCode: [],
       leaderName: '',
       taskInfo: {
@@ -108,11 +107,9 @@ export default {
     }
   },
   methods: {
-    handleTaskAssignmentClick () {
-      this.taskModal = true
-    },
     handleTaskCancel () {
       this.taskModal = false
+      this.$emit('taskAssignmentCancel')
     },
     handleTaskConfirm () {
       const findUserName = (currentName) => {
@@ -124,7 +121,6 @@ export default {
         }
       }
       let yh_username = findUserName(this.taskInfo.maintenancePeople.currentName)
-      console.log(yh_username)
       let result = {
         trees: this.treesCode,
         yh_username: yh_username,
@@ -176,16 +172,16 @@ export default {
       this.taskInfo.maintenanceDate = date
     },
     monitorWindowChange () {
-      this.$refs.datePicker.$el.style.width = this.$refs.registerInput.$el.offsetWidth + 'px'
+      this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
     }
   },
   created () {
     const initializeTreeNumberList = () => {
-      queryTreeBasicProperty().then(message => {
-        this.taskInfo.treeNumber.list = message.data.trees_basic_property.map((item) => {
-          return item.tree_code
+        queryTreeBasic().then(message => {
+          this.taskInfo.treeNumber.list = message.data.basic.map(item => {
+            return item.tree_code
+          })
         })
-      })
     }
     initializeTreeNumberList()
 
@@ -209,7 +205,6 @@ export default {
 
     const initializeMaintenancePeople = () => {
       queryUnitUsers({ is_yh: true }).then(message => {
-        console.log(message)
         for (let item of message.data.users) {
           this.taskInfo.maintenancePeople.list.push(item.name)
           this.taskInfo.maintenancePeople.nameMap[item.username] = item.name
@@ -234,9 +229,11 @@ export default {
     initializeDateInfo()
   },
 
+  mounted() {
+    window.addEventListener('resize', this.monitorWindowChange)
+  },
   updated () {
     this.$refs.datePicker.$el.style.width = this.$refs.maintenancePeopleSelect.$el.offsetWidth + 'px'
-    window.addEventListener('resize', this.monitorWindowChange)
   },
   beforeDestroy(){
     window.removeEventListener('resize', this.monitorWindowChange)
