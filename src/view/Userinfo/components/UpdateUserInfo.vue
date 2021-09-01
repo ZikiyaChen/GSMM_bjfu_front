@@ -48,7 +48,7 @@
           <!--<span >身份:</span>-->
           <FormItem label="身份:" prop="role_names">
             <CheckboxGroup v-model="user.role_names">
-              <Checkbox v-for="role in roles" :label="role" :key="'key_'+role" :disabled="is_not_show">
+              <Checkbox v-for="role in roles" :label="role" :key="'key_'+role" >
                 <span>{{ role }}</span>
               </Checkbox>
             </CheckboxGroup>
@@ -70,6 +70,7 @@ import { GetUserByUsername, changePassword } from "@/api/user";
 import { updateWithinField } from "@/libs/tools";
 // eslint-disable-next-line no-unused-vars
 import { getToken } from "@/libs/util";
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: "UpdateUserInfo",
@@ -78,8 +79,9 @@ export default {
     show: Boolean,
     onCancel: Function,
     onOK: Function,
-    username: ''
+    selected_username: ''
   },
+  mixins: [UserMixin],
   data: function () {
     return {
       is_not_show: true,
@@ -94,7 +96,8 @@ export default {
         unit: '',
         role_names: []
       },
-      roles: ['管理员'],
+      // roles: ['管理员'],
+      roles: [],
       sexList: ['男', '女'],
       ruleValidate: {
         username: [{ required: true, message: 'the username can not be empty', trigger: 'blur' }],
@@ -154,21 +157,34 @@ export default {
         }
       })
     },
+    // onShowChange: function (show) {
+    //   if (show) {
+    //     // 显示的时候拉数据
+    //     GetUserByUsername(this.username).then((resp) => {
+    //       updateWithinField(this.user, resp.data.user)
+    //       if (resp.data.user.role_names.length === 0 || resp.data.user.role_names.includes('管理员')) {
+    //         this.is_not_show = false
+    //       } else {
+    //         this.is_not_show = true
+    //       }
+    //     })
+    //   }
+    // },
     onShowChange: function (show) {
       if (show) {
+        if(this.access.includes('超级管理员')){
+          this.roles = ['超级管理员','单位管理员','养护人员','调查人员']
+        }else {
+          this.roles = ['养护人员','调查人员']
+        }
         // 显示的时候拉数据
-        GetUserByUsername(this.username).then((resp) => {
+        GetUserByUsername(this.selected_username).then((resp) => {
           updateWithinField(this.user, resp.data.user)
-          if (resp.data.user.role_names.length === 0 || resp.data.user.role_names.includes('管理员')) {
-            this.is_not_show = false
-          } else {
-            this.is_not_show = true
-          }
         })
       }
     },
     changepassword: function (passwd) {
-      changePassword(this.username, { 'password': passwd }).then((resp) => {
+      changePassword(this.selected_username, { 'password': passwd }).then((resp) => {
         if (resp.data.code === 200) {
           this.$Message.success('修改成功！')
         }

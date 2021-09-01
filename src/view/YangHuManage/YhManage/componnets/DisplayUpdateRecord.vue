@@ -49,6 +49,11 @@ export default {
         result.state = '已完成'
         updateSpecificRecord(this.id, result).then(message => {
           console.log(message)
+          if(message.data.code === 200){
+            this.$Message.success('修改成功')
+          }else {
+            this.$Message.error('修改失败')
+          }
           this.$emit('recordConfirm')
         })
       }
@@ -88,7 +93,7 @@ export default {
     const initializeFormData = () => {
       getSpecificRecord(this.recordType, this.maintenanceId).then(message => {
         let specificRecord = message.data.specific_record
-        let tempWeatherInfoStr = `当前城市：${specificRecord.growth_place}，天气情况：${specificRecord.wea}，温度：${specificRecord.tem}，最高温度：${specificRecord.tem1}，最低温度：${specificRecord.tem2}，湿度：${specificRecord.humidity}，风力：${specificRecord.win_speed}，空气质量：${specificRecord.air_level}，预警：${specificRecord.alarm_type}`
+        let tempWeatherInfoStr = `当前城市：北京，天气情况：${specificRecord.wea}，温度：${specificRecord.tem}，最高温度：${specificRecord.tem1}，最低温度：${specificRecord.tem2}，湿度：${specificRecord.humidity}，风力：${specificRecord.win_speed}，空气质量：${specificRecord.air_level}，预警：${specificRecord.alarm_type}`
         let tempWeatherInfo = {
           // city: specificRecord.growth_place,
           wea: specificRecord.wea,

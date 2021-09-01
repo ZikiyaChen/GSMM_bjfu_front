@@ -1,6 +1,9 @@
 <template>
   <div id="root">
-    <Button @click="modalAdd = true">添加</Button>
+    <h1>古树养护工作项目分类</h1>
+    <br>
+    <Button @click="modalAdd = true" type="primary">添加</Button>
+    <br>
     <Modal
       v-model="modalAdd"
       title="请输入要添加的信息"
@@ -9,6 +12,15 @@
       <Input v-model="inputType" placeholder="请输入养护类型" style="margin:5px"/>
       <Input v-model="inputProject" placeholder="请输入具体养护项目" style="margin:5px"/>
       <Input v-model="inputMethod" placeholder="请输入处理方法" style="margin:5px"/>
+    </Modal>
+    <Modal
+      v-model="editModal"
+      title="请修改信息"
+      @on-ok="handleChange"
+      @on-cancel="handleCancel">
+      <Input v-model="editType" style="margin:5px"/>
+      <Input v-model="editProject" style="margin:5px"/>
+      <Input v-model="editMethod" style="margin:5px"/>
     </Modal>
     <br>
     <Table v-if="isRouterAlive" :columns="columns" :data="orderedData" border :span-method="handleSpan" disabled-hover>
@@ -29,20 +41,12 @@
 
       <template slot-scope="{ row, index }" slot="action">
         <div>
-          <Button @click="handleEdit(row, index)" size="small">修改</Button>
-          <Modal
-            v-model="editModal"
-            title="请修改信息"
-            @on-ok="handleChange"
-            @on-cancel="handleCancel">
-            <Input v-model="editType" style="margin:5px"/>
-            <Input v-model="editProject" style="margin:5px"/>
-            <Input v-model="editMethod" style="margin:5px"/>
-          </Modal>
-          <Button @click="handleDelete(row)" type="error" size="small">删除</Button>
+          <Button @click="handleEdit(row, index)" size="small" type="primary">修改</Button>
+          <Button @click="handleDelete(row)" type="error" size="small" style="margin-left: 10px">删除</Button>
         </div>
       </template>
     </Table>
+
 
   </div>
 

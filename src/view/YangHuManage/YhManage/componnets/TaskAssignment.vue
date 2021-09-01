@@ -2,7 +2,7 @@
   <div>
     <Modal
       :value="taskModal"
-      title="任务分配"
+      title="任务分配添加"
       @on-ok="handleTaskConfirm"
       @on-cancel="handleTaskCancel">
       <Form :model="taskInfo" label-position="left" :label-width="100">
@@ -70,6 +70,7 @@
 import {queryTreeBasic, queryTreeBasicProperty} from "@/api/table";
 import { insertMaintenanceAllot, queryYhOptions } from "@/api/yh_manage";
 import { queryGroupUsers, queryUnitUsers } from "@/api/user";
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: 'TaskAssignment',
@@ -77,6 +78,7 @@ export default {
     showTaskModal: Boolean,
     default: false
   },
+  mixins: [UserMixin],
   data () {
     return {
       taskModal: this.showTaskModal,
@@ -126,7 +128,7 @@ export default {
         yh_username: yh_username,
         yh_type: this.taskInfo.maintenanceType.currentType,
         predict_time: this.taskInfo.maintenanceDate,
-        create_by: this.leaderName
+        create_by: this.username
       }
       insertMaintenanceAllot(result).then(message => {
         if (message.status === 200) {
@@ -134,6 +136,7 @@ export default {
         } else {
           this.$Message.error('提交失败')
         }
+        this.$emit('taskAssignmentConfirm')
       }).catch(error => {
         console.log(error)
         this.$Message.warning('请勿同一时间提交相同记录')

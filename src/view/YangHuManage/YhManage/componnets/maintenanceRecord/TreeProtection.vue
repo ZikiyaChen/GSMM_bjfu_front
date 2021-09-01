@@ -108,6 +108,20 @@ export default {
       this.measureQuality.contentStr = value
     },
     handleProtectionMeasureChange (option) {
+      if(option.length !== 0) {
+        queryYhOptions({yh_type: '树体保护措施', project: option[option.length-1]}).then(res => {
+          this.handleMethod.methods = []
+          let classify = res.data.yh_classify
+          for (let item of classify) {
+            if (item.yh_type === '树体保护措施') {
+              this.handleMethod.methods.push({
+                label: item.method,
+                value: item.method
+              })
+            }
+          }
+        })
+      }
       this.protectionMeasure.projectsStr = option.join(',')
     },
     handleMethodChange (option) {
@@ -148,20 +162,41 @@ export default {
     }
     initializeProtectionMeasureProjects()
 
+    // const initializeHandleMethod = () => {
+    //   queryYhOptions().then(message => {
+    //     let classify = message.data.yh_classify
+    //     for (let item of classify) {
+    //       if (item.yh_type === '树体保护措施') {
+    //         this.handleMethod.methods.push({
+    //           label: item.method,
+    //           value: item.method
+    //         })
+    //       }
+    //     }
+    //   })
+    // }
+    // initializeHandleMethod()
+
     const initializeHandleMethod = () => {
-      queryYhOptions().then(message => {
-        let classify = message.data.yh_classify
-        for (let item of classify) {
-          if (item.yh_type === '树体保护措施') {
-            this.handleMethod.methods.push({
-              label: item.method,
-              value: item.method
-            })
+      console.log('@',this.otherFormData.projects)
+      if(this.otherFormData.projects !== undefined) {
+        queryYhOptions({yh_type: '树体保护措施', project: this.otherFormData.projects[0]}).then(message => {
+          let classify = message.data.yh_classify
+          for (let item of classify) {
+            if (item.yh_type === '树体保护措施') {
+              this.handleMethod.methods.push({
+                label: item.method,
+                value: item.method
+              })
+            }
           }
-        }
-      })
+        })
+      }
     }
     initializeHandleMethod()
+
+
+
 
     const initializeTypicalData = () => {
       if (this.showFlag) {

@@ -9,7 +9,7 @@
           </Input>
         </FormItem>
 
-        <FormItem label="单位：" prop="unit">
+        <FormItem label="单位：" prop="unit" v-role="['超级管理员']">
           <AutoComplete
             v-model="query.unit"
             placeholder="输入或选择"
@@ -40,7 +40,7 @@
       :show="showUserUpdateModal"
       @onOK="onUpdateUserModalOK"
       @onCancel="onUpdateUserModalCancel"
-      :username="this.selected_username"
+      :selected_username="this.selected_username"
     ></UpdateUserInfo>
     <AddNewUserModal
       :show="showAddNewUserModal"
@@ -53,7 +53,6 @@
 <script>
 import { AddUser, queryUnits, queryUnitUsers, updateUser } from "@/api/user";
 import AddNewUserModal from "@/view/UserManage/components/AddNewUserModal";
-import { getToken } from "@/libs/util";
 import UpdateUserInfo from "@/view/Userinfo/components/UpdateUserInfo";
 export default {
   name: "index",

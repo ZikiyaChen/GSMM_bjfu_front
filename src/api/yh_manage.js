@@ -99,7 +99,8 @@ export const deleteYhOptions = (id) => {
 
 export const getCurrentWeather = () => {
   return axios.request({
-    url: 'https://tianqiapi.com/api?version=v6&appid=91325957&appsecret=D2VFoOra',
+    // url: 'https://tianqiapi.com/api?version=v6&appid=91325957&appsecret=D2VFoOra',
+    url: 'http://tianqiapi.com/api?version=v6&appid=61978259&appsecret=ktrYN6ua',
     method: 'get'
   })
 }
@@ -112,13 +113,63 @@ export const queryYhRecords = (params) => {
     params: params
   })
 }
-
+// 删除yh_record， 传的是yh_record的id
+export const deleteYhRecord = (id) =>{
+  return axios.request({
+    url: 'delete_yh_record/'+id,
+    method: 'delete',
+    id: id
+  })
+}
 // yh_allot 任务分配的工单
 export const queryYhAllots = (params) => {
   return axios.request({
     url: 'yh_allots',
     method: 'get',
     params: params
+  })
+}
+
+export const deleteYhAllot = (id) =>{
+  return axios.request({
+    url: 'delete_yh_allot/'+ id,
+    method: 'delete',
+    id: id
+  })
+}
+
+// 从YhAllot中 删除 某个 还未做 的树的任务
+export const deleteTreeInYhAllot = (id) =>{
+  return axios.request({
+    url: 'delete_yh_record_from_allot/'+ id,
+    method: 'delete',
+    id: id
+  })
+}
+
+export const getYhAllot = (id) =>{
+  return axios.request({
+    url: 'get_yh_allot/'+ id,
+    method: 'get',
+    id: id
+  })
+}
+
+export const updateYhAllot = (id,data) =>{
+  return axios.request({
+    url: 'update_yh_allot/'+ id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+
+export const  addTreeToAllot = (id, data) =>{
+  return axios.request({
+    url: 'add_tree_to_allot/'+ id,
+    method: 'put',
+    id: id,
+    data: data
   })
 }
 
@@ -135,6 +186,30 @@ export const getPestName = () => {
   return axios.request({
     url: 'bch_names',
     method: 'get'
+  })
+}
+
+export const AddPestName = (data) => {
+  return axios.request({
+    url: 'insert_bch_names',
+    method: 'post',
+    data: data
+  })
+}
+
+export const updatePestNames = (id, data) => {
+  return axios.request({
+    url: 'update_bch_name/' + id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+export const deletePestName = (id) => {
+  return axios.request({
+    url: 'delete_bch_name/' + id,
+    method: 'delete',
+    id: id
   })
 }
 
@@ -175,3 +250,4 @@ export const insertRecordByTypeAssignment = (type, id, data) => {
     data: data
   })
 }
+

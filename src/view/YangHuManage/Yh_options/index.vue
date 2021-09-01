@@ -11,7 +11,7 @@
   </Tabs>
 
     <template v-if="select_tag==='日常养护管理'">
-      <DailyManage></DailyManage>
+      <index></index>
     </template>
     <template v-else-if="select_tag==='修剪'">
       <xiujian></xiujian>
@@ -33,9 +33,10 @@ import DailyManage from "@/view/YangHuManage/Yh_options/measures/DailyManage";
 import Xiujian from "@/view/YangHuManage/Yh_options/measures/xiujian";
 import ShutiProtect from "@/view/YangHuManage/Yh_options/measures/ShutiProtect";
 import EnvironmentProtect from "@/view/YangHuManage/Yh_options/measures/EnvironmentProtect";
+import index from "@/view/OptionManage/yh_classify_options/index";
 export default {
   name: "index",
-  components: {EnvironmentProtect, ShutiProtect, Xiujian, DailyManage},
+  components: {EnvironmentProtect, ShutiProtect, Xiujian, DailyManage, index},
   data(){
     return{
       select_tag: '日常养护管理'

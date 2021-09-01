@@ -46,49 +46,85 @@
     </template>
 
     <template v-slot:other>
-      <FormItem label="生长状态描述">
-        <Col span="4">
+      <Row>
+        <Col span="9">
+          <FormItem label="生长状态描述">折枝
           <Select
             :default-label="growthStatus.model"
             v-model="growthStatus.model"
-            @on-change="handleFoldingBranchesChange">
+            @on-change="handleFoldingBranchesChange" style="width: 150px">
             <Option v-for="item in growthStatus.foldingBranches"
                     :value="item.value"
                     :key="item.value">{{ item.label }}
             </Option>
           </Select>
+          </FormItem>
         </Col>
-        <Col span="4">
+        <Col span="7">
+          <FormItem label="方向">
           <Input
-            style="padding-right:2px"
             v-model="growthStatus.direction"
             placeholder="方向"></Input>
+          </FormItem>
         </Col>
-        <Col span="4">
+
+
+        <Col span="8">
+          <FormItem label="长度">
           <Input
-            style="padding-right:2px"
+
             v-model="growthStatus.length"
             placeholder="长度"></Input>
+          </FormItem>
         </Col>
-        <Col span="4">
+      </Row>
+      <Row>
+        <Col span="9">
+          <FormItem>直径
           <Input
-            style="padding-right:2px"
+            style="width: 150px"
             v-model="growthStatus.diameter"
             placeholder="直径"></Input>
+          </FormItem>
         </Col>
-        <Col span="4">
-          <Input
-            style="padding-right:2px"
-            v-model="growthStatus.surroundings"
-            placeholder="周边环境"></Input>
+
+        <Col span="7">
+          <FormItem label="周边环境">
+<!--          <Input-->
+<!--            style="padding-right:2px"-->
+<!--            v-model="growthStatus.surroundings"-->
+<!--            placeholder="周边环境"></Input>-->
+            <Select
+              :default-label="growthStatus.surroundings"
+              v-model="growthStatus.surroundings"
+              @on-change="handleGrowthSurroundingsChange">
+              <Option v-for="item in growthStatus.surroundingsList"
+                      :value="item.value"
+                      :key="item.value">{{ item.label }}
+              </Option>
+            </Select>
+          </FormItem>
         </Col>
-        <Col span="4">
-          <Input
-            style="padding-right:2px"
-            v-model="growthStatus.growStatus"
-            placeholder="生长状态"></Input>
+        <Col span="8">
+          <FormItem label="生长现状">
+<!--          <Input-->
+<!--            style="padding-right:2px"-->
+<!--            v-model="growthStatus.growStatus"-->
+<!--            placeholder="生长状态"></Input>-->
+
+            <Select
+              :default-label="growthStatus.growStatus"
+              v-model="growthStatus.growStatus"
+              @on-change="handleGrowthStatusChange">
+              <Option v-for="item in growthStatus.growStatusList"
+                      :value="item.value"
+                      :key="item.value">{{ item.label }}
+              </Option>
+            </Select>
+          </FormItem>
         </Col>
-      </FormItem>
+      </Row>
+
 
       <FormItem label="施工影响描述">
         <Input v-model="constructionImpact"></Input>
@@ -137,7 +173,9 @@ export default {
         length: '',
         diameter: '',
         surroundings: '',
-        growStatus: ''
+        surroundingsList: ['杂树影响','陡坡','板结','铺装地面'],
+        growStatus: '',
+        growStatusList: ['无明显变化','好转','呈继续衰弱趋势']
       },
       constructionImpact: '',
       waitingPeriod: ''
@@ -148,20 +186,30 @@ export default {
       this.$emit('cancelOrConfirm', 'cancel', null)
     },
     handleInspectionChange (value) {
-      this.inspection.qualitiesStr = value
+      // this.inspection.qualitiesStr = value
+      this.inspection.model = value
     },
     handleGrowthPotentialChange (value) {
-      this.growthPotential.statusStr = value
+      // this.growthPotential.statusStr = value
+      this.growthPotential.model = value
     },
     handleFoldingBranchesChange (value) {
       this.growthStatus.foldingBranchesInt = value === '是' ? 1 : 0
+    },
+    handleGrowthSurroundingsChange(value){
+      this.growthStatus.surroundings = value
+    },
+    handleGrowthStatusChange(value){
+      this.growthStatus.growStatus = value
     },
     handleBasicConfirm (data) {
       let lengthTemp = parseFloat(this.growthStatus.length)
       let diameterTemp = parseFloat(this.growthStatus.diameter)
       const temp = {
-        project: this.inspection.qualitiesStr,
-        g_vigor: this.growthPotential.statusStr,
+        // project: this.inspection.qualitiesStr,
+        project: this.inspection.model,
+        // g_vigor: this.growthPotential.statusStr,
+        g_vigor: this.growthPotential.model,
         is_massage: this.growthStatus.foldingBranchesInt,
         direction: this.growthStatus.direction,
         length: lengthTemp,
@@ -196,6 +244,26 @@ export default {
       })
     }
     initializeGrowthPotential()
+
+    const initializeSurroundings = () => {
+      this.growthStatus.surroundingsList = this.growthStatus.surroundingsList.map(item => {
+        return {
+          label: item,
+          value: item
+        }
+      })
+    }
+    initializeSurroundings()
+
+    const initializeGrowStatusList = () => {
+      this.growthStatus.growStatusList = this.growthStatus.growStatusList.map(item => {
+        return {
+          label: item,
+          value: item
+        }
+      })
+    }
+    initializeGrowStatusList()
 
     const initializeFoldingBranches = () => {
       this.growthStatus.foldingBranches = this.growthStatus.foldingBranches.map(item => {

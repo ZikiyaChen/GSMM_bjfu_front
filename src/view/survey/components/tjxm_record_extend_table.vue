@@ -1,12 +1,31 @@
 <template>
   <Card>
     <Table :show-header="true" :data="data" :columns="columns"></Table>
+    <Modal
+      v-model="deleteConfirmModal"
+      :selected_object="deleteObject"
+      :loading="loading">
+      <p slot="header" style="color:#ff9900;text-align:center; font-size: 16px">
+        <Icon type="ios-information-circle"></Icon>
+        <span>删除确认</span>
+      </p>
+      <div style="text-align:center; font-size: 16px">
+        <p>删除后不可取消，请确认是否删除？</p>
+        <P>确认删除请点击“删除”，否则点击“取消”按钮。</P>
+        <p></p>
+      </div>
+      <div slot="footer" style="text-align: center">
+        <Button type="error" size="large"  @click="ConfirmDelete">删除</Button>
+        <Button size="large" @click="CancelDelete">取消</Button>
+      </div>
+    </Modal>
 
   </Card>
 </template>
 
 <script>
 import { deleteTjxmRecord, queryTjxmRecord } from "@/api/table";
+import {deleteYhAllot} from "@/api/yh_manage";
 
 export default {
   name: "tjxm_record_extend_table",
@@ -15,6 +34,10 @@ export default {
   },
   data: function () {
     return {
+      deleteConfirmModal: false,
+      deleteObject: undefined,
+      loading: true,
+
       data: [],
       columns: [
         {
@@ -90,7 +113,7 @@ export default {
               // }, '查看'),
               h('Button', {
                 props: {
-                  type: 'error',
+                  type: 'primary',
                   size: 'small'
                 },
                 directives: [{
@@ -103,7 +126,6 @@ export default {
                 },
                 on: {
                   click: () => {
-                    console.log('编辑', params)
                     if (params.row.type_yw === 'BasicInformation') {
                       this.$router.push({ path: `/survey/update/` + params.row.type_yw + `/${params.row.tree_code}` })
                     } else {
@@ -111,10 +133,10 @@ export default {
                     }
                   }
                 }
-              }, '修改'),
+              }, '编辑'),
               h('Button', {
                 props: {
-                  type: 'primary',
+                  type: 'success',
                   size: 'small'
                 },
                 directives: [{
@@ -149,14 +171,8 @@ export default {
                 on: {
                   click: () => {
                     console.log('删除', params)
-                    deleteTjxmRecord(params.row).then(res => {
-                      if (res.data.code === 200) {
-                        this.$Message.success('删除成功')
-                        this.fetchTjxmRecord()
-                      } else {
-                        this.$Message.error('删除失败')
-                      }
-                    })
+                    this.deleteObject = params.row
+                    this.deleteConfirmModal = true
                   }
                 }
               }, '删除')
@@ -167,6 +183,23 @@ export default {
     }
   },
   methods: {
+    //删除确认------
+    ConfirmDelete(){
+      deleteTjxmRecord(this.deleteObject).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+          this.deleteConfirmModal = false
+          this.deleteObject = undefined
+          this.fetchTjxmRecord()
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
+    },
+    CancelDelete(){
+      this.deleteConfirmModal = false
+    },
+
     getArrDifference (arr1, arr2) {
       return arr1.concat(arr2).filter(function (v, i, arr) {
         return arr.indexOf(v) === arr.lastIndexOf(v)

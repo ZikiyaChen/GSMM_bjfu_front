@@ -32,6 +32,21 @@
           <Option v-for="item in OwnerList" :value="item.value" :key="item.value">{{ item.value }}</Option>
         </Select>
       </FormItem>
+
+      <FormItem label="调查人:">
+        <Select v-model="query.dc_username" placeholder="调查人姓名" filterable
+                @on-query-change="ondcUserUnitQueryChange" clearable style="width: 150px">
+          <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+        </Select>
+      </FormItem>
+
+      <FormItem label="调查时间:" >
+        <DatePicker :value="investigate_time_range"  type="datetimerange" format="yyyy-MM-dd HH:mm"
+                    placement="bottom-start" placeholder="Select date"
+                    @on-change="DateTimeChange"
+                    clearable style="width: 250px"></DatePicker>
+      </FormItem>
+
       <FormItem >
         <Button type="primary" @click=" onSearch">查询</Button>
       </FormItem>
@@ -55,33 +70,58 @@
       </div>
     </div>
 
-    <RightDeleteTree
-      :show="showDeleteModal"
-      :tree_code="this.selected_tree_code"
-      title="提醒"
-      @onOK="ok"
-      @onCancel="cancel">
-    </RightDeleteTree>
+<!--    <RightDeleteTree-->
+<!--      :show="showDeleteModal"-->
+<!--      :tree_code="this.selected_tree_code"-->
+<!--      title="提醒"-->
+<!--      @onOK="ok"-->
+<!--      @onCancel="cancel">-->
+<!--    </RightDeleteTree>-->
+
+    <!--      删除确认  -->
+    <Modal
+      v-model="deleteConfirmModal"
+      :selected_tree_code="delete_tree_code"
+      :loading="loading">
+      <p slot="header" style="color:#ff9900;text-align:center; font-size: 16px">
+        <Icon type="ios-information-circle"></Icon>
+        <span>删除确认</span>
+      </p>
+      <div style="text-align:center; font-size: 16px">
+        <p>会删除该古树的全部信息，删除后不可取消，请确认是否删除？</p>
+        <P>确认删除请点击“删除”，否则点击“取消”按钮。</P>
+        <p></p>
+      </div>
+      <div slot="footer" style="text-align: center">
+        <Button type="error" size="large"  @click="ConfirmDelete">删除</Button>
+        <Button size="large" @click="CancelDelete">取消</Button>
+      </div>
+    </Modal>
+
   </Card>
 </div>
 </template>
 
 <script>
-import { deleteOneTree, queryFamilyTypes, queryTreeBasicProperty } from '@/api/table'
-import { queryUsers } from "@/api/user";
-import { getToken, showByAccess } from "@/libs/util";
+import { deleteOneTree,  queryTreeBasicProperty } from '@/api/table'
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
 import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
 import name from "@/view/tools-methods/name.json"
 import { ownerList } from "@/view/survey/right_base_options";
+import {queryUnitUsers} from "@/api/user";
 
 export default {
   name: "base_survey",
   components: { RightDeleteTree, tjxm_record_extend_table },
   data () {
     return {
-      selected_tree_code: undefined,
-      showDeleteModal: false,
+      dcUsers: [],
+      investigate_time_range: undefined,
+
+      deleteConfirmModal: false,
+      delete_tree_code: undefined,
+      loading: true,
+
       query: {
         level: undefined,
         tree_code_like: undefined,
@@ -282,8 +322,8 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.selected_tree_code = params.row.tree_code
-                    this.showDeleteModal = true
+                    this.delete_tree_code = params.row.tree_code
+                    this.deleteConfirmModal = true
                   }
                 }
               }, '删除')
@@ -326,21 +366,41 @@ export default {
     }
   },
   methods: {
-    ok (tree_code) {
-      console.log('###', tree_code)
-      deleteOneTree(tree_code).then(res => {
-        if (res.data.code === 200) {
+    //调查人查询
+    ondcUserUnitQueryChange(value){
+      queryUnitUsers({name_like: value, is_dc:true}).then(res => {
+        this.dcUsers = res.data.users
+      })
+    },
+
+    //时间范围查询，时间范围发生变化时
+    DateTimeChange(value){
+      if(value[0]!==''&&value[1]!=='') {
+        this.query.investigate_time_gte = value[0]
+        this.query.investigate_time_lte = value[1]
+      }else {
+        this.query.investigate_time_gte = undefined
+        this.query.investigate_time_lte = undefined
+      }
+    },
+    //删除确认------
+    ConfirmDelete(){
+      deleteOneTree(this.delete_tree_code).then(msg=>{
+        if(msg.data.code === 200){
           this.$Message.success('该古树删除成功')
+          this.deleteConfirmModal = false
+          this.delete_tree_code = undefined
           this.fetchData()
-        } else {
+        }else {
           this.$Message.error('该古树删除失败')
         }
       })
-      this.showDeleteModal = false
     },
-    cancel () {
-      this.showDeleteModal = false
+    CancelDelete(){
+      this.deleteConfirmModal = false
     },
+
+
     fetchData: function () {
       // 数据表发生变化请求数据
 
