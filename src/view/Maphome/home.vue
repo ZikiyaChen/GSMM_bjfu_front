@@ -1,26 +1,56 @@
+<!--<template>-->
+<!--    <div style="height: 100%">-->
+<!--      <div id="container" class="container">-->
+
+<!--        <Form class="select" inline :model="query" >-->
+<!--          <FormItem label="古树等级:" :label-width="80" style="background-color: white">-->
+<!--            <Select style="width:100px" v-model="query.level" clearable>-->
+<!--              <Option v-for="item in levelList" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
+<!--            </Select>-->
+
+<!--          </FormItem>-->
+<!--          <FormItem><Alert style="padding-right: 12px;padding-left: 12px">共有：{{total}}棵</Alert></FormItem>-->
+
+<!--          <Button type="primary" @click="onSearch">查询</Button>-->
+
+<!--        </Form>-->
+<!--        <InfoWindowComponent ref="infowindow" :treeInfo="treeInfo"></InfoWindowComponent>-->
+<!--      </div>-->
+
+
+<!--    </div>-->
+
+<!--</template>-->
+
 <template>
-    <div style="height: 100%">
-      <div id="container" class="container">
-
-        <Form class="select" inline :model="query" >
-          <FormItem label="古树等级:" :label-width="80" style="background-color: white">
-            <Select style="width:100px" v-model="query.level" clearable>
-              <Option v-for="item in levelList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
-
-          </FormItem>
-          <FormItem><Alert style="padding-right: 12px;padding-left: 12px">共有：{{total}}棵</Alert></FormItem>
-
-          <Button type="primary" @click="onSearch">查询</Button>
-
-        </Form>
-        <InfoWindowComponent ref="infowindow" :treeInfo="treeInfo"></InfoWindowComponent>
-      </div>
-
-
+  <div style="height: 100%; position: relative">
+    <div id="container" class="container">
+      <InfoWindowComponent ref="infowindow" :treeInfo="treeInfo"></InfoWindowComponent>
     </div>
+    <div class="select" >
+      <Form inline :model="query" >
+        <FormItem label="古树等级:" :label-width="80" style="background-color: white">
+          <Select style="width:100px" v-model="query.level" clearable>
+            <Option v-for="item in levelList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+
+        </FormItem>
+        <FormItem label="树种:" :label-width="80" >
+          <Select style="width:100px" v-model="query.zw_name" clearable>
+            <Option v-for="item in NameList" :value="item.name" :key="item.name">{{ item.name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem><Alert style="padding-right: 12px;padding-left: 12px">共有：{{total}}棵</Alert></FormItem>
+
+        <Button type="primary" @click="onSearch">查询</Button>
+
+      </Form>
+    </div>
+  </div>
 
 </template>
+
+
 
 <script>
 import second from '../../../public/second.png'
@@ -28,7 +58,7 @@ import first from '../../../public/first.png'
 import third from '../../../public/third.png'
 import famous from '../../../public/famous.png'
 import {queryTreeBasicProperty} from "@/api/table";
-import { forEach } from "@/libs/tools";
+import name from '../tools-methods/name.json'
 import Vue from 'vue'
 import InfoWindowComponent from "@/view/Maphome/components/InfoWindow";
 import AMap from 'AMap';
@@ -51,8 +81,11 @@ export default {
       }, // 分页
       total: 0,
       query:{
-        level: undefined
+        level: undefined,
+        zw_name: undefined
       },
+
+      NameList: [],
 
       levelList: [
         {
@@ -75,15 +108,7 @@ export default {
     }
   },
   created() {
-
-
-      // queryTreeBasicProperty().then(res=>{
-      //   if(res.data.code === 200){
-      //     this.tree = res.data.trees_basic_property
-      //     console.log(this.tree)
-      //   }
-      // })
-
+    this.initNameList()
   },
   mounted () {
     this.getTree()
@@ -97,7 +122,9 @@ export default {
 
   },
   methods: {
-
+    initNameList(){
+      this.NameList = name.contents
+    },
     onSearch(){
       this.getTree()
       setTimeout(()=>{
@@ -289,7 +316,9 @@ export default {
   left:3vh;
   overflow: auto;
   z-index: 999;
-  height: 200px;
+  height: 300px;
+  width: 900px;
+  /*background: rgba(60,179,113, .3);*/
 
 }
 </style>
