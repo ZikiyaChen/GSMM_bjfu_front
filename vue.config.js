@@ -41,6 +41,9 @@ module.exports = {
   // https://www.foobar.com/my-app/
   // then change this to '/my-app/'
   publicPath: BASE_URL,
+  outputDir: 'dist',
+  assetsDir: 'static',
+  runtimeCompiler: true, // 支持实时的渲染
   // tweak internal webpack configuration.
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   // 如果你不需要使用eslint，把lintOnSave设为false即可
