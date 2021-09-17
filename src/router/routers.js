@@ -99,6 +99,16 @@ export default [
       // }
     ]
   },
+  {
+    path: '/treeInfo/:tree_code',
+    name: 'treeInfoSimple',
+    meta: {
+      title: '古树介绍',
+      hideInMenu: true
+    },
+    component: () => import('@/view/survey/SimpleTreeInfo')
+  },
+
 
   // {
   //   path: '',
