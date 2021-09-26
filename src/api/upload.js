@@ -7,3 +7,18 @@ export const ShowPic = (file_name) => {
     file_name: file_name
   })
 }
+export const ProduceQrcode = (tree_code)=>{
+  return axios.request({
+    url: 'create_qrcode/'+tree_code,
+    method: 'post',
+    tree_code: tree_code
+  })
+}
+
+export const ShowQRcode = (tree_code) =>{
+  return axios.request({
+    url: 'static/qrcode/'+ tree_code,
+    method: 'get',
+    tree_code: tree_code
+  })
+}

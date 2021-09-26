@@ -622,7 +622,7 @@ import {
   postFamilyTypes, postGenusTypes, postClassTypes,
   getBasic, postTjxmRecord, queryTreeBasicProperty, getOneTreeBaseInfo
 } from "@/api/table";
-import { ShowPic } from "@/api/upload";
+import {ProduceQrcode, ShowPic} from "@/api/upload";
 import name from "@/view/tools-methods/name.json"
 
 import Float_bar from "_c/FloatBar/float_bar";
@@ -1083,6 +1083,9 @@ export default {
               postTjxmRecord(this.basic_record).then(record => {
                 if (record.data.code === 200) {
                   this.$Message.success('成功')
+                  ProduceQrcode(this.TreeInformation.tree_code).then(msg =>{
+                    console.log(msg)
+                  })//生成二维码 文件以tree_code命名
                 }
               })
             })

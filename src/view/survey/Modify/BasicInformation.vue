@@ -536,6 +536,14 @@
 
         </Row>
 
+        <Row>
+          <Col offset="1">
+            <FormItem label="二维码：">
+                <img :src="'data:image/jpg;base64,'+ QrcodeImg"  style="width: 100px"/>
+            </FormItem>
+          </Col>
+        </Row>
+
       </Form>
       <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center">
@@ -571,7 +579,7 @@ import {
   updateBasic, updateDynamic, updateBrand, updateGeo, updatePic, updateTjxmRecord,
   getOneTjxmRecord, queryTreeBasicProperty, queryTjxmRecord
 } from "@/api/table";
-import { ShowPic } from "@/api/upload";
+import {ShowPic, ShowQRcode} from "@/api/upload";
 import { dateToString, forEach } from "@/libs/tools";
 import name from "@/view/tools-methods/name.json"
 import {
@@ -596,6 +604,8 @@ export default {
     return {
       timeIndex: 0,
       timeLineList: PathToList,
+
+      QrcodeImg: '',
 
       showModal: false,
       options: [],
@@ -1202,11 +1212,18 @@ export default {
         })
       }
     },
+    getQrcode(){
+      ShowQRcode(this.tree_code).then(res=>{
+        this.QrcodeImg = res.data
+      })
+    }
   },
 
   mounted: function () {
     this.fetchData()
     this.InitIndex()
+    this.getQrcode()
+
     // this.fetchOptions()
 
     // setTimeout(()=>{
