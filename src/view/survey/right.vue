@@ -419,7 +419,7 @@
             :max-size="2048"
             multiple
             type="drag"
-            action="/api/uploadpic"
+            :action="UploadPicAPI"
             style="display: inline-block;width:70px;">
             <div style="width: 70px;height:70px;line-height: 70px;">
               <Icon type="ios-camera" size="20"></Icon>
@@ -498,7 +498,7 @@
                 :max-size="2048"
                 multiple
                 type="drag"
-                action="/api/uploadpic"
+                :action="UploadPicAPI"
                 style="display: inline-block;width:70px;">
                 <div style="width: 70px;height:70px;line-height: 70px;">
                   <Icon type="ios-camera" size="20"></Icon>
@@ -568,7 +568,7 @@
                 :max-size="2048"
                 multiple
                 type="drag"
-                action="/api/uploadpic"
+                :action="UploadPicAPI"
                 style="display: inline-block;width:70px;">
                 <div style="width: 70px;height:70px;line-height: 70px;">
                   <Icon type="ios-camera" size="20"></Icon>
@@ -622,7 +622,7 @@ import {
   postFamilyTypes, postGenusTypes, postClassTypes,
   getBasic, postTjxmRecord, queryTreeBasicProperty, getOneTreeBaseInfo
 } from "@/api/table";
-import {ProduceQrcode, ShowPic} from "@/api/upload";
+import {ProduceQrcode, ShowPic, UploadPicAPI} from "@/api/upload";
 import name from "@/view/tools-methods/name.json"
 
 import Float_bar from "_c/FloatBar/float_bar";
@@ -635,6 +635,7 @@ export default {
   mixins: [UserMixin],
   data () {
     return {
+      UploadPicAPI: UploadPicAPI,
       showModal: false,
       date: new Date(),
 
