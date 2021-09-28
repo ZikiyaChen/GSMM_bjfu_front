@@ -4,7 +4,7 @@
       <h1>用户管理</h1>
       <br>
       <Form :label-width="80" :model="query" inline>
-        <FormItem label="用户名字：" prop="name">
+        <FormItem label="用户姓名：" prop="name">
           <Input style="width: 180px" v-model="query.name_like" placeholder="请输入用户名字"  clearable>
           </Input>
         </FormItem>
@@ -28,10 +28,12 @@
 
       </Form>
 
-      <Table border stripe :columns="columns" :data="data"></Table>
+      <Table border stripe :columns="columns" :data="data" max-height="500"></Table>
       <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
-          <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+          <Page :total="total"  :current="pages._page" :page-size="pages._per_page" show-total
+                @on-change="onPageChange"
+                show-elevator show-sizer :page-size-opts="[10,20,30]" @on-page-size-change="onPageSizeChange"></Page>
         </div>
       </div>
 
@@ -47,27 +49,52 @@
       @onOK="onAddModalOK"
       @onCancel="onAddModalCancel"
     ></AddNewUserModal>
+    <!--      删除确认  -->
+    <Modal
+      v-model="deleteConfirmModal"
+      :selected_username="delete_username">
+      <p slot="header" style="color:#ff9900;text-align:center; font-size: 16px">
+        <Icon type="ios-information-circle"></Icon>
+        <span>删除确认</span>
+      </p>
+      <div style="text-align:center; font-size: 16px">
+        <p>会删除该用户信息，删除后不可取消，请确认是否删除？</p>
+        <P>确认删除请点击“删除”，否则点击“取消”按钮。</P>
+        <p></p>
+      </div>
+      <div slot="footer" style="text-align: center">
+        <Button type="error" size="large"  @click="ConfirmDelete">删除</Button>
+        <Button size="large" @click="CancelDelete">取消</Button>
+      </div>
+    </Modal>
+
+
   </div>
 </template>
 
 <script>
-import { AddUser, queryUnits, queryUnitUsers, updateUser } from "@/api/user";
+import {AddUser, deleteUser, queryUnits, queryUnitUsers, updateUser} from "@/api/user";
 import AddNewUserModal from "@/view/UserManage/components/AddNewUserModal";
 import UpdateUserInfo from "@/view/Userinfo/components/UpdateUserInfo";
+import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
+import UserMixin from "@/mixin/UserMixin";
 export default {
   name: "index",
-  components: { UpdateUserInfo, AddNewUserModal },
+  components: { UpdateUserInfo, AddNewUserModal, RightDeleteTree },
+  mixins: [UserMixin],
   data () {
     let that = this
     return {
       units: [],
       showAddNewUserModal: false,
       showUserUpdateModal: false,
+      deleteConfirmModal: false,
       query: {
         name_like: undefined,
         unit: undefined
       },
       selected_username: undefined,
+      delete_username: undefined,
       total: 0, // 总数量
       data: [], // 数据
       pages: {
@@ -77,24 +104,39 @@ export default {
 
       columns: [
         {
+          type: 'index',
+          title: '#',
+          width: 50,
+          key: 'index',
+        },
+        {
           title: '用户名',
-          key: 'username'
+          key: 'username',
+          width: 110,
+          resizable: true,
         },
         {
           title: '名字',
-          key: 'name'
+          key: 'name',
+          width: 110,
+          resizable: true
         },
         {
           title: '性别',
-          key: 'sex'
+          key: 'sex',
+          width: 70,
+          resizable: true,
         },
         {
           title: '单位',
-          key: 'unit'
+          key: 'unit',
+          width: 120,
+          resizable: true,
         },
         {
           title: '身份',
-          minWidth: 80,
+          width: 250,
+          resizable: true,
           render: function (h, params) {
             let tags = params.row.role_names.map((item) => {
               return h('Tag', item)
@@ -141,11 +183,15 @@ export default {
         },
         {
           title: '电话',
-          key: 'tele'
+          key: 'tele',
+          width: 120,
+          resizable: true
         },
         {
           title: '单位管理员',
           align: "center",
+          width: 120,
+          resizable: true,
 
           render: function (h, params) {
             if (params.row.is_unitAdmin) {
@@ -167,15 +213,18 @@ export default {
         {
           title: '操作',
           align: 'center',
+          fixed: 'right',
+          width: 190,
           render: (h, params) => {
             return h('div', [
               h('Button', {
                 props: {
                   type: 'primary',
-                  size: 'small'
+                  size: 'small',
+                  icon: 'md-create'
                 },
                 style: {
-                  marginRight: '2px'
+                  marginRight: '10px'
                 },
                 on: {
                   click: () => {
@@ -183,7 +232,24 @@ export default {
                     this.showUserUpdateModal = true
                   }
                 }
-              }, '修改')
+              }, '编辑'),
+              h('Button', {
+                props: {
+                  type: 'error',
+                  size: 'small',
+                  icon: 'ios-trash',
+                  disabled: (params.row.is_unitAdmin === true && this.access.includes('单位管理员')),
+                },
+                style: {
+                  marginRight: '10px',
+                },
+                on: {
+                  click: () => {
+                    this.delete_username = params.row.username
+                    this.deleteConfirmModal = true
+                  }
+                }
+              }, '删除')
             ])
           }
         }
@@ -191,6 +257,26 @@ export default {
     }
   },
   methods: {
+    //删除确认------
+    ConfirmDelete(){
+      deleteUser(this.delete_username).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('该用户删除成功')
+          this.deleteConfirmModal = false
+          this.delete_username = undefined
+          this.fetchData()
+        }else {
+          this.$Message.error('该用户删除失败')
+        }
+      })
+    },
+    CancelDelete(){
+      this.deleteConfirmModal = false
+    },
+    onPageSizeChange(page_size){
+      this.pages._per_page = page_size
+      this.fetchData()
+    },
     fetchData: function () {
       // 数据表发生变化请求数据
       // query.unit清空后，会变成'',查到的是空

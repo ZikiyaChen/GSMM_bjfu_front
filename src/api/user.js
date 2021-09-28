@@ -135,6 +135,13 @@ export const updateUser = (id, data) => {
   })
 }
 
+export const deleteUser = (username) => {
+  return axios.request({
+    url: 'users/'+ username,
+    method: 'delete'
+  })
+}
+
 // 养护人员列表
 export const queryGroupUsers = (params) => {
   return axios.request({

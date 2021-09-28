@@ -63,20 +63,15 @@
 <!--      <Step title ="待进行"></Step>-->
 <!--    </Steps>-->
 <!--    <router-link to=right><button>点我到第二个页面</button></router-link> // 通过按钮进行页面跳转-->
-    <Table :columns="columns" :data="tableData" border></Table>
-    <div style="margin: 10px;overflow: hidden">
+    <Table :columns="columns" :data="tableData" border max-height="500" :loading="loadingTable"></Table>
+    <div style="margin: 10px; overflow: hidden">
       <div style="float: right;">
-        <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+        <Page :total="total"  :current="pages._page" :page-size="pages._per_page" show-total
+              @on-change="onPageChange"
+              show-elevator show-sizer :page-size-opts="[10,20,30]" @on-page-size-change="onPageSizeChange"></Page>
       </div>
     </div>
 
-<!--    <RightDeleteTree-->
-<!--      :show="showDeleteModal"-->
-<!--      :tree_code="this.selected_tree_code"-->
-<!--      title="提醒"-->
-<!--      @onOK="ok"-->
-<!--      @onCancel="cancel">-->
-<!--    </RightDeleteTree>-->
 
     <!--      删除确认  -->
     <Modal
@@ -105,14 +100,14 @@
 <script>
 import { deleteOneTree,  queryTreeBasicProperty } from '@/api/table'
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
-import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
+
 import name from "@/view/tools-methods/name.json"
 import { ownerList } from "@/view/survey/right_base_options";
 import {queryUnitUsers} from "@/api/user";
 
 export default {
   name: "base_survey",
-  components: { RightDeleteTree, tjxm_record_extend_table },
+  components: {  tjxm_record_extend_table },
   data () {
     return {
       dcUsers: [],
@@ -120,7 +115,8 @@ export default {
 
       deleteConfirmModal: false,
       delete_tree_code: undefined,
-      loading: true,
+      loadingTable: false, // 表格加载状态
+      loading: false,
 
       query: {
         level: undefined,
@@ -165,6 +161,7 @@ export default {
           type: 'expand',
           title: '古树信息',
           width: 70,
+          fixed: 'left',
           render: (h, params) => {
             return h(tjxm_record_extend_table, {
               props: {
@@ -176,6 +173,9 @@ export default {
         {
           title: '古树编号',
           align: 'center',
+          resizable: true,
+          width: 120,
+          fixed: 'left',
           render: function (h, params) {
             return h('span', params.row.tree_code)
           }
@@ -183,6 +183,8 @@ export default {
         {
           title: '科',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.family)
           }
@@ -190,6 +192,8 @@ export default {
         {
           title: '属',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.genus)
           }
@@ -197,6 +201,8 @@ export default {
         {
           title: '中文名',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.zw_name)
           }
@@ -204,6 +210,8 @@ export default {
         {
           title: '拉丁名',
           align: 'center',
+          resizable: true,
+          width: 170,
           render: function (h, params) {
             return h('span', params.row.ld_name)
           }
@@ -211,6 +219,8 @@ export default {
         {
           title: '古树等级',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.level)
           }
@@ -218,6 +228,8 @@ export default {
         {
           title: '真实树龄（年）',
           align: 'center',
+          resizable: true,
+          width: 115,
           render: function (h, params) {
             return h('span', params.row.dynamic_property.real_age)
           }
@@ -225,6 +237,8 @@ export default {
         {
           title: '树高（米）',
           align: 'center',
+          resizable: true,
+          width: 100,
           render: function (h, params) {
             return h('span', params.row.dynamic_property.height)
           }
@@ -232,6 +246,8 @@ export default {
         {
           title: '经度',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.geo_property.longitude)
           }
@@ -239,6 +255,8 @@ export default {
         {
           title: '纬度',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.geo_property.latitude)
           }
@@ -246,6 +264,8 @@ export default {
         {
           title: '权属',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.owner)
           }
@@ -253,6 +273,8 @@ export default {
         {
           title: '管护人',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.gh_user.name)
           }
@@ -260,6 +282,8 @@ export default {
         {
           title: '管护单位',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.gh_unit)
           }
@@ -269,6 +293,7 @@ export default {
           title: '调查时间',
           align: 'center',
           width: '150px',
+          resizable: true,
           render: function (h, params) {
             return h('span', params.row.investigate_time)
           }
@@ -276,6 +301,8 @@ export default {
         {
           title: '调查单位',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.dc_unit)
           }
@@ -283,6 +310,8 @@ export default {
         {
           title: '调查人',
           align: 'center',
+          resizable: true,
+          width: 90,
           render: function (h, params) {
             return h('span', params.row.dc_user.name)
           }
@@ -291,6 +320,7 @@ export default {
           title: '操作',
           align: 'center',
           width: '130px',
+          fixed: 'right',
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -366,6 +396,13 @@ export default {
     }
   },
   methods: {
+    onPageSizeChange(page_size){
+      console.log('page_size',page_size)
+      this.pages._per_page = page_size
+      this.loadingTable = true
+      this.fetchData()
+
+    },
     //调查人查询
     ondcUserUnitQueryChange(value){
       queryUnitUsers({name_like: value, is_dc:true}).then(res => {
@@ -409,6 +446,7 @@ export default {
       return queryTreeBasicProperty(args).then((resp) => {
         this.tableData = resp.data.trees_basic_property
         this.total = resp.data.total
+        this.loadingTable = false
       })
     },
     onSearch () {

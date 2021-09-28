@@ -32,10 +32,12 @@
         </FormItem>
       </Form>
       <record-add @confirmSuccess="handleConfirmSuccess" style="margin-bottom: 10px"></record-add>
-      <Table stripe :columns="columns" :data="data" border></Table>
+      <Table  :columns="columns" :data="data" border max-height="500"></Table>
       <div style="margin:   10px;overflow: hidden">
         <div style="float: right;">
-          <Page :total="total" show-total :page-size="pages._per_page" :current="pages._page" @on-change="onPageChange"></Page>
+          <Page :total="total"  :current="pages._page" :page-size="pages._per_page" show-total
+                @on-change="onPageChange"
+                show-elevator show-sizer :page-size-opts="[10,20,30]" @on-page-size-change="onPageSizeChange"></Page>
         </div>
       </div>
       <TreeYhHistory
@@ -157,12 +159,15 @@ export default {
       total: 0,
       pages: {
         _page: 1,
-        _per_page: 5
+        _per_page: 10
       }, // 分页
       columns: [
         {
           title: '古树编号',
           align: 'center',
+          fixed: 'left',
+          resizable: true,
+          width: 100,
           render: function (h, params) {
             return h('span', params.row.tree_code)
           }
@@ -170,6 +175,9 @@ export default {
         {
           title: '树种',
           align: 'center',
+          fixed: 'left',
+          resizable: true,
+          width: 100,
           render: function (h, params) {
             return h('span', params.row.tree.zw_name)
           }
@@ -177,6 +185,8 @@ export default {
         {
           title: '养护项目类型',
           align: "center",
+          resizable: true,
+          width: 110,
           render: function (h, params) {
             return h('span', params.row.yh_type)
           }
@@ -184,6 +194,9 @@ export default {
         {
           title: '措施性质',
           align: "center",
+
+          resizable: true,
+          width: 100,
           render: function (h, params) {
             return h('span', params.row.property)
           }
@@ -191,6 +204,9 @@ export default {
         {
           title: '具体养护项目',
           align: "center",
+
+          resizable: true,
+          width: 110,
           render: function (h, params) {
             return h('span', params.row.projects)
           }
@@ -198,6 +214,9 @@ export default {
         {
           title: '养护人姓名',
           align: "center",
+
+          resizable: true,
+          width: 110,
           render: function (h, params) {
             return h('span', params.row.yh_user.name)
           }
@@ -205,6 +224,9 @@ export default {
         {
           title: '养护单位',
           align: "center",
+
+          resizable: true,
+          width: 100,
           render: function (h, params) {
             return h('span', params.row.unit)
           }
@@ -212,6 +234,8 @@ export default {
         {
           title: '预计养护时间',
           align: "center",
+          resizable: true,
+          width: 110,
           render: function (h, params) {
             return h('span', params.row.predict_time)
           }
@@ -219,6 +243,8 @@ export default {
         {
           title: '实际养护时间',
           align: "center",
+          resizable: true,
+          width: 110,
           render: function (h, params) {
             return h('span', params.row.actual_time)
           }
@@ -226,6 +252,8 @@ export default {
         {
           title: '任务类型',
           align: "center",
+          resizable: true,
+          width: 110,
           render: function (h, params) {
             if (params.row.work_type === '分配') {
               return h('Tag', { props: { color: 'red' } }, '分配')
@@ -259,6 +287,8 @@ export default {
         {
           title: '完成状态',
           align: "center",
+          resizable: true,
+          width: 110,
           render: function (h, params) {
             if (params.row.state === '待养护') {
               return h('Tag', { props: { color: 'red' } }, '待养护')
@@ -298,6 +328,9 @@ export default {
         {
           title: '操作',
           align: 'center',
+          fixed: 'right',
+          resizable: true,
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -362,6 +395,9 @@ export default {
         {
           title: '古树养护历史',
           align: 'center',
+          fixed: 'right',
+          resizable: true,
+          width: 120,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -389,6 +425,10 @@ export default {
     this.fetchData()
   },
   methods: {
+    onPageSizeChange(page_size){
+      this.pages._per_page = page_size
+      this.fetchData()
+    },
     ConfirmDelete(){
       deleteYhRecord(this.delete_id).then(msg=>{
         if(msg.data.code === 200){
