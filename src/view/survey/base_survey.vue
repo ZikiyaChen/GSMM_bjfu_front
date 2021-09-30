@@ -2,41 +2,46 @@
 <div>
   <Card>
     <h2 slot="title">名木古树信息</h2>
-    <Form :label-width="80" :model="query" inline>
-      <FormItem label="古树编号:" :label-width="80">
-        <Input v-model="query.tree_code_like" style="width: 150px" clearable></Input>
+    <Form :label-width="110" :model="query" inline>
+      <FormItem label="古树编号:" >
+        <Input v-model="query.tree_code_like" style="width: 140px" clearable></Input>
       </FormItem>
-      <FormItem label="古树等级:" :label-width="80">
-        <Select style="width:100px" v-model="query.level" clearable>
+      <FormItem label="古树等级:" >
+        <Select style="width:140px" v-model="query.level" clearable>
           <Option v-for="item in levelList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="科:" :label-width="80">
-        <Select style="width:120px" v-model="query.family" clearable>
+      <FormItem label="科:" >
+        <Select style="width:140px" v-model="query.family" clearable>
           <Option v-for="item in KeList" :value="item.fname" :key="item.fname">{{ item.fname }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="属:" :label-width="80">
-        <Select style="width:120px" v-model="query.genus" clearable>
+      <FormItem label="属:" >
+        <Select style="width:140px" v-model="query.genus" clearable>
           <Option v-for="item in ShuList" :value="item.gname" :key="item.gname">{{ item.gname }}</Option>
         </Select>
       </FormItem>
 
-      <FormItem label="种:" :label-width="80">
-        <Select style="width:120px" v-model="query.zw_name" clearable>
+      <FormItem label="种:" >
+        <Select style="width:140px" v-model="query.zw_name" clearable>
           <Option v-for="item in NameList" :value="item.name" :key="item.name">{{ item.name }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="权属:" :label-width="80">
-        <Select style="width:120px" v-model="query.owner" clearable>
+      <FormItem label="权属:" >
+        <Select style="width:140px" v-model="query.owner" clearable>
           <Option v-for="item in OwnerList" :value="item.value" :key="item.value">{{ item.value }}</Option>
         </Select>
       </FormItem>
 
-      <FormItem label="调查人:">
+      <FormItem label="调查人:" >
         <Select v-model="query.dc_username" placeholder="调查人姓名" filterable
-                @on-query-change="ondcUserUnitQueryChange" clearable style="width: 150px">
+                @on-query-change="ondcUserUnitQueryChange" clearable style="width: 140px">
           <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="签订管护责任书:" >
+        <Select v-model="query.is_signed" placeholder="是否签订" clearable style="width: 140px">
+        <Option v-for="item  in signList" :value="item.value" :key="item.value">{{item.label}}</Option>
         </Select>
       </FormItem>
 
@@ -50,12 +55,20 @@
       <FormItem >
         <Button type="primary" @click=" onSearch">查询</Button>
       </FormItem>
+
+
+
+      <a href="http://localhost:5000/export_report/110131A01">下载</a>
       <FormItem>
       <router-link :to="{path: `/survey/right`}" v-role="['超级管理员','单位管理员','调查人员']" >
         <Button type="success" style="margin-right: 30px">新增古树</Button>
       </router-link>
       </FormItem>
     </Form>
+
+
+
+
 <!--    <Steps :current="2" size="small">-->
 <!--      <Step title ="已完成"></Step>-->
 <!--      <Step title ="进行中"></Step>-->
@@ -98,12 +111,15 @@
 </template>
 
 <script>
+
 import { deleteOneTree,  queryTreeBasicProperty } from '@/api/table'
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
 
 import name from "@/view/tools-methods/name.json"
-import { ownerList } from "@/view/survey/right_base_options";
+import { ownerList, SignList } from "@/view/survey/right_base_options";
 import {queryUnitUsers} from "@/api/user";
+import {exportTreeReport} from "@/api/upload";
+
 
 export default {
   name: "base_survey",
@@ -124,12 +140,14 @@ export default {
         family: undefined,
         genus: undefined,
         zw_name: undefined,
-        owner: undefined
+        owner: undefined,
+
       },
       KeList: [],
       ShuList: [],
       NameList: [],
       OwnerList: ownerList,
+      signList: SignList,
       total: 0,
       pages: {
         _page: 1,
@@ -319,7 +337,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          width: '130px',
+          width: '220px',
           fixed: 'right',
           render: (h, params) => {
             return h('div', [
@@ -356,7 +374,30 @@ export default {
                     this.deleteConfirmModal = true
                   }
                 }
-              }, '删除')
+              }, '删除'),
+
+              h('Button', {
+                props: {
+                  type: 'success',
+                  size: 'small',
+                  icon: "md-download"
+                },
+                attrs:{
+                  href: 'http://localhost:5000/export_report/' + params.row.tree_code
+                },
+                directives: [{
+                  name: 'role',
+                  value: ['超级管理员', '单位管理员']
+                }],
+                style: {
+                  marginRight: '2px'
+                },
+                on: {
+                  click: () => {
+                    this.onExportReport(params.row.tree_code)
+                  }
+                }
+              }, '导出报告')
             ])
           }
         }
@@ -396,6 +437,14 @@ export default {
     }
   },
   methods: {
+    //导出古树调查报告--下载
+    //window.location.href 告诉您浏览器当前URL位置的属性。更改属性的值将重定向页面。
+    //window.open 打开一个新的窗口并跳转到URL
+    onExportReport(tree_code){
+      window.location.href='http://localhost:5000/export_report/'+tree_code
+    },
+
+
     onPageSizeChange(page_size){
       console.log('page_size',page_size)
       this.pages._per_page = page_size

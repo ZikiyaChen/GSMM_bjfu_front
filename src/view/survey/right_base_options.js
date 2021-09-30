@@ -9,6 +9,18 @@ export const is_signedList = [
   }
 ]
 
+export const SignList = [
+  {
+    value: 1,
+    label: '是'
+  },
+  {
+    value: 0,
+    label: '否'
+  }
+
+]
+
 export const levelList = [
   {
     value: '一级'

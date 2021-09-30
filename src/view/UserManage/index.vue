@@ -68,23 +68,31 @@
       </div>
     </Modal>
 
-
+<!--    重置密码，修改密码-->
+    <UpdatePassword
+      :show="changepass_visible"
+      @onOk="ChangePassword"
+      @onCancel="()=>{this.changepass_visible=false}">
+    </UpdatePassword>
   </div>
 </template>
 
 <script>
-import {AddUser, deleteUser, queryUnits, queryUnitUsers, updateUser} from "@/api/user";
+import {AddUser, changePassword, deleteUser, queryUnits, queryUnitUsers, updateUser} from "@/api/user";
 import AddNewUserModal from "@/view/UserManage/components/AddNewUserModal";
 import UpdateUserInfo from "@/view/Userinfo/components/UpdateUserInfo";
 import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
 import UserMixin from "@/mixin/UserMixin";
+import UpdatePassword from "@/view/Userinfo/components/UpdatePassword";
 export default {
   name: "index",
-  components: { UpdateUserInfo, AddNewUserModal, RightDeleteTree },
+  components: { UpdateUserInfo, AddNewUserModal, RightDeleteTree,UpdatePassword },
   mixins: [UserMixin],
   data () {
     let that = this
     return {
+      changepass_visible: false,
+
       units: [],
       showAddNewUserModal: false,
       showUserUpdateModal: false,
@@ -211,6 +219,32 @@ export default {
         },
 
         {
+          title: '密码',
+          align: 'center',
+          fixed: 'right',
+          width: 100,
+          render: (h, params) => {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'warning',
+                  size: 'small',
+                  icon: "md-key"
+                },
+                style: {
+                  marginRight: '10px'
+                },
+                on: {
+                  click: () => {
+                    this.selected_username = params.row.username
+                    this.changepass_visible = true
+                  }
+                }
+              }, '重置')
+            ])
+          }
+        },
+        {
           title: '操作',
           align: 'center',
           fixed: 'right',
@@ -257,6 +291,16 @@ export default {
     }
   },
   methods: {
+    //修改密码
+    ChangePassword: function (passwd) {
+      changePassword(this.selected_username, { 'password': passwd }).then((resp) => {
+        if (resp.data.code === 200) {
+          this.$Message.success('修改成功！')
+        }
+      })
+      this.changepass_visible = false
+    },
+
     //删除确认------
     ConfirmDelete(){
       deleteUser(this.delete_username).then(msg=>{
