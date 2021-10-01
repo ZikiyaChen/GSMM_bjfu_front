@@ -622,7 +622,7 @@ import {
   postFamilyTypes, postGenusTypes, postClassTypes,
   getBasic, postTjxmRecord, queryTreeBasicProperty, getOneTreeBaseInfo
 } from "@/api/table";
-import {ProduceQrcode, ShowPic, UploadPicAPI} from "@/api/upload";
+import {ProduceQrcode, ShowPic, UploadPicApi} from "@/api/upload";
 import name from "@/view/tools-methods/name.json"
 
 import Float_bar from "_c/FloatBar/float_bar";
@@ -635,7 +635,7 @@ export default {
   mixins: [UserMixin],
   data () {
     return {
-      UploadPicAPI: UploadPicAPI,
+      UploadPicAPI: UploadPicApi,
       showModal: false,
       date: new Date(),
 

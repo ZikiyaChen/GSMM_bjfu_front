@@ -9,18 +9,39 @@
       title="请输入要添加的信息"
       @on-ok="handleAdd"
       @on-cancel="handleCancel">
-      <Input v-model="inputType" placeholder="请输入养护类型" style="margin:5px"/>
-      <Input v-model="inputProject" placeholder="请输入具体养护项目" style="margin:5px"/>
-      <Input v-model="inputMethod" placeholder="请输入处理方法" style="margin:5px"/>
+      <Form :label-width="90" >
+        <FormItem label="养护类型">
+          <AutoComplete v-model="inputType" :data="TypeList" placeholder="请输入养护类型"
+                      clearable icon="ios-arrow-dropdown-circle"  @on-change="TypeChange">
+          </AutoComplete>
+        </FormItem>
+        <FormItem label="具体养护项目">
+          <AutoComplete v-model="inputProject" placeholder="请输入具体养护项目" clearable :data="ProjectArr"
+                        icon="ios-arrow-dropdown-circle"  @on-change="ProjectChange"></AutoComplete>
+<!--          <Input v-model="inputProject" placeholder="请输入具体养护项目" style="margin:5px">-->
+<!--          </Input>-->
+        </FormItem>
+        <FormItem label="处理方法">
+          <Input v-model="inputMethod" placeholder="请输入处理方法" />
+        </FormItem>
+      </Form>
     </Modal>
     <Modal
       v-model="editModal"
       title="请修改信息"
       @on-ok="handleChange"
       @on-cancel="handleCancel">
-      <Input v-model="editType" style="margin:5px"/>
-      <Input v-model="editProject" style="margin:5px"/>
-      <Input v-model="editMethod" style="margin:5px"/>
+      <Form :label-width="90">
+        <FormItem label="养护类型">
+          <Input v-model="editType" />
+        </FormItem>
+        <FormItem label="具体养护项目">
+          <Input v-model="editProject" />
+        </FormItem>
+        <FormItem label="处理方法">
+          <Input v-model="editMethod" />
+        </FormItem>
+      </Form>
     </Modal>
     <br>
     <Table v-if="isRouterAlive" :columns="columns" :data="orderedData" border :span-method="handleSpan" disabled-hover>
@@ -53,12 +74,15 @@
 </template>
 
 <script>
-import { queryYhOptions, AddYhOptions, deleteYhOptions, updateYhOptions } from '@/api/yh_manage'
+import {queryYhOptions, AddYhOptions, deleteYhOptions, updateYhOptions, getMaintenanceProjects} from '@/api/yh_manage'
 
 export default {
   name: "index",
   data () {
     return {
+      TypeList: ['日常养护管理','修剪','树体保护措施','病虫害防治', '生长环境保护与改善','巡查工作'],
+      ProjectArr: [],
+
       // 表头
       columns: [
         {
@@ -121,6 +145,23 @@ export default {
     }
   },
   methods: {
+    // yh_type改变时，project下拉框选项改变
+    TypeChange(value){
+      if(this.TypeList.includes(value)){
+        getMaintenanceProjects(value).then(res=>{
+          let ProjectList= res.data.projects
+          this.ProjectArr = []
+          ProjectList.forEach((item, index, array) => {
+            console.log(item)
+            this.ProjectArr.push(item['project'])
+          })
+        })
+      }
+    },
+
+    ProjectChange(){
+
+    },
     getYhClassifyData () {
       queryYhOptions().then(result => {
         this.content = result.data.yh_classify
@@ -184,6 +225,7 @@ export default {
       yhClassify.yh_type = this.inputType
       yhClassify.project = this.inputProject
       yhClassify.method = this.inputMethod
+      console.log(yhClassify)
       AddYhOptions(yhClassify).then(
         (result) => {
           if (result.data.code === 200) {
@@ -191,7 +233,14 @@ export default {
             this.reload()
             this.inputDataClean()
           } else {
-            this.$Message.error('信息添加失败')
+            if(result.data.code === 501){
+              this.$Message.error('已存在，添加失败')
+              this.inputDataClean()
+            }else {
+              this.$Message.error('信息添加失败')
+              this.inputDataClean()
+            }
+
           }
         }
       )

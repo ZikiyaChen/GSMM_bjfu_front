@@ -7,12 +7,7 @@ import axios from "@/libs/api.request";
 //     file_name: file_name
 //   })
 // }
-export const UploadPicAPI = () =>{
-  return axios.request({
-    url: 'uploadpic',
-    method: 'post'
-  })
-}
+export const UploadPicApi =   'http://localhost:5000/uploadpic'
 
 export const ShowPic = (file_name) => {
   return axios.request({

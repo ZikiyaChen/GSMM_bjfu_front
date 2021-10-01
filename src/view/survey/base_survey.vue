@@ -56,9 +56,6 @@
         <Button type="primary" @click=" onSearch">查询</Button>
       </FormItem>
 
-
-
-      <a href="http://localhost:5000/export_report/110131A01">下载</a>
       <FormItem>
       <router-link :to="{path: `/survey/right`}" v-role="['超级管理员','单位管理员','调查人员']" >
         <Button type="success" style="margin-right: 30px">新增古树</Button>
@@ -441,7 +438,7 @@ export default {
     //window.location.href 告诉您浏览器当前URL位置的属性。更改属性的值将重定向页面。
     //window.open 打开一个新的窗口并跳转到URL
     onExportReport(tree_code){
-      window.location.href='http://localhost:5000/export_report/'+tree_code
+      window.location.href='http://127.0.0.1:5000/export_report/'+tree_code
     },
 
 
