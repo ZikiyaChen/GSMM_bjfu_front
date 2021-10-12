@@ -438,7 +438,8 @@ export default {
     //window.location.href 告诉您浏览器当前URL位置的属性。更改属性的值将重定向页面。
     //window.open 打开一个新的窗口并跳转到URL
     onExportReport(tree_code){
-      window.location.href='http://127.0.0.1:5000/export_report/'+tree_code
+      // window.location.href='http://123.56.25.195:5000/export_report/'+tree_code
+      window.location.href='http://localhost:5000/export_report/'+tree_code
     },
 
 

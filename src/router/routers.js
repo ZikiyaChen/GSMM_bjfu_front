@@ -328,6 +328,15 @@ export default [
           title: '其它信息管理'
         },
         component: () => import('@/view/OptionManage/other/index')
+      },
+      {
+        path: 'species',
+        name: 'species',
+        meta: {
+          icon: 'ios-document',
+          title: '树种管理'
+        },
+        component: () => import('@/view/OptionManage/SpeciesManage/index')
       }
     ]
   },

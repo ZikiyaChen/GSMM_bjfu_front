@@ -596,6 +596,7 @@ import Float_bar from "_c/FloatBar/float_bar";
 import { checkLat, checkLon } from "@/view/tools-methods/someValidateRule";
 import { PathToList } from "@/view/survey/options";
 import { queryUnits, queryUsers } from "@/api/user";
+import {GetKe, GetShu, GetZhong} from "@/api/tree_species";
 
 export default {
   name: "BasicInformation",
@@ -879,6 +880,31 @@ export default {
       }
       this.options = option
     },
+
+
+    // // 将数据库数据转成级联选择器的data格式
+    // DataTurn () {
+    //   var option = []
+    //   var shuArr = []
+    //
+    //   GetKe().then(ke=>{
+    //     option = ke.data.families
+    //     for(let [index, elem] of option.entries()){
+    //       GetShu({'family':elem.value}).then(shu=>{
+    //         shuArr = shu.data.genuses
+    //         option[index]['children'] = shuArr
+    //         for(let [j, item] of option[index]['children'].entries()){ // 对children遍历
+    //           GetZhong({'genus':item.value}).then(name=>{
+    //             option[index]['children'][j]['children']=name.data.names
+    //           })
+    //         }
+    //       })
+    //     }
+    //     this.options = option
+    //     console.log(this.TreeInformation.Base.treetype)
+    //   })
+    //
+    // },
     ok () {
       this.showModal = false
       this.$router.push({ path: `/survey/environment/${this.tree_code}` })
@@ -903,6 +929,7 @@ export default {
     getTreeType (base) {
       let typelist = [base.family, base.genus, base.zw_name, base.ld_name]
       this.TreeInformation.Base.treetype = typelist
+      console.log(typelist)
     },
 
     // showLdname (cid) {
@@ -1119,6 +1146,7 @@ export default {
         console.log('record', this.tjxm_record)
         this.picTurnUrl()
         this.getTreeType(this.TreeInformation.Base)
+
         // 初始化管护人列表 ghUsers
         this.ghUsers.push(this.TreeInformation.Base.gh_user)
         this.dcUsers.push(this.TreeInformation.Base.dc_user)

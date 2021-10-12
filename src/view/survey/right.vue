@@ -628,6 +628,7 @@ import name from "@/view/tools-methods/name.json"
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUnitUsers, queryUsers } from "@/api/user";
 import UserMixin from "@/mixin/UserMixin";
+import {GetKe, GetShu, GetZhong} from "@/api/tree_species";
 
 export default {
   name: "right",
@@ -846,59 +847,83 @@ export default {
       this.showModal = false
     },
 
-    // 将json数据转成级联选择器种的data形式--按json
-    DataTurn (data) {
+    // // 将json数据转成级联选择器种的data形式--按json
+    // DataTurn (data) {
+    //   var option = []
+    //   var keArr = []
+    //   var shuArr = []
+    //   var nameArr = []
+    //   var shuIndex = {}
+    //   for (let [index, elem] of data.entries()) {
+    //     if (!keArr.includes(elem.ke)) { // 如果该科第一次被遍历到，那么直接将科属种全部加入
+    //       keArr.push(elem.ke)
+    //       shuArr.push(elem.shu)
+    //
+    //       option.push({
+    //         value: elem.ke,
+    //         label: elem.ke,
+    //         children: [{
+    //           value: elem.shu,
+    //           label: elem.shu,
+    //           children: [{
+    //             value: elem.name,
+    //             label: elem.name,
+    //             children: [{ value: elem.lading, label: elem.lading }]
+    //           }]
+    //         }]
+    //       })
+    //
+    //       shuIndex[elem.shu] = option[option.length - 1].children.length - 1
+    //     } else { // 该科不是第一次被遍历到, 即已被加入
+    //       let i = keArr.indexOf(elem.ke);// 找到该科第一次被加入时的索引位置
+    //
+    //       if (!shuArr.includes(elem.shu)) { // 该科的属没有被加入,把该属及种加入
+    //         shuArr.push(elem.shu)
+    //         option[i].children.push({
+    //           value: elem.shu,
+    //           label: elem.shu,
+    //           children: [{
+    //             value: elem.name,
+    //             label: elem.name,
+    //             children: [{ value: elem.lading, label: elem.lading }]
+    //           }]
+    //         })
+    //
+    //         shuIndex[elem.shu] = option[i].children.length - 1
+    //       } else { // 如果该属被加入了。
+    //         option[i].children[shuIndex[elem.shu]].children.push({
+    //           value: elem.name,
+    //           label: elem.name,
+    //           children: [{ value: elem.lading, label: elem.lading }]
+    //         })
+    //       }
+    //     }
+    //   }
+    //   this.options = option
+    // },
+
+    // 将数据库数据转成级联选择器的data格式
+    DataTurn () {
       var option = []
-      var keArr = []
       var shuArr = []
-      var nameArr = []
-      var shuIndex = {}
-      for (let [index, elem] of data.entries()) {
-        if (!keArr.includes(elem.ke)) { // 如果该科第一次被遍历到，那么直接将科属种全部加入
-          keArr.push(elem.ke)
-          shuArr.push(elem.shu)
 
-          option.push({
-            value: elem.ke,
-            label: elem.ke,
-            children: [{
-              value: elem.shu,
-              label: elem.shu,
-              children: [{
-                value: elem.name,
-                label: elem.name,
-                children: [{ value: elem.lading, label: elem.lading }]
-              }]
-            }]
+      GetKe().then(ke=>{
+        option = ke.data.families
+        for(let [index, elem] of option.entries()){
+          GetShu({'family':elem.value}).then(shu=>{
+            shuArr = shu.data.genuses
+            option[index]['children'] = shuArr
+            for(let [j, item] of option[index]['children'].entries()){ // 对children遍历
+              GetZhong({'genus':item.value}).then(name=>{
+                option[index]['children'][j]['children']=name.data.names
+              })
+            }
           })
-
-          shuIndex[elem.shu] = option[option.length - 1].children.length - 1
-        } else { // 该科不是第一次被遍历到, 即已被加入
-          let i = keArr.indexOf(elem.ke);// 找到该科第一次被加入时的索引位置
-
-          if (!shuArr.includes(elem.shu)) { // 该科的属没有被加入,把该属及种加入
-            shuArr.push(elem.shu)
-            option[i].children.push({
-              value: elem.shu,
-              label: elem.shu,
-              children: [{
-                value: elem.name,
-                label: elem.name,
-                children: [{ value: elem.lading, label: elem.lading }]
-              }]
-            })
-
-            shuIndex[elem.shu] = option[i].children.length - 1
-          } else { // 如果该属被加入了。
-            option[i].children[shuIndex[elem.shu]].children.push({
-              value: elem.name,
-              label: elem.name,
-              children: [{ value: elem.lading, label: elem.lading }]
-            })
-          }
         }
-      }
-      this.options = option
+        console.log(option)
+        this.options = option
+      })
+
     },
 
     // 科属种的级联选择器的数据---按数据库

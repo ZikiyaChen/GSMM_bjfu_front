@@ -7,6 +7,7 @@ import axios from "@/libs/api.request";
 //     file_name: file_name
 //   })
 // }
+// export const UploadPicApi =   'http://123.56.25.195:5000/uploadpic'
 export const UploadPicApi =   'http://localhost:5000/uploadpic'
 
 export const ShowPic = (file_name) => {

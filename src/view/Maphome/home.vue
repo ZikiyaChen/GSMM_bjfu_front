@@ -204,8 +204,8 @@ export default {
             // icon: treeicon
             icon: new AMap.Icon({
               image: that.treeicon,
-              size: new AMap.Size(128, 128),  //图标大小
-              imageSize: new AMap.Size(25,25)
+              size: new AMap.Size(150, 150),  //图标大小
+              imageSize: new AMap.Size(30,30)
             })
           });
           // console.log(marker)
@@ -225,7 +225,7 @@ export default {
       console.log('11',this.tree)
       this.map = new AMap.Map('container', { // eslint-disable-line no-unused-vars
         resizeEnable: true,
-        zoom: 9,
+        zoom: 9
       });
       AMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.OverView','AMap.DistrictSearch'], function () {
         var toolBar = new AMap.ToolBar()
@@ -234,8 +234,6 @@ export default {
         map.addControl(toolBar);
         map.addControl(scale)
         map.addControl(overView)
-
-
       })
 
 
