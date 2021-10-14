@@ -99,7 +99,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -147,7 +147,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -195,7 +195,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -245,7 +245,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -293,7 +293,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -341,7 +341,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -391,7 +391,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -439,7 +439,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -487,7 +487,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -588,14 +588,12 @@
 import { damageList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddFzbhAnalysis, AddGpAnalysis,
   AddStssAnalysis,
   getDamage,
-  getGrowthVigorById, getNewGrowthVigor,
   getOneTreeBaseInfo, postTjxmRecord,
-  queryTjxmRecord, updateDamage, updateGrowthVigor, updateTjxmRecord
+  queryTjxmRecord, updateDamage
 } from "@/api/table";
-import { ShowPic } from "@/api/upload";
+import {DeletePic, ShowPic, UploadPicApi} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
 
@@ -604,6 +602,7 @@ export default {
   components: { Float_bar },
   data () {
     return {
+      UploadPicAPI: UploadPicApi,
       timeIndex: 0,
       timeLineList: PathToList,
 
@@ -1005,6 +1004,13 @@ export default {
     },
     handleRemoveList_base1 (index) {
       // 删除
+      DeletePic(this.Damage.pic_base1[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_base1.splice(index, 1)
       this.PicUrlList_base1.splice(index, 1)
     },
@@ -1025,6 +1031,13 @@ export default {
     },
     handleRemoveList_base2 (index) {
       // 删除
+      DeletePic(this.Damage.pic_base2[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_base2.splice(index, 1)
       this.PicUrlList_base2.splice(index, 1)
     },
@@ -1045,6 +1058,13 @@ export default {
     },
     handleRemoveList_base3 (index) {
       // 删除
+      DeletePic(this.Damage.pic_base3[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_base3.splice(index, 1)
       this.PicUrlList_base3.splice(index, 1)
     },
@@ -1065,6 +1085,13 @@ export default {
     },
     handleRemoveList_trunk1 (index) {
       // 删除
+      DeletePic(this.Damage.pic_trunk1[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_trunk1.splice(index, 1)
       this.PicUrlList_trunk1.splice(index, 1)
     },
@@ -1085,6 +1112,13 @@ export default {
     },
     handleRemoveList_trunk2 (index) {
       // 删除
+      DeletePic(this.Damage.pic_trunk2[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_trunk2.splice(index, 1)
       this.PicUrlList_trunk2.splice(index, 1)
     },
@@ -1105,6 +1139,13 @@ export default {
     },
     handleRemoveList_trunk3 (index) {
       // 删除
+      DeletePic(this.Damage.pic_trunk3[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_trunk3.splice(index, 1)
       this.PicUrlList_trunk3.splice(index, 1)
     },
@@ -1125,6 +1166,13 @@ export default {
     },
     handleRemoveList_ske1 (index) {
       // 删除
+      DeletePic(this.Damage.pic_ske1[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_ske1.splice(index, 1)
       this.PicUrlList_ske1.splice(index, 1)
     },
@@ -1144,6 +1192,13 @@ export default {
     },
     handleRemoveList_ske2 (index) {
       // 删除
+      DeletePic(this.Damage.pic_ske2[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_ske2.splice(index, 1)
       this.PicUrlList_ske2.splice(index, 1)
     },
@@ -1163,6 +1218,13 @@ export default {
     },
     handleRemoveList_ske3 (index) {
       // 删除
+      DeletePic(this.Damage.pic_ske3[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.Damage.pic_ske3.splice(index, 1)
       this.PicUrlList_ske3.splice(index, 1)
     },

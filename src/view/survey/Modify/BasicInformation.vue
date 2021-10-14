@@ -374,7 +374,7 @@
                 :max-size="2048"
                 multiple
                 type="drag"
-                action="/api/uploadpic"
+                :action="UploadPicAPI"
                 style="display: inline-block;width:70px;">
                 <div style="width: 70px;height:70px;line-height: 70px;">
                   <Icon type="ios-camera" size="20"></Icon>
@@ -440,7 +440,7 @@
                 <img :src="'data:image/jpg;base64,'+item"  />
                 <div class="demo-upload-list-cover">
                   <Icon type="ios-eye-outline" @click.native="handleView_pic(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_pic(index)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_pic(item,index)"></Icon>
                 </div>
               </div>
               <Upload
@@ -452,7 +452,7 @@
                 :max-size="2048"
                 multiple
                 type="drag"
-                action="/api/uploadpic"
+                :action="UploadPicAPI"
                 style="display: inline-block;width:70px;">
                 <div style="width: 70px;height:70px;line-height: 70px;">
                   <Icon type="ios-camera" size="20"></Icon>
@@ -522,7 +522,7 @@
                 :max-size="2048"
                 multiple
                 type="drag"
-                action="/api/uploadpic"
+                :action="UploadPicAPI"
                 style="display: inline-block;width:70px;">
                 <div style="width: 70px;height:70px;line-height: 70px;">
                   <Icon type="ios-camera" size="20"></Icon>
@@ -579,7 +579,7 @@ import {
   updateBasic, updateDynamic, updateBrand, updateGeo, updatePic, updateTjxmRecord,
   getOneTjxmRecord, queryTreeBasicProperty, queryTjxmRecord
 } from "@/api/table";
-import {ShowPic, ShowQRcode} from "@/api/upload";
+import {DeletePic, ShowPic, ShowQRcode, UploadPicApi} from "@/api/upload";
 import { dateToString, forEach } from "@/libs/tools";
 import name from "@/view/tools-methods/name.json"
 import {
@@ -605,7 +605,7 @@ export default {
     return {
       timeIndex: 0,
       timeLineList: PathToList,
-
+      UploadPicAPI: UploadPicApi,
       QrcodeImg: '',
 
       showModal: false,
@@ -1187,6 +1187,13 @@ export default {
     },
     handleRemoveList_history (index) {
       // 删除
+      DeletePic(this.TreeInformation.Dong.history_pic[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.TreeInformation.Dong.history_pic.splice(index, 1)
       this.historyPicUrlList.splice(index, 1)
     },
@@ -1207,6 +1214,13 @@ export default {
     },
     handleRemoveList_brand (index) {
       // 删除
+      DeletePic(this.TreeInformation.Brand.brand_pic[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.TreeInformation.Brand.brand_pic.splice(index, 1)
       this.brandPicUrlList.splice(index, 1)
     },
@@ -1225,8 +1239,16 @@ export default {
       this.showImageUrl = imageUrl
       this.visible_p = true
     },
-    handleRemoveList_pic (index) {
+    handleRemoveList_pic (item,index) {
       // 删除
+      //删除图片在static中的名称
+      DeletePic(this.TreeInformation.Pic.path[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.TreeInformation.Pic.path.splice(index, 1)
       this.PicUrlList.splice(index, 1)
     },

@@ -98,7 +98,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -147,7 +147,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -205,7 +205,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -269,7 +269,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -318,7 +318,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -366,7 +366,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -414,7 +414,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -462,7 +462,7 @@
               :max-size="2048"
               multiple
               type="drag"
-              action="/api/uploadpic"
+              :action="UploadPicAPI"
               style="display: inline-block;width:70px;">
               <div style="width: 70px;height:70px;line-height: 70px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -575,15 +575,12 @@
 import { base_looseList, damageList, has_absoundList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddGpAnalysis,
   AddqxkfDetect,
-  AddStssAnalysis,
-  getGrowthVigorById,
-  getIncline, getNewGrowthVigor,
+  getIncline,
   getOneTreeBaseInfo, postTjxmRecord,
-  queryTjxmRecord, updateGrowthVigor, updateIncline, updateTjxmRecord
+  queryTjxmRecord,  updateIncline, updateTjxmRecord
 } from "@/api/table";
-import { ShowPic } from "@/api/upload";
+import { ShowPic, UploadPicApi } from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
 
@@ -592,6 +589,7 @@ export default {
   components: { Float_bar },
   data () {
     return {
+      UploadPicAPI: UploadPicApi,
       timeIndex: 0,
       timeLineList: PathToList,
 

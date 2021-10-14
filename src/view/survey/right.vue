@@ -622,7 +622,7 @@ import {
   postFamilyTypes, postGenusTypes, postClassTypes,
   getBasic, postTjxmRecord, queryTreeBasicProperty, getOneTreeBaseInfo
 } from "@/api/table";
-import {ProduceQrcode, ShowPic, UploadPicApi} from "@/api/upload";
+import {DeletePic, ProduceQrcode, ShowPic, UploadPicApi} from "@/api/upload";
 import name from "@/view/tools-methods/name.json"
 
 import Float_bar from "_c/FloatBar/float_bar";
@@ -1181,6 +1181,13 @@ export default {
     },
     handleRemoveList_history (index) {
       // 删除
+      DeletePic(this.TreeInformation.Dong.history_pic[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.TreeInformation.Dong.history_pic.splice(index, 1)
       this.historyPicUrlList.splice(index, 1)
     },
@@ -1201,6 +1208,13 @@ export default {
     },
     handleRemoveList_brand (index) {
       // 删除
+      DeletePic(this.TreeInformation.Brand.brand_pic[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.TreeInformation.Brand.brand_pic.splice(index, 1)
       this.brandPicUrlList.splice(index, 1)
     },
@@ -1221,6 +1235,13 @@ export default {
     },
     handleRemoveList_pic (index) {
       // 删除
+      DeletePic(this.TreeInformation.Pic.path[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
       this.TreeInformation.Pic.path.splice(index, 1)
       this.PicUrlList.splice(index, 1)
     },

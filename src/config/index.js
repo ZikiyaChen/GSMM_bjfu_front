@@ -21,7 +21,7 @@ export default {
     // dev: 'https://www.easy-mock.com/mock/5add9213ce4d0e69998a6f51/iview-admin/',
     dev: 'http://localhost:5000/',
     // pro: 'https://produce.com'
-    pro: 'http://123.56.25.195:5000/'
+    pro: 'http://8.140.170.84:35000/'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home

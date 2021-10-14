@@ -7,9 +7,16 @@ import axios from "@/libs/api.request";
 //     file_name: file_name
 //   })
 // }
-// export const UploadPicApi =   'http://123.56.25.195:5000/uploadpic'
-export const UploadPicApi =   'http://localhost:5000/uploadpic'
+// export const UploadPicApi =   'http://localhost:5000/uploadpic'
+export const UploadPicApi = 'http://8.140.170.84:35000/uploadpic'
 
+export const DeletePic = (file_name) =>{
+  return axios.request({
+    url: 'delete_pic/'+file_name,
+    method: 'delete',
+    file_name: file_name
+  })
+}
 export const ShowPic = (file_name) => {
   return axios.request({
     url: 'static/img/'+file_name,

@@ -13,18 +13,18 @@
       </FormItem>
       <FormItem label="科:" >
         <Select style="width:140px" v-model="query.family" clearable>
-          <Option v-for="item in KeList" :value="item.fname" :key="item.fname">{{ item.fname }}</Option>
+          <Option v-for="item in KeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
       <FormItem label="属:" >
         <Select style="width:140px" v-model="query.genus" clearable>
-          <Option v-for="item in ShuList" :value="item.gname" :key="item.gname">{{ item.gname }}</Option>
+          <Option v-for="item in ShuList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
 
       <FormItem label="种:" >
         <Select style="width:140px" v-model="query.zw_name" clearable>
-          <Option v-for="item in NameList" :value="item.name" :key="item.name">{{ item.name }}</Option>
+          <Option v-for="item in NameList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
       <FormItem label="权属:" >
@@ -115,7 +115,7 @@ import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_exten
 import name from "@/view/tools-methods/name.json"
 import { ownerList, SignList } from "@/view/survey/right_base_options";
 import {queryUnitUsers} from "@/api/user";
-import {exportTreeReport} from "@/api/upload";
+import {GetKe, GetShu, GetZhong} from "@/api/tree_species";
 
 
 export default {
@@ -379,9 +379,10 @@ export default {
                   size: 'small',
                   icon: "md-download"
                 },
-                attrs:{
-                  href: 'http://localhost:5000/export_report/' + params.row.tree_code
-                },
+                // attrs:{
+                //   href: 'http://8.140.170.84:35000/export_report/' + params.row.tree_code
+                //   // href: 'http://localhost:5000/export_report/' + params.row.tree_code
+                // },
                 directives: [{
                   name: 'role',
                   value: ['超级管理员', '单位管理员']
@@ -401,17 +402,6 @@ export default {
       ],
 
       tableData: [],
-
-      codeList: [
-        {
-          value: 'New York',
-          label: 'New York'
-        },
-        {
-          value: 'London',
-          label: 'London'
-        }
-      ],
       model1: '',
       levelList: [
         {
@@ -438,8 +428,8 @@ export default {
     //window.location.href 告诉您浏览器当前URL位置的属性。更改属性的值将重定向页面。
     //window.open 打开一个新的窗口并跳转到URL
     onExportReport(tree_code){
-      // window.location.href='http://123.56.25.195:5000/export_report/'+tree_code
-      window.location.href='http://localhost:5000/export_report/'+tree_code
+      window.location.href='http://8.140.170.84:35000/export_report/'+tree_code
+      // window.location.href='http://localhost:5000/export_report/'+tree_code
     },
 
 
@@ -506,39 +496,57 @@ export default {
       this.fetchData()
     },
 
-    JsonChangeToOptions () {
-      let options = name.contents
-      let keArr = []
-      let shuArr = []
-      let nameArr = []
-      for (let [index, elem] of options.entries()) {
-        if (!keArr.includes(elem.ke)) {
-          keArr.push(elem.ke)
-          this.KeList.push({ fname: elem.ke })
-        }
-        if (!shuArr.includes(elem.shu)) {
-          shuArr.push(elem.shu)
-          this.ShuList.push({ gname: elem.shu })
-        }
-        if (!nameArr.includes(elem.name)) {
-          nameArr.push(elem.name)
-          this.NameList.push({ name: elem.name })
-        }
-      }
-      console.log('###KeList', this.KeList)
-      console.log('###ShuList', this.ShuList)
-      console.log('###NameList', this.NameList)
-    }
+    fetchOptions(){
+      GetKe().then(ke=>{
+        this.KeList = ke.data.families
+      })
+      GetShu().then(shu=>{
+        this.ShuList = shu.data.genuses
+      })
+      GetZhong().then(name=>{
+        this.NameList = name.data.names
+      })
+    },
+
+    // JsonChangeToOptions () {
+    //   let options = name.contents
+    //   let keArr = []
+    //   let shuArr = []
+    //   let nameArr = []
+    //   for (let [index, elem] of options.entries()) {
+    //     if (!keArr.includes(elem.ke)) {
+    //       keArr.push(elem.ke)
+    //       this.KeList.push({ fname: elem.ke })
+    //     }
+    //     if (!shuArr.includes(elem.shu)) {
+    //       shuArr.push(elem.shu)
+    //       this.ShuList.push({ gname: elem.shu })
+    //     }
+    //     if (!nameArr.includes(elem.name)) {
+    //       nameArr.push(elem.name)
+    //       this.NameList.push({ name: elem.name })
+    //     }
+    //   }
+    //   console.log('###KeList', this.KeList)
+    //   console.log('###ShuList', this.ShuList)
+    //   console.log('###NameList', this.NameList)
+    // }
+  },
+  mounted() {
+
   },
   created () {
     queryTreeBasicProperty({ ...this.pages, ...this.query }).then((resp) => {
       this.tableData = resp.data.trees_basic_property
       this.total = resp.data.total
     })
+
+    this.fetchOptions()
     // queryFamilyTypes().then((res) => {
     //   this.FamilyList = res.data.species_types
     // })
-    this.JsonChangeToOptions()
+    // this.JsonChangeToOptions()
+
   }
 
 }

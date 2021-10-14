@@ -178,7 +178,7 @@
                 :max-size="2048"
                 multiple
                 type="drag"
-                action="/api/uploadpic"
+                :action="UploadPicAPI"
                 style="display: inline-block;width:70px;">
                 <div style="width: 70px;height:70px;line-height: 70px;">
                   <Icon type="ios-camera" size="20"></Icon>
@@ -502,15 +502,13 @@ import {
 } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddFzbhAnalysis,
-  AddGpAnalysis,
-  getNewGrowthVigor, getNewProtect,
+  AddFzbhAnalysis, getNewProtect,
   getOneTreeBaseInfo, getProtect_By_id,
   postTjxmRecord,
-  queryTjxmRecord, updateGrowthVigor, updateProtect, updateTjxmRecord
+  queryTjxmRecord,  updateProtect, updateTjxmRecord
 } from "@/api/table";
 import Float_bar from "_c/FloatBar/float_bar";
-import { ShowPic } from "@/api/upload";
+import { ShowPic, UploadPicApi } from "@/api/upload";
 import { queryUnits, queryUsers } from "@/api/user";
 
 export default {
@@ -518,6 +516,7 @@ export default {
   components: { Float_bar },
   data () {
     return {
+      UploadPicAPI: UploadPicApi,
       timeIndex: 0,
       timeLineList: PathToList,
 
