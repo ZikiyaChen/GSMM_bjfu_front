@@ -18,111 +18,218 @@
           </ul>
         </div>
       </div>
-      <h2 slot="title" style="text-align: center">名木古树每木调查表--修改</h2>
-      <Form :label-width="120" label-position="right" ref="Tree_form" :model="TreeInformation" :rules="ruleValidate" inline>
-        <h4>基本信息：</h4>
+      <h2 slot="title" style="text-align: center">名木古树基本信息调查表</h2>
+      <Form :label-width="140" label-position="right" ref="Tree_form" :model="TreeInformation" :rules="ruleValidate" inline>
+
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="古树编号" prop="tree_code">
-              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" style="width: 200px"></Input>
+          <Col span="10" offset="1">
+            <FormItem label="古树编号：" prop="tree_code" class="error-tip">
+              <Input v-model="TreeInformation.tree_code" placeholder="请输入古树编号" ></Input>
             </FormItem>
           </Col>
-          <Col span="9">
-            <FormItem label="调查时间" prop="Dong.investigate_time">
-              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="datetime" placeholder="请选择日期" style="width: 200px"></DatePicker>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="9" offset="1">
-            <FormItem label="管护单位" prop="Base.gh_unit">
+          <Col span="10">
+            <FormItem label="管护单位：" prop="Base.gh_unit" class="error-tip">
               <Select v-model="TreeInformation.Base.gh_unit" placeholder="选择管护单位名称" filterable @on-clear="GetGhUnit"
-                      @on-query-change="onGhUnitSelectQueryChange" clearable style="width: 200px" >
+                      @on-query-change="onGhUnitSelectQueryChange" clearable  >
                 <Option v-for="item in ghUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
               </Select>
             </FormItem>
           </Col>
 
-          <Col span="9">
-            <FormItem label="调查单位" prop="Base.gh_unit">
-              <Select v-model="TreeInformation.Base.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetDcUnit"
-                      @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
-                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-              </Select>
+        </Row>
+        <Row>
+          <Col span="10" offset="1">
+            <FormItem label="是否签订管护责任书：" prop="Base.is_signed" style="width: 100%;" class="error-tip">
+              <RadioGroup v-model="TreeInformation.Base.is_signed">
+                <Radio v-for="item in IsSignedList" :label="item.value" :key="item.value">{{item.label}}</Radio>
+              </RadioGroup>
             </FormItem>
           </Col>
-
-        </Row>
-
-        <Row>
-          <Col span="9"  offset="1">
-            <FormItem label="管护人" prop="Base.gh_username">
+          <Col span="10" >
+            <FormItem label="管护人：" prop="Base.gh_username" class="error-tip">
               <Select v-model="TreeInformation.Base.gh_username" placeholder="名字" filterable
-                      @on-query-change="onGhUserSelectQueryChange" clearable style="width: 200px">
+                      @on-query-change="onGhUserSelectQueryChange" clearable >
                 <Option v-for="item in ghUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
               </Select>
             </FormItem>
           </Col>
+        </Row>
+        <Row>
+          <Col span="10" offset="1">
+            <FormItem label="调查顺序号：" prop="Dong.investigate_id" class="error-tip">
+              <Input v-model="TreeInformation.Dong.investigate_id" placeholder="请输入调查顺序号" ></Input>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="管护单位电话：" >
+              <Input placeholder="请输入电话"></Input>
+            </FormItem>
+          </Col>
+        </Row>
 
-          <Col span="9">
-            <FormItem label="调查人" prop="Base.dc_username">
+        <Row>
+          <Col span="10" offset="1">
+            <FormItem label="特征代码：" prop="Base.character_code" class="error-tip">
+              <Input v-model="TreeInformation.Base.character_code" placeholder="请输入特征代码" ></Input>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="调查单位：" prop="Base.gh_unit" class="error-tip">
+              <Select v-model="TreeInformation.Base.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetDcUnit"
+                      @on-query-change="onDcUnitSelectQueryChange" clearable >
+                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="10" offset="1">
+            <FormItem label="调查时间：" prop="Dong.investigate_time" class="error-tip">
+              <DatePicker v-model="TreeInformation.Dong.investigate_time"  type="datetime" placeholder="请选择日期" ></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="调查人：" prop="Base.dc_username">
               <Select v-model="TreeInformation.Base.dc_username" placeholder="名字" filterable
-                      @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                      @on-query-change="onDcUserSelectQueryChange" clearable>
                 <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
               </Select>
             </FormItem>
           </Col>
         </Row>
+        <div style="color: mediumseagreen;  margin-left: 130px; margin-bottom: 5px; font-weight: bold" >
+          <span>树种:</span>
+        </div>
 
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="特征代码" prop="Base.character_code">
-              <Input v-model="TreeInformation.Base.character_code" placeholder="请输入特征代码" style="width: 200px"></Input>
+          <Col offset="1" span="10">
+            <FormItem label="科属种、拉丁名：" prop="Base.treetype" style="width: 100%;">
+              <Cascader v-model="TreeInformation.Base.treetype" :data="options" clearable></Cascader>
             </FormItem>
-
           </Col>
-          <Col span="9">
-            <FormItem label="调查顺序号" prop="Dong.investigate_id">
-              <Input v-model="TreeInformation.Dong.investigate_id" placeholder="请输入调查顺序号" style="width: 200px"></Input>
+
+          <Col span="10" >
+            <FormItem label="俗名：" prop="Base.bm_name">
+              <Input v-model="TreeInformation.Base.bm_name" placeholder="请输入俗名" clearable>
+              </Input>
+            </FormItem>
+          </Col>
+        </Row>
+
+
+        <div style="color: mediumseagreen;  margin-left: 130px; margin-bottom: 5px; font-weight: bold" >
+          <span>位置:</span>
+        </div>
+
+        <Row>
+          <Col offset="1">
+            <FormItem label="省市区、街道(乡镇)：" class="regionStyle" prop="Base.dizhi">
+              <v-region @values="regionChange" :town="true" v-model="TreeInformation.Base.dizhi"></v-region>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="古树等级" prop="Base.level">
+          <Col span="10" offset="1">
+            <FormItem label="村/居委会：" prop="Base.village">
+              <Input v-model="TreeInformation.Base.village" placeholder="请输入"></Input>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="小地名：" prop="Base.place_name">
+              <Input v-model="TreeInformation.Base.place_name" placeholder="请输入古树位置小地名信息" ></Input>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col offset="1" span="10">
+            <FormItem label="东经：" prop="Position.longitude">
+              <Input v-model="TreeInformation.Position.longitude" placeholder="请输入经度"></Input>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="北纬：" prop="Position.latitude">
+              <Input v-model="TreeInformation.Position.latitude" placeholder="请输入纬度"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col offset="1">
+            <FormItem label="生长场所（多选）：" prop="Base.palce" style="width: 100%">
+              <CheckboxGroup v-model="TreeInformation.Base.palce">
+                <Checkbox v-for="item in PalceList" :label="item.value" :key="item.value"></Checkbox>
+              </CheckboxGroup>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col offset="1" span="10">
+            <FormItem label="分布特点：" prop="Base.placing_character">
+              <RadioGroup v-model="TreeInformation.Base.placing_character">
+                <Radio v-for="item in PlacingCharacterList" :label="item.value" :key="item.value"></Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="权属：" prop="Base.owner" style="width: 100%;">
+              <RadioGroup v-model="TreeInformation.Base.owner">
+                <Radio v-for="item in OwnerList" :label="item.value" :key="item.value" style="width: 60px; margin-right: 10px"></Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <div style="color: mediumseagreen;  margin-left: 130px; margin-bottom: 5px; font-weight: bold" >
+          <span>树龄:</span>
+        </div>
+        <Row>
+          <Col span="10" offset="1">
+            <FormItem label="真实树龄：" prop="Dong.real_age" class="error-tip">
+              <Input v-model="TreeInformation.Dong.real_age"><span slot="append">年</span></Input>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="预估树龄：" prop="Dong.estimate_age">
+              <Input v-model="TreeInformation.Dong.estimate_age"><span slot="append">年</span></Input>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col span="15" offset="1">
+            <FormItem label="树龄估测依据：" prop="Dong.basis">
+              <Input v-model="TreeInformation.Dong.basis" type="textarea" :autosize="{minRows: 1,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col offset="1">
+            <FormItem label="古树等级：" prop="Base.level">
               <RadioGroup v-model="TreeInformation.Base.level">
                 <Radio v-for="item in LevelList" :label="item.value" :key="item.value"></Radio>
               </RadioGroup>
             </FormItem>
 
           </Col>
-          <Col span="9">
-            <FormItem label="树高" prop="Dong.height">
-              <Input v-model="TreeInformation.Dong.height" placeholder="请输入树高" style="width: 160px">
-                <span slot="append">m</span>
-              </Input>
-            </FormItem>
-          </Col>
         </Row>
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="是否签订管护责任书" prop="Base.is_signed">
-              <RadioGroup v-model="TreeInformation.Base.is_signed">
-                <Radio v-for="item in IsSignedList" :label="item.value" :key="item.value">{{item.label}}</Radio>
-              </RadioGroup>
+          <Col span="10" offset="1">
+            <FormItem label="树高：" prop="Dong.height">
+              <Input v-model="TreeInformation.Dong.height" placeholder="请输入树高" >
+                <span slot="append">米</span>
+              </Input>
             </FormItem>
           </Col>
-          <Col span="9">
-            <FormItem label="胸围" prop="Dong.bust">
-              <Input v-model="TreeInformation.Dong.bust" placeholder="请输入古树的胸围" style="width: 160px">
-                <span slot="append">cm</span>
+          <Col span="10">
+            <FormItem label="胸围：" prop="Dong.bust">
+              <Input v-model="TreeInformation.Dong.bust" placeholder="请输入古树的胸围" >
+                <span slot="append">厘米</span>
               </Input>
             </FormItem>
           </Col>
         </Row>
-        <Divider />
-        <h4>树种信息：</h4>
-
 <!--        <Row>-->
 <!--          <Col span="9" offset="1">-->
 <!--            <FormItem label="科属种" prop="Base.treetype">-->
@@ -138,226 +245,124 @@
 <!--          </Col>-->
 <!--        </Row>-->
 
+        <div style="color: mediumseagreen;  margin-left: 130px; margin-bottom: 5px; font-weight: bold" >
+          <span>冠幅:</span>
+        </div>
         <Row>
-          <Col offset="1" >
-            <FormItem label="科属种、拉丁名" prop="Base.treetype" style="width: 450px">
-              <Cascader v-model="TreeInformation.Base.treetype" :data="options" clearable></Cascader>
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col span="9" offset="1">
-            <FormItem label="俗名" prop="Base.bm_name">
-              <Input v-model="TreeInformation.Base.bm_name" placeholder="请输入别名" style="width: 200px" clearable>
-              </Input>
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Divider />
-        <h4>树龄：</h4>
-        <Row>
-          <Col span="7" offset="1">
-            <FormItem label="真实树龄" prop="Dong.real_age">
-              <InputNumber v-model="TreeInformation.Dong.real_age"
-                           :formatter="value => `${value}   年`"
-                           :parser="value => value.replace('   年', '')"></InputNumber>
-            </FormItem>
-          </Col>
-          <Col span="7">
-            <FormItem label="预估树龄" prop="Dong.estimate_age">
-              <InputNumber v-model="TreeInformation.Dong.estimate_age"
-                           :formatter="value => `${value}   年`"
-                           :parser="value => value.replace('   年', '')"></InputNumber>
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col span="9" offset="1">
-            <FormItem label="树龄估测依据" prop="Dong.basis">
-              <Input v-model="TreeInformation.Dong.basis" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
-            </FormItem>
-          </Col>
-        </Row>
-        <Divider />
-        <h4>位置信息：</h4>
-        <Row>
-          <Col offset="1">
-            <FormItem label="省市区街道" class="regionStyle" prop="Base.dizhi">
-              <v-region @values="regionChange" :town="true" v-model="TreeInformation.Base.dizhi"></v-region>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col offset="1">
-            <FormItem label="村/居委会" prop="Base.village">
-              <Input v-model="TreeInformation.Base.village" placeholder="请输入" style="width: 300px"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col offset="1">
-            <FormItem label="小地名" prop="Base.place_name">
-              <Input v-model="TreeInformation.Base.place_name" placeholder="请输入古树位置小地名信息" style="width: 300px"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col offset="1" span="6">
-            <FormItem label="经度" prop="Position.longitude">
-              <Input v-model="TreeInformation.Position.longitude" placeholder="请输入经度"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="6" offset="1">
-            <FormItem label="纬度" prop="Position.latitude">
-              <Input v-model="TreeInformation.Position.latitude" placeholder="请输入纬度"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col offset="1">
-            <FormItem label="生长场所" prop="Base.palce">
-              <RadioGroup v-model="TreeInformation.Base.palce">
-                <Radio v-for="item in PalceList" :label="item.value" :key="item.value"></Radio>
-              </RadioGroup>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col offset="1">
-            <FormItem label="分布特点" prop="Base.placing_character">
-              <RadioGroup v-model="TreeInformation.Base.placing_character">
-                <Radio v-for="item in PlacingCharacterList" :label="item.value" :key="item.value"></Radio>
-              </RadioGroup>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col offset="1">
-            <FormItem label="权属" prop="Base.owner">
-              <RadioGroup v-model="TreeInformation.Base.owner">
-                <Radio v-for="item in OwnerList" :label="item.value" :key="item.value"></Radio>
-              </RadioGroup>
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Divider />
-        <h4>冠幅：</h4>
-        <Row>
-          <Col offset="1" span="7">
-            <FormItem label="平均" prop="Dong.c_average">
-              <!--              <InputNumber v-model="TreeInformation.Dong.c_average"-->
-              <!--                           :step="0.01"-->
-              <!--                           :formatter="value => `${value}  m`"-->
-              <!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
-              <Input v-model="TreeInformation.Dong.c_average" placeholder="请输入冠幅平均" style="width: 160px">
+          <Col offset="1" span="10">
+            <FormItem label="平均：" prop="Dong.c_average">
+              <Input v-model="TreeInformation.Dong.c_average" placeholder="请输入冠幅平均" >
                 <span slot="append"> m </span>
               </Input>
             </FormItem>
           </Col>
-          <Col span="7">
-            <FormItem label="东西" prop="Dong.c_dx">
-              <!--              <InputNumber v-model="TreeInformation.Dong.c_dx"-->
-              <!--                           :step="0.01"-->
-              <!--                           :formatter="value => `${value}  m`"-->
-              <!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
-              <Input v-model="TreeInformation.Dong.c_dx" placeholder="请输入冠幅东西" style="width: 160px">
+          <Col span="10">
+            <FormItem label="东西：" prop="Dong.c_dx">
+
+              <Input v-model="TreeInformation.Dong.c_dx" placeholder="请输入冠幅东西">
                 <span slot="append"> m </span>
               </Input>
             </FormItem>
           </Col>
-          <Col span="7">
-            <FormItem label="南北" prop="Dong.c_nb">
+        </Row>
+        <Row>
+          <Col span="10" offset="1">
+            <FormItem label="南北：" prop="Dong.c_nb">
               <!--              <InputNumber v-model="TreeInformation.Dong.c_nb"-->
               <!--                           :step="0.01"-->
               <!--                           :formatter="value => `${value}  m`"-->
               <!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
-              <Input v-model="TreeInformation.Dong.c_nb" placeholder="请输入冠幅南北" style="width: 160px">
+              <Input v-model="TreeInformation.Dong.c_nb" placeholder="请输入冠幅南北" >
                 <span slot="append"> m </span>
               </Input>
             </FormItem>
           </Col>
         </Row>
-        <Divider />
-        <h4>立地条件：</h4>
+
+        <div style="color: mediumseagreen;  margin-left: 100px; margin-bottom: 5px; font-weight: bold" >
+          <span>立地条件:</span>
+        </div>
         <Row>
-          <Col offset="1" span="7">
-            <FormItem label="海拔" prop="Position.elevation">
-              <Input v-model="TreeInformation.Position.elevation" placeholder="请输入海拔" style="width: 150px">
+          <Col offset="1" span="10">
+            <FormItem label="海拔：" prop="Position.elevation">
+              <Input v-model="TreeInformation.Position.elevation" placeholder="请输入海拔">
                 <span slot="append">m</span>
               </Input>
             </FormItem>
           </Col>
-          <Col span="7">
-            <FormItem label="坡向" prop="Position.aspect">
-              <Input v-model="TreeInformation.Position.aspect" placeholder="请输入坡向" style="width: 150px">
+          <Col span="10">
+            <FormItem label="坡向：" prop="Position.aspect">
+              <Input v-model="TreeInformation.Position.aspect" placeholder="请输入坡向" >
               </Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col offset="1" span="7">
-            <FormItem label="坡度" prop="Position.slope">
-              <Input v-model="TreeInformation.Position.slope" placeholder="请输入坡度" style="width: 150px">
+          <Col offset="1" span="10">
+            <FormItem label="坡度：" prop="Position.slope">
+              <Input v-model="TreeInformation.Position.slope" placeholder="请输入坡度">
                 <span slot="append">度</span>
               </Input>
             </FormItem>
           </Col>
-          <Col span="7">
-            <FormItem label="坡位" prop="Position.slope_position">
-              <Input v-model="TreeInformation.Position.slope_position" placeholder="请输入坡位" style="width: 150px">
+          <Col span="10">
+            <FormItem label="坡位：" prop="Position.slope_position">
+              <Input v-model="TreeInformation.Position.slope_position" placeholder="请输入坡位" >
               </Input>
             </FormItem>
           </Col>
         </Row>
 
-        <Divider />
-        <h4>其他信息：</h4>
+        <div style="color: mediumseagreen;  margin-left: 100px; margin-bottom: 5px; font-weight: bold" >
+          <span>其他信息:</span>
+        </div>
         <Row>
-          <Col offset="1">
-            <FormItem label="生长势" prop="Dong.g_vigor">
+          <Col offset="1" span="10">
+            <FormItem label="生长势：" prop="Dong.g_vigor" style="width: 95%">
               <RadioGroup v-model="TreeInformation.Dong.g_vigor">
-                <Radio v-for="item in GVigorList" :label="item.value" :key="item.value"></Radio>
+                <Radio v-for="item in GVigorList" :label="item.value" :key="item.value"
+                       style="width: 50px;margin-right: 15px"></Radio>
               </RadioGroup>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
-          <Col offset="1">
-            <FormItem label="生长环境" prop="Dong.g_environment">
+          <Col span="10">
+            <FormItem label="生长环境：" prop="Dong.g_environment" style="width: 95%;">
               <RadioGroup v-model="TreeInformation.Dong.g_environment">
-                <Radio v-for="item in GEnvironmentList" :label="item.value" :key="item.value"></Radio>
+                <Radio v-for="item in GEnvironmentList" :label="item.value" :key="item.value"
+                       style="width: 50px;margin-right: 15px"></Radio>
               </RadioGroup>
             </FormItem>
           </Col>
         </Row>
+
+        <Row>
+          <Col span="18" offset="1">
+            <FormItem label="影响生长环境因素：" prop="Dong.affect_factor">
+              <Input v-model="TreeInformation.Dong.affect_factor" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."  />
+            </FormItem>
+          </Col>
+        </Row>
+
         <Row>
           <Col offset="1">
-            <FormItem label="新增古树原因" prop="Dong.reason">
+            <FormItem label="新增名木古树原因：" prop="Dong.reason">
               <RadioGroup v-model="TreeInformation.Dong.reason">
                 <Radio v-for="item in ReasonList" :label="item.value" :key="item.value"></Radio>
               </RadioGroup>
             </FormItem>
           </Col>
         </Row>
-
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="影响生长环境因素" prop="Dong.affect_factor">
-              <Input v-model="TreeInformation.Dong.affect_factor" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
+          <Col span="18" offset="1">
+            <FormItem label="古树历史描述：" prop="Dong.history">
+              <Input v-model="TreeInformation.Dong.history" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."
+                     maxlength="300" show-word-limit />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col offset="1">
-            <FormItem label="文化历史照片" prop="Dong.history_pic">
+            <FormItem label="文化历史照片：" prop="Dong.history_pic">
               <div class="demo-upload-list" v-for="(item,index) in historyPicUrlList" :key="index">
                 <img :src="'data:image/jpg;base64,'+item"  />
                 <div class="demo-upload-list-cover">
@@ -375,8 +380,8 @@
                 multiple
                 type="drag"
                 :action="UploadPicAPI"
-                style="display: inline-block;width:70px;">
-                <div style="width: 70px;height:70px;line-height: 70px;">
+                class="pic-upload-list">
+                <div class="camera-style">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
@@ -388,33 +393,22 @@
         </Row>
 
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="古树历史描述" prop="Dong.history">
-              <Input v-model="TreeInformation.Dong.history" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."
-                     maxlength="300" show-word-limit style="width: 500px" />
-
+          <Col span="18" offset="1">
+            <FormItem label="树种奇特性状描述：" prop="Dong.describe">
+              <Input v-model="TreeInformation.Dong.describe" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."  />
             </FormItem>
           </Col>
         </Row>
-
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="树种奇特性状描述" prop="Dong.describe">
-              <Input v-model="TreeInformation.Dong.describe" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col span="9" offset="1">
-            <FormItem label="树种鉴定记载" prop="Base.jd_record">
-              <Input v-model="TreeInformation.Base.jd_record" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px" />
+          <Col span="18" offset="1">
+            <FormItem label="树种鉴定记载：" prop="Base.jd_record">
+              <Input v-model="TreeInformation.Base.jd_record" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..."  />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col offset="1">
-            <FormItem prop="Dong.conserve_status" label="保护现状">
+            <FormItem prop="Dong.conserve_status" label="保护现状：" style="width: 100%;">
               <CheckboxGroup v-model="TreeInformation.Dong.conserve_status">
                 <Checkbox v-for="item in ConserveStatusList" :label="item.value" :key="item.value"></Checkbox>
               </CheckboxGroup>
@@ -423,7 +417,7 @@
         </Row>
         <Row>
           <Col offset="1">
-            <FormItem prop="Dong.yhfz_status" label="养护复壮现状">
+            <FormItem prop="Dong.yhfz_status" label="养护复壮现状：" style="width: 100%;">
               <CheckboxGroup v-model="TreeInformation.Dong.yhfz_status">
                 <Checkbox v-for="item in YhfzStatusList" :label="item.value" :key="item.value"></Checkbox>
               </CheckboxGroup>
@@ -431,13 +425,22 @@
           </Col>
         </Row>
 
-        <Divider />
-        <h4>古树图片：</h4>
+        <div style="color: mediumseagreen;  margin-left: 100px; margin-bottom: 5px; font-weight: bold" >
+          <span>古树图片:</span>
+        </div>
+        <Row>
+          <Col span="18" offset="1">
+            <FormItem label="古树照片的说明：" prop="Pic.explain">
+              <Input v-model="TreeInformation.Pic.explain" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px"
+                     class="TextStyle"/>
+            </FormItem>
+          </Col>
+        </Row>
         <Row>
           <Col offset="1">
-            <FormItem label="古树照片" prop="Pic.path">
+            <FormItem label="古树照片：" prop="Pic.path">
               <div class="demo-upload-list" v-for="(item,index) in PicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"  />
+                <img :src="'data:image/jpg;base64,'+item"/>
                 <div class="demo-upload-list-cover">
                   <Icon type="ios-eye-outline" @click.native="handleView_pic(item)"></Icon>
                   <Icon type="ios-trash-outline" @click.native="handleRemoveList_pic(item,index)"></Icon>
@@ -453,8 +456,8 @@
                 multiple
                 type="drag"
                 :action="UploadPicAPI"
-                style="display: inline-block;width:70px;">
-                <div style="width: 70px;height:70px;line-height: 70px;">
+                class="pic-upload-list">
+                <div class="camera-style">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
@@ -464,16 +467,8 @@
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col span="9" offset="1">
-            <FormItem label="古树照片的说明" prop="Pic.explain">
-              <Input v-model="TreeInformation.Pic.explain" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px"
-                     class="TextStyle"/>
-            </FormItem>
-          </Col>
-        </Row>
 
-        <Divider />
+
         <h4>树牌信息：</h4>
         <Row>
           <Col offset="1">
@@ -487,13 +482,15 @@
 
         <Row>
           <Col offset="1">
-            <FormItem label="现有树牌" prop="Brand.brand_right">
+            <FormItem label="现有树牌" prop="Brand.brand_right" style="width: 100%;">
               <RadioGroup v-model="TreeInformation.Brand.brand_right">
-                <Radio v-for="item in BrandRightList" :label="item.value" :key="item.value"></Radio>
+                <Radio v-for="item in BrandRightList" :label="item.value" :key="item.value"
+                       style=" width: auto; margin-right: 35px"></Radio>
               </RadioGroup>
             </FormItem>
           </Col>
         </Row>
+
         <Row>
           <Col offset="1">
             <FormItem label="其它后台信息" prop="Brand.is_right">
@@ -570,17 +567,11 @@
 
 <script>
 import {
-  AddBasicProperty,
-  AddDynamicProperty, AddGeoProperty, AddPicRecord, AddTreeBrand, getBasic,
-  getOneTreeBaseInfo, postTjxmRecord,
-  queryClassTypes,
-  queryFamilyTypes,
-  queryGenusTypes,
-  updateBasic, updateDynamic, updateBrand, updateGeo, updatePic, updateTjxmRecord,
-  getOneTjxmRecord, queryTreeBasicProperty, queryTjxmRecord
+  getOneTreeBaseInfo,
+  updateBasic, updateDynamic, updateBrand, updateGeo, updatePic, updateTjxmRecord, queryTjxmRecord
 } from "@/api/table";
 import {DeletePic, ShowPic, ShowQRcode, UploadPicApi} from "@/api/upload";
-import { dateToString, forEach } from "@/libs/tools";
+import { dateToString } from "@/libs/tools";
 import name from "@/view/tools-methods/name.json"
 import {
   brand_rightList, conserve_statusList, g_environmentList, g_vigorList,
@@ -634,7 +625,7 @@ export default {
           village: '', // 村/居委会
           place_name: '', // 小地名
 
-          palce: '', // 生长场所
+          palce: [], // 生长场所
           placing_character: '', // 分布特点
           owner: '', // 权属
           level: '', // 古树等级
@@ -1294,8 +1285,43 @@ export default {
 </script>
 
 <style scoped>
+/*margin-bottom控制formItem上下间隔距离
+  width控制formItem输入框的长度*/
+.ivu-form-item {
+  margin-bottom: 14px;
+  width: 85%;
+}
+
+.error-tip >>> div.ivu-form-item-error-tip {
+  padding-top: 0.5mm!important;
+}
+
+/*控制单选选项之间距离*/
+.ivu-radio-wrapper {
+  width: 85px;
+  margin-right: 15px;
+}
+/*复选框选项间隔*/
+.ivu-checkbox-wrapper {
+  width: 100px;
+  margin-right: 25px;
+}
+.ivu-date-picker {
+  width: 100%;
+}
+/*控制上传图片框大小*/
+.camera-style {
+  width: 100px;
+  height:100px;
+  line-height: 100px;
+}
+.pic-upload-list {
+  display: inline-block;
+  width:100px;
+}
+
 .demo-upload-list {
-  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  display: inline-block;width: 100px;height: 100px;text-align: center;line-height: 100px;
   border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
   position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
 }
@@ -1331,7 +1357,8 @@ export default {
 /*节点间距*/
 .my_timeline_item {
   display: inline-block;
-  width: 170px;
+  /*width: 170px;*/
+  width: 130px;
 }
 .my_timeline_node {
   box-sizing: border-box;

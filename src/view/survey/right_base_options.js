@@ -51,15 +51,18 @@ export const familyList = [
 ]
 
 export const palceList = [
-  {
-    value: '乡村'
-  },
-  {
-    value: '城区'
-  },
-  {
-    value: '山区'
-  }
+  {value: '乡村街道'},
+  {value: '中心城区'},
+  {value: '城市副中心'},
+  {value: '远郊野外'},
+  {value: '区县城区'},
+  {value: '自然保护区'},
+  {value: '风景名胜区'},
+  {value: '森林公园'},
+  {value: '历史文化街区'},
+  {value: '风貌保护区'},
+  {value: '历史名园'},
+  {value: '名人故居'}
 ]
 
 export const placing_characterList = [

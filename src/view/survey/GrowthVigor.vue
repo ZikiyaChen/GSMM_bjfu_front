@@ -19,83 +19,61 @@
           </ul>
         </div>
       </div>
-      <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
-        <h4>古树基本信息</h4>
+      <Form :label-width="180" label-position="right" :model="TreeInformation" inline >
+        <h4>古树基本信息:</h4>
         <Row>
-          <Col  span="5" offset="3">
-            <FormItem label="古树编号">
+          <Col  span="11" offset="1">
+            <FormItem label="古树编号：">
               <Input disabled  v-model="tree_code" class="TextColor"></Input>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
-          <Col span="5" offset="3">
-            <FormItem label="科" prop="Base.family">
-              <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
-            </FormItem>
-          </Col>
-          <Col span="5" >
-            <FormItem label="属" prop="Base.genus">
-              <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
-            </FormItem>
-          </Col>
-          <Col span="5" >
-            <FormItem label="中文名" prop="Base.zw_name">
+          <Col span="11" >
+            <FormItem label="中文名：" prop="Base.zw_name">
               <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
             </FormItem>
           </Col>
         </Row>
-
-        <Row>
-          <Col span="5" offset="3">
-            <FormItem label="拉丁名" prop="Base.ld_name">
-              <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
-            </FormItem>
-          </Col>
-          <Col span="5">
-            <FormItem label="俗名" prop="Base.bm_name">
-              <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
-              </Input>
-            </FormItem>
-          </Col>
-        </Row>
       </Form>
-      <Divider></Divider>
-      <h4>生长势分析</h4>
-      <Form :label-width="198" label-position="right"  ref="GrowthVigor_form" :model="GrowthVigor" :rules="ruleValidate" inline>
+
+
+      <Form :label-width="180" label-position="right"  ref="GrowthVigor_form" :model="GrowthVigor" :rules="ruleValidate" inline>
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="调查单位" prop="dc_unit">
+          <Col span="11" offset="1">
+            <FormItem label="调查单位：" prop="dc_unit" class="error-tip">
               <Select v-model="GrowthVigor.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                      @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+                      @on-query-change="onDcUnitSelectQueryChange" clearable  >
                 <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
               </Select>
             </FormItem>
           </Col>
-          <Col span="9">
-            <FormItem label="调查时间" prop="update_time">
+          <Col span="11">
+            <FormItem label="调查时间：" prop="update_time" class="error-tip">
               <DatePicker v-model="GrowthVigor.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="调查人" prop="investigate_username">
+          <Col span="11" offset="1">
+            <FormItem label="调查人：" prop="investigate_username" class="error-tip">
               <Select v-model="GrowthVigor.investigate_username" placeholder="名字" filterable
-                      @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                      @on-query-change="onDcUserSelectQueryChange" clearable >
                 <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
               </Select>
             </FormItem>
           </Col>
         </Row>
+        <h4>生长势分析：</h4>
+<!--        <div style="color: #2d8cf0;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >-->
+<!--          <span>生长势分析:</span>-->
+<!--        </div>-->
         <Row>
-          <Col offset="2">
+          <Col offset="1">
             <FormItem prop="shoot_type">
-              <span slot="label" style="font-size: 13px">
+              <span slot="label" >
                 <Tooltip placement="top" max-width="200" >
                 <div slot="content">在树冠东南西北四个方向共随机选取20条标准枝，测量各个枝条的新梢年生长量，取其平均值。单位cm。 </div>
               <Icon type="md-alert" size="14" color="#808695"/>
-            </Tooltip>新梢生长量</span>
+            </Tooltip>新梢生长量：</span>
               <RadioGroup v-model="GrowthVigor.shoot_type">
                 <Radio v-for="item in ShootTypeList" :label="item.value" :key="item.value"></Radio>
               </RadioGroup>
@@ -104,8 +82,8 @@
         </Row>
 
         <Row v-if="GrowthVigor.shoot_type === '落叶树'">
-          <Col offset="2">
-            <FormItem label="落叶树" prop="shoot">
+          <Col offset="1">
+            <FormItem label="落叶树：" prop="shoot">
               <RadioGroup v-model="GrowthVigor.shoot">
                 <Radio v-for="item in ShootList1" :label="item.value" :key="item.value"></Radio>
               </RadioGroup>
@@ -114,8 +92,8 @@
         </Row>
         <div  v-if="GrowthVigor.shoot_type === '常绿树'">
          <Row>
-           <Col offset="2">
-             <FormItem label="常绿树" prop="shoot">
+           <Col offset="1">
+             <FormItem label="常绿树：" prop="shoot">
                <RadioGroup v-model="GrowthVigor.shoot">
                  <Radio v-for="item in ShootList2" :label="item.value" :key="item.value"></Radio>
                </RadioGroup>
@@ -123,8 +101,8 @@
            </Col>
          </Row>
           <Row>
-            <Col offset="2">
-              <FormItem label="叶片宿存（常绿树）" prop="blade_persistent">
+            <Col offset="1">
+              <FormItem label="叶片宿存(常绿树)：" prop="blade_persistent">
                 <RadioGroup v-model="GrowthVigor.blade_persistent">
                   <Radio v-for="item in BladePersistentList" :label="item.value" :key="item.value"></Radio>
                 </RadioGroup>
@@ -133,13 +111,13 @@
           </Row>
        </div>
         <Row>
-          <Col offset="2">
+          <Col offset="1">
             <FormItem prop="normal_blade_rate">
-              <span slot="label" style="font-size: 13px">
+              <span slot="label" >
                 <Tooltip placement="top" max-width="200" >
                 <div slot="content">叶色正常、无病虫害、无干枯卷曲现象的叶片占全部叶片数量的比例。</div>
               <Icon type="md-alert" size="14" color="#808695"/>
-            </Tooltip>正常叶片率</span>
+            </Tooltip>正常叶片率：</span>
               <RadioGroup v-model="GrowthVigor.normal_blade_rate">
                 <Radio v-for="item in NormalBladeRateList" :label="item.value" :key="item.value"></Radio>
               </RadioGroup>
@@ -148,8 +126,8 @@
         </Row>
 
         <Row>
-          <Col offset="2">
-            <FormItem label="生长势总体评价" prop="growth_vigor">
+          <Col offset="1">
+            <FormItem label="生长势总体评价：" prop="growth_vigor">
               <RadioGroup v-model="GrowthVigor.growth_vigor" vertical>
                 <Radio v-for="item in GrowthVigorList" :label="item.value" :key="item.value">{{item.label}}</Radio>
               </RadioGroup>
@@ -158,37 +136,39 @@
         </Row>
 
         <Row>
-          <Col offset="2">
+          <Col offset="1" span="12">
             <FormItem prop="chlorophyll">
-              <span slot="label" style="font-size: 13px">
+              <span slot="label">
                 <Tooltip placement="top" max-width="200" >
                 <div slot="content">在树冠东南西北四个方向，每个方向随机选取5个正常枝条，采集枝条中部完全展开新生叶片，带回实验室测定；也可利用叶绿素仪测定。取平均值</div>
               <Icon type="md-alert" size="14" color="#808695"/>
-            </Tooltip>叶片叶绿素含量</span>
+            </Tooltip>叶片叶绿素含量：</span>
               <Input v-model="GrowthVigor.chlorophyll" placeholder="请输入叶片叶绿素含量"></Input>
             </FormItem>
           </Col>
         </Row>
+<!--        <div style="color: #2d8cf0;  margin-left: 75px; margin-bottom: 5px; font-weight: bold" >-->
+<!--        <span>叶绿素荧光(光合潜能):</span>-->
+<!--        </div>-->
+        <h4>叶绿素荧光(光合潜能):</h4>
 
         <Row>
-          <Col offset="2" span="5">
-            <FormItem prop="Fo">
-              <span slot="label" style="font-size: 13px">
+          <Col offset="1" span="7">
+            <FormItem prop="Fo" style="width: 100%;">
+              <span slot="label" >
                 <Tooltip placement="top" max-width="200" >
                 <div slot="content">在树冠东南西北四个方向，每个方向随机选取5个正常枝条，选择枝条中部完全展开新生叶片进行测定，计算最大光合潜能。取平均值，使用叶绿素荧光仪测定。</div>
               <Icon type="md-alert" size="14" color="#808695"/>
-            </Tooltip>叶绿素荧光（光合潜能）：Fo</span>
-              <InputNumber :step="0.01"
-                           v-model="GrowthVigor.Fo"></InputNumber>
+            </Tooltip>Fo：</span>
+              <Input v-model="GrowthVigor.Fo"></Input>
+            </FormItem>
+          </Col>
+          <Col span="7">
+            <FormItem prop="Fm" label="Fm：" style="width: 100%">
+              <Input v-model="GrowthVigor.Fm"></Input>
             </FormItem>
           </Col>
           <Col span="5">
-            <FormItem prop="Fm">
-              <span slot="label" style="font-size: 13px">Fm</span>
-              <InputNumber :step="0.01" v-model="GrowthVigor.Fm"></InputNumber>
-            </FormItem>
-          </Col>
-          <Col span="3">
             <FormItem>
             <Button type="primary" shape="circle" icon="ios-calculator" @click="JiSuan"></Button>
             </FormItem>
@@ -196,18 +176,18 @@
         </Row>
 
         <Row>
-          <Col offset="2">
+          <Col offset="1" span="12">
             <FormItem>
-              <span slot="label" style="font-size: 13px">(Fm-Fo) / Fm=</span>
+              <span slot="label">(Fm-Fo) / Fm：</span>
               <Input v-model="GrowthVigor.photosynthetic"></Input>
             </FormItem>
           </Col>
         </Row>
 
         <Row>
-          <Col offset="2">
+          <Col offset="1">
             <FormItem prop="pic_path">
-            <span slot="label" style="font-size: 13px">
+            <span slot="label" >
               <Tooltip placement="top" max-width="200" >
                 <div slot="content">新梢典型照片，叶片宿存情况照片，非正常叶片照片</div>
               <Icon type="md-alert" size="15" color="#808695"/>
@@ -229,8 +209,8 @@
                 multiple
                 type="drag"
                 :action="UploadPicAPI"
-                style="display: inline-block;width:70px;">
-                <div style="width: 70px;height:70px;line-height: 70px;">
+                class="pic-upload-list">
+                <div class="camera-style">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
@@ -300,7 +280,7 @@ import {
   getOneTreeBaseInfo,
   postTjxmRecord, queryTjxmRecord, updateGrowthVigor,  updateTjxmRecord
 } from "@/api/table"
-import { ShowPic, UploadPicApi } from "@/api/upload";
+import {DeletePic, ShowPic, UploadPicApi} from "@/api/upload";
 import { checkDecimal } from "@/view/tools-methods/someValidateRule";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
@@ -477,10 +457,8 @@ export default {
                 if (res.data.code === 200) {
                   if (this.tjxm_record.status === '已完成') {
                     this.$Message.success('修改提交成功')
-                    this.fetchData()
                   } else {
                     this.$Message.success('修改保存成功')
-                    this.fetchData()
                   }
                 } else {
                   if (this.tjxm_record.status === '已完成') {
@@ -614,6 +592,13 @@ export default {
       // 删除
       this.GrowthVigor.pic_path.splice(index, 1)
       this.PicUrlList.splice(index, 1)
+      DeletePic(this.GrowthVigor.pic_path[index]).then(msg=>{
+        if(msg.data.code === 200){
+          this.$Message.success('删除成功')
+        }else {
+          this.$Message.error('删除失败')
+        }
+      })
     },
     handleSuccessList: function (res, file) {
       if (res.code === 500) {
@@ -629,12 +614,29 @@ export default {
 </script>
 
 <style scoped>
-.ivu-radio-wrapper {
-  margin-right: 20px;
+/*margin-bottom控制formItem上下间隔距离
+  width控制formItem输入框的长度*/
+.ivu-form-item {
+  margin-bottom: 14px;
+  width: 80%;
 }
 
-.TextStyle >>> textarea.ivu-input {
-  font-size: 12px;
+.error-tip >>> div.ivu-form-item-error-tip {
+  padding-top: 0.5mm!important;
+}
+
+/*控制单选选项之间距离*/
+.ivu-radio-wrapper {
+  width: 100px;
+  margin-right: 20px;
+}
+/*复选框选项间隔*/
+.ivu-checkbox-wrapper {
+  width: 100px;
+  margin-right: 20px;
+}
+.ivu-date-picker {
+  width: 100%;
 }
 
 .icon1Style >>> .ivu-tooltip-rel {
@@ -652,9 +654,18 @@ export default {
 .TextColor >>> .ivu-input[disabled], fieldset[disabled] .ivu-input {
   color: #999999 !important;
 }
-
+/*控制上传图片框大小*/
+.camera-style {
+  width: 100px;
+  height:100px;
+  line-height: 100px;
+}
+.pic-upload-list {
+  display: inline-block;
+  width:100px;
+}
 .demo-upload-list {
-  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  display: inline-block;width: 100px;height: 100px;text-align: center;line-height: 100px;
   border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
   position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
 }
@@ -683,7 +694,7 @@ export default {
 /*节点间距*/
 .my_timeline_item {
   display: inline-block;
-  width: 170px;
+  width: 130px;
 }
 .my_timeline_node {
   box-sizing: border-box;

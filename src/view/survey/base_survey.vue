@@ -2,50 +2,61 @@
 <div>
   <Card>
     <h2 slot="title">名木古树信息</h2>
-    <Form :label-width="110" :model="query" inline>
-      <FormItem label="古树编号:" >
-        <Input v-model="query.tree_code_like" style="width: 140px" clearable></Input>
+    <Form :label-width="75" :model="query" inline>
+      <FormItem label="古树编号">
+        <Input v-model="query.tree_code_like" style="width: 120px" clearable placeholder="古树编号"></Input>
       </FormItem>
-      <FormItem label="古树等级:" >
-        <Select style="width:140px" v-model="query.level" clearable>
+      <FormItem label="古树等级" >
+        <Select style="width:120px" v-model="query.level" clearable>
           <Option v-for="item in levelList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="科:" >
-        <Select style="width:140px" v-model="query.family" clearable>
+      <FormItem label="科" >
+        <Select style="width:120px" v-model="query.family" clearable>
           <Option v-for="item in KeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="属:" >
-        <Select style="width:140px" v-model="query.genus" clearable>
+      <FormItem label="属" >
+        <Select style="width:120px" v-model="query.genus" clearable>
           <Option v-for="item in ShuList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
 
-      <FormItem label="种:" >
-        <Select style="width:140px" v-model="query.zw_name" clearable>
+      <FormItem label="种" >
+        <Select style="width:120px" v-model="query.zw_name" clearable>
           <Option v-for="item in NameList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="权属:" >
-        <Select style="width:140px" v-model="query.owner" clearable>
+      <FormItem label="权属" >
+        <Select style="width:120px" v-model="query.owner" clearable>
           <Option v-for="item in OwnerList" :value="item.value" :key="item.value">{{ item.value }}</Option>
         </Select>
       </FormItem>
 
-      <FormItem label="调查人:" >
+      <FormItem label="调查人" >
         <Select v-model="query.dc_username" placeholder="调查人姓名" filterable
-                @on-query-change="ondcUserUnitQueryChange" clearable style="width: 140px">
+                @on-query-change="ondcUserUnitQueryChange" clearable style="width: 120px">
           <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="签订管护责任书:" >
-        <Select v-model="query.is_signed" placeholder="是否签订" clearable style="width: 140px">
+
+      <FormItem label="体检单位" >
+        <Select v-model="query.dc_unit" placeholder="请选择" clearable style="width: 120px">
+          <Option v-for="item  in Unit" :value="item.unit" :key="item.unit">{{item.unit}}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="管护单位" >
+        <Select v-model="query.gh_unit" placeholder="请选择" clearable style="width: 120px">
+          <Option v-for="item  in Unit" :value="item.unit" :key="item.unit">{{item.unit}}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="签订责任书" >
+        <Select v-model="query.is_signed" placeholder="是否签订" clearable style="width: 120px">
         <Option v-for="item  in signList" :value="item.value" :key="item.value">{{item.label}}</Option>
         </Select>
       </FormItem>
 
-      <FormItem label="调查时间:" >
+      <FormItem label="调查时间" >
         <DatePicker :value="investigate_time_range"  type="datetimerange" format="yyyy-MM-dd HH:mm"
                     placement="bottom-start" placeholder="Select date"
                     @on-change="DateTimeChange"
@@ -65,14 +76,6 @@
 
 
 
-
-<!--    <Steps :current="2" size="small">-->
-<!--      <Step title ="已完成"></Step>-->
-<!--      <Step title ="进行中"></Step>-->
-<!--      <Step title ="待进行"></Step>-->
-<!--      <Step title ="待进行"></Step>-->
-<!--    </Steps>-->
-<!--    <router-link to=right><button>点我到第二个页面</button></router-link> // 通过按钮进行页面跳转-->
     <Table :columns="columns" :data="tableData" border max-height="500" :loading="loadingTable"></Table>
     <div style="margin: 10px; overflow: hidden">
       <div style="float: right;">
@@ -114,7 +117,7 @@ import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_exten
 
 import name from "@/view/tools-methods/name.json"
 import { ownerList, SignList } from "@/view/survey/right_base_options";
-import {queryUnitUsers} from "@/api/user";
+import {queryUnits, queryUnitUsers} from "@/api/user";
 import {GetKe, GetShu, GetZhong} from "@/api/tree_species";
 
 
@@ -138,8 +141,11 @@ export default {
         genus: undefined,
         zw_name: undefined,
         owner: undefined,
-
+        dc_unit: undefined,
+        gh_unit: undefined
       },
+      Unit: [],
+
       KeList: [],
       ShuList: [],
       NameList: [],
@@ -172,19 +178,19 @@ export default {
       },
 
       columns: [
-        {
-          type: 'expand',
-          title: '古树信息',
-          width: 70,
-          fixed: 'left',
-          render: (h, params) => {
-            return h(tjxm_record_extend_table, {
-              props: {
-                selected_tree_code: params.row.tree_code
-              }
-            })
-          }
-        },
+        // {
+        //   type: 'expand',
+        //   title: '古树信息',
+        //   width: 70,
+        //   fixed: 'left',
+        //   render: (h, params) => {
+        //     return h(tjxm_record_extend_table, {
+        //       props: {
+        //         selected_tree_code: params.row.tree_code
+        //       }
+        //     })
+        //   }
+        // },
         {
           title: '古树编号',
           align: 'center',
@@ -428,8 +434,8 @@ export default {
     //window.location.href 告诉您浏览器当前URL位置的属性。更改属性的值将重定向页面。
     //window.open 打开一个新的窗口并跳转到URL
     onExportReport(tree_code){
-      window.location.href='http://8.140.170.84:35000/export_report/'+tree_code
-      // window.location.href='http://localhost:5000/export_report/'+tree_code
+      // window.location.href='http://8.140.170.84:35000/export_report/'+tree_code
+      window.location.href='http://localhost:5000/export_report/'+tree_code
     },
 
 
@@ -542,10 +548,10 @@ export default {
     })
 
     this.fetchOptions()
-    // queryFamilyTypes().then((res) => {
-    //   this.FamilyList = res.data.species_types
-    // })
-    // this.JsonChangeToOptions()
+
+    queryUnits().then(res=>{
+      this.Unit = res.data.units
+    })
 
   }
 
@@ -553,5 +559,8 @@ export default {
 </script>
 
 <style scoped>
-
+/*控制formItem上下间隔距离*/
+.ivu-form-item {
+  margin-bottom: 10px;
+}
 </style>

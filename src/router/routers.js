@@ -150,16 +150,6 @@ export default [
         },
         component: () => import('@/view/survey/right.vue')
       },
-
-      // {
-      //   path: 'tree_class',
-      //   name: 'tree_class_page',
-      //   meta: {
-      //     icon: 'ios-document',
-      //     title: '名木古树树种管理'
-      //   },
-      //   component: () => import('@/view/survey/TreeClass/TreeClass')
-      // },
       {
         path: 'environment/:tree_code',
         name: 'environment',
@@ -223,37 +213,7 @@ export default [
         },
         component: () => import('@/view/survey/Modify/BasicInformation')
 
-      },
-      {
-        path: 'update/environment/:tree_code',
-        name: 'environmentUpdate',
-        meta: {
-          title: '生长环境评价分析',
-          hideInMenu: true
-        },
-        component: () => import('@/view/survey/Modify/environmentUpdate')
-
-      },
-      {
-        path: 'update/GrowthVigor/:tree_code',
-        name: 'GrowthVigorUpdate',
-        meta: {
-          title: '生长势分析查看修改',
-          hideInMenu: true
-        },
-        component: () => import('@/view/survey/Modify/GrowthVigorUpdate')
-
-      },
-      {
-        path: 'update/Protect/:tree_code',
-        name: 'ProtectUpdate',
-        meta: {
-          title: '已采取复壮保护措施情况与分析-查看修改',
-          hideInMenu: true
-        },
-        component: () => import('@/view/survey/Modify/ProtectUpdate')
-
-      },
+      }
     ]
   },
 
@@ -263,7 +223,7 @@ export default [
     meta: {
       title: '养护管理',
       icon: 'ios-folder-open',
-      access: ['超级管理员', '单位管理员', '养护人员']
+      access: ['单位管理员', '养护人员']
     },
     component: Main,
     children: [
@@ -273,7 +233,7 @@ export default [
         meta: {
           icon: 'ios-document',
           title: '养护任务结果管理',
-          access: ['超级管理员', '单位管理员']
+          access: ['单位管理员']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
       },
@@ -315,7 +275,7 @@ export default [
         name: 'yh_options',
         path: 'yh_options',
         meta: {
-          title: '养护选项管理',
+          title: '养护项目管理',
           icon: "md-arrow-dropright-circle",
         },
         component: () => import('@/view/OptionManage/yh_classify_options/index')
@@ -325,7 +285,7 @@ export default [
         name: 'other',
         meta: {
           icon: 'ios-document',
-          title: '其它信息管理'
+          title: '病虫害管理'
         },
         component: () => import('@/view/OptionManage/other/index')
       },

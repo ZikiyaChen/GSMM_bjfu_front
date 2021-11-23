@@ -20,58 +20,31 @@
       </div>
     </div>
 
-    <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
+    <Form :label-width="180" label-position="right" :model="TreeInformation" inline >
       <h4>古树基本信息</h4>
       <Row>
-        <Col  span="5" offset="2">
-          <FormItem label="古树编号">
+        <Col  span="10" offset="2">
+          <FormItem label="古树编号：">
             <Input disabled  v-model="tree_code" class="TextColor"></Input>
           </FormItem>
         </Col>
-      </Row>
-      <Row>
-        <Col span="5" offset="2">
-          <FormItem label="科" prop="Base.family">
-            <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
-          </FormItem>
-        </Col>
-        <Col span="5" >
-          <FormItem label="属" prop="Base.genus">
-            <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
-          </FormItem>
-        </Col>
-        <Col span="5" >
-          <FormItem label="中文名" prop="Base.zw_name">
+        <Col span="10" >
+          <FormItem label="中文名：" prop="Base.zw_name">
             <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
           </FormItem>
         </Col>
       </Row>
-
-      <Row>
-        <Col span="5" offset="2">
-          <FormItem label="拉丁名" prop="Base.ld_name">
-            <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
-          </FormItem>
-        </Col>
-        <Col span="5">
-          <FormItem label="俗名" prop="Base.bm_name">
-            <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
-            </Input>
-          </FormItem>
-        </Col>
-      </Row>
     </Form>
-    <Divider></Divider>
-    <Form :label-width="198" label-position="right"  ref="Diseases_form" :model="Diseases" :rules="ruleValidate" inline>
+    <Form :label-width="180" label-position="right"  ref="Diseases_form" :model="Diseases" :rules="ruleValidate" inline>
       <h4>树干基部：</h4>
       <Row>
         <Col offset="2">
           <FormItem prop="bmoth_status">
-                <span slot="label" style="font-size: 13px">
+                <span slot="label">
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">记录树体活组织中虫害类型、虫孔数量、虫孔直径，并计算最大受害部位宽度与树干周长比，&le;1/3判定为”轻度“，1/3-1/2 为”中度“，>1/2为”重度“；否则记为”无“。</div>
               <Icon type="md-alert" size="15" color="#808695"/>
-            </Tooltip>蛀干害虫</span>
+            </Tooltip>蛀干害虫：</span>
             <RadioGroup v-model="Diseases.bmoth_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -79,9 +52,9 @@
         </Col>
       </Row>
       <Row v-if="Diseases.bmoth_status !== '无'">
-        <Col offset="2">
+        <Col offset="2" span="18">
           <FormItem prop="bmoth_name">
-            <span slot="label" style="font-size: 13px">蛀干害虫名称</span>
+            <span slot="label" >蛀干害虫名称：</span>
             <Input v-model="Diseases.bmoth_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -90,11 +63,11 @@
       <Row>
         <Col offset="2">
           <FormItem prop="bdisease_status">
-            <span slot="label" style="font-size: 13px">
+            <span slot="label">
                <Tooltip placement="top" max-width="200" >
                 <div slot="content">记录病害名称，并计算最大受害部位宽度与树干周长比，&le;1/3判定为”轻度“，1/3-1/2 为”中度“，>1/2为”重度“；否则记为”无“。</div>
               <Icon type="md-alert" size="15" color="#808695"/>
-            </Tooltip>病害</span>
+            </Tooltip>病害：</span>
             <RadioGroup v-model="Diseases.bdisease_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -102,9 +75,9 @@
         </Col>
       </Row>
       <Row v-if="Diseases.bdisease_status !== '无'">
-        <Col offset="2">
+        <Col offset="2" span="18">
           <FormItem prop="bdisease_name">
-            <span slot="label" style="font-size: 13px">病害名称</span>
+            <span slot="label" >病害名称：</span>
             <Input v-model="Diseases.bdisease_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -113,7 +86,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="base_pic">
-            <span slot="label" style="font-size: 13px">特征照片</span>
+            <span slot="label">特征照片：</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_base" :key="index">
               <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
@@ -131,8 +104,8 @@
               multiple
               type="drag"
               :action="UploadPicAPI"
-              style="display: inline-block;width:70px;">
-              <div style="width: 70px;height:70px;line-height: 70px;">
+              class="pic-upload-list">
+              <div class="camera-style">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
@@ -143,12 +116,11 @@
 
         </Col>
       </Row>
-      <Divider />
       <h4>树干：</h4>
       <Row>
         <Col offset="2">
           <FormItem prop="tmoth_status">
-            <span slot="label" style="font-size: 13px">蛀干害虫</span>
+            <span slot="label">蛀干害虫：</span>
             <RadioGroup v-model="Diseases.tmoth_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -156,9 +128,9 @@
         </Col>
       </Row>
       <Row v-if="Diseases.tmoth_status !== '无'">
-        <Col offset="2">
+        <Col offset="2" span="18">
           <FormItem prop="tmoth_name">
-            <span slot="label" style="font-size: 13px">蛀干害虫名称</span>
+            <span slot="label">蛀干害虫名称：</span>
             <Input v-model="Diseases.tmoth_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -167,7 +139,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="tdisease_status">
-            <span slot="label" style="font-size: 13px">病害</span>
+            <span slot="label">病害：</span>
             <RadioGroup v-model="Diseases.tdisease_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -175,9 +147,9 @@
         </Col>
       </Row>
       <Row v-if="Diseases.tdisease_status !== '无'">
-        <Col offset="2">
+        <Col offset="2" span="18">
           <FormItem prop="tdisease_name">
-            <span slot="label" style="font-size: 13px">病害名称</span>
+            <span slot="label">病害名称：</span>
             <Input v-model="Diseases.tdisease_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -186,7 +158,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="trunk_pic">
-            <span slot="label" style="font-size: 13px">特征照片</span>
+            <span slot="label">特征照片：</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_trunk" :key="index">
               <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
@@ -204,8 +176,8 @@
               multiple
               type="drag"
               :action="UploadPicAPI"
-              style="display: inline-block;width:70px;">
-              <div style="width: 70px;height:70px;line-height: 70px;">
+              class="pic-upload-list">
+              <div class="camera-style">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
@@ -216,12 +188,12 @@
 
         </Col>
       </Row>
-      <Divider />
+
       <h4>构成骨架大枝：</h4>
       <Row>
         <Col offset="2">
           <FormItem prop="smoth_status">
-            <span slot="label" style="font-size: 13px">蛀干害虫</span>
+            <span slot="label">蛀干害虫：</span>
             <RadioGroup v-model="Diseases.smoth_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -229,9 +201,9 @@
         </Col>
       </Row>
       <Row v-if="Diseases.smoth_status !== '无'">
-        <Col offset="2">
+        <Col offset="2" span="18">
           <FormItem prop="smoth_name">
-            <span slot="label" style="font-size: 13px">蛀干害虫名称</span>
+            <span slot="label">蛀干害虫名称：</span>
             <Input v-model="Diseases.smoth_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -240,7 +212,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="sdisease_status">
-            <span slot="label" style="font-size: 13px">病害</span>
+            <span slot="label">病害：</span>
             <RadioGroup v-model="Diseases.sdisease_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -248,9 +220,9 @@
         </Col>
       </Row>
       <Row v-if="Diseases.sdisease_status !== '无'">
-        <Col offset="2">
+        <Col offset="2" span="18">
           <FormItem prop="sdisease_name">
-            <span slot="label" style="font-size: 13px">病害名称</span>
+            <span slot="label">病害名称：</span>
             <Input v-model="Diseases.sdisease_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -259,7 +231,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="ske_pic">
-            <span slot="label" style="font-size: 13px">特征照片</span>
+            <span slot="label" >特征照片：</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_ske" :key="index">
               <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
@@ -277,8 +249,8 @@
               multiple
               type="drag"
               :action="UploadPicAPI"
-              style="display: inline-block;width:70px;">
-              <div style="width: 70px;height:70px;line-height: 70px;">
+              class="pic-upload-list">
+              <div class="camera-style">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
@@ -290,16 +262,16 @@
         </Col>
       </Row>
 
-      <Divider />
+
       <h4>叶片：</h4>
       <Row>
         <Col offset="2">
           <FormItem prop="blade_status">
-            <span slot="label" style="font-size: 13px">
+            <span slot="label">
               <Tooltip placement="top" max-width="200" >
                 <div slot="content"></div>
               <Icon type="md-alert" size="15" color="#808695"/>
-            </Tooltip>病害</span>
+            </Tooltip>病害：</span>
             <RadioGroup v-model="Diseases.blade_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -309,7 +281,7 @@
       <Row v-if="Diseases.blade_status !== '无'">
         <Col offset="2">
           <FormItem prop="blade_name">
-            <span slot="label" style="font-size: 13px">病害名称</span>
+            <span slot="label">病害名称：</span>
             <Input v-model="Diseases.blade_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -318,7 +290,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="blade_pic">
-            <span slot="label" style="font-size: 13px">特征照片</span>
+            <span slot="label">特征照片：</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_blade" :key="index">
               <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
@@ -336,8 +308,8 @@
               multiple
               type="drag"
               :action="UploadPicAPI"
-              style="display: inline-block;width:70px;">
-              <div style="width: 70px;height:70px;line-height: 70px;">
+              class="pic-upload-list">
+              <div class="camera-style">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
@@ -349,16 +321,16 @@
         </Col>
       </Row>
 
-      <Divider />
+
       <h4>枝梢：</h4>
       <Row>
         <Col offset="2">
           <FormItem prop="branch_status">
-            <span slot="label" style="font-size: 13px">
+            <span slot="label" >
               <Tooltip placement="top" max-width="200" >
                 <div slot="content"></div>
               <Icon type="md-alert" size="15" color="#808695"/>
-            </Tooltip>蛀干害虫</span>
+            </Tooltip>蛀干害虫：</span>
             <RadioGroup v-model="Diseases.branch_status">
               <Radio v-for="item in OptionList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
@@ -366,9 +338,9 @@
         </Col>
       </Row>
       <Row v-if="Diseases.branch_status !== '无'">
-        <Col offset="2">
+        <Col offset="2" span="18">
           <FormItem prop="branch_name">
-            <span slot="label" style="font-size: 13px">蛀干害虫名称</span>
+            <span slot="label">蛀干害虫名称：</span>
             <Input v-model="Diseases.branch_name" placeholder="请输入"></Input>
           </FormItem>
         </Col>
@@ -376,7 +348,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="branch_pic">
-            <span slot="label" style="font-size: 13px">特征照片</span>
+            <span slot="label">特征照片：</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList_branch" :key="index">
               <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
@@ -394,8 +366,8 @@
               multiple
               type="drag"
               :action="UploadPicAPI"
-              style="display: inline-block;width:70px;">
-              <div style="width: 70px;height:70px;line-height: 70px;">
+              class="pic-upload-list">
+              <div class="camera-style">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
@@ -406,38 +378,39 @@
 
         </Col>
       </Row>
-      <Divider />
+
       <h4>评价：</h4>
       <Row>
         <Col offset="2" span="18">
           <FormItem prop="total_eval">
-            <span slot="label" style="font-size: 13px">总体评价</span>
-            <Input v-model="Diseases.total_eval" type="textarea" :autosize="true" style="width: 350px"
-                   placeholder="（评价树体遭受病虫害侵袭程度，给出管护建议，仅发生在腐朽组织或部位的虫害需要在本部分说明）" class="TextStyle"></Input>
+            <span slot="label" >总体评价：</span>
+            <Input v-model="Diseases.total_eval" type="textarea" :autosize="true"
+                   placeholder="（评价树体遭受病虫害侵袭程度，给出管护建议，
+   仅发生在腐朽组织或部位的虫害需要在本部分说明）" class="TextStyle"></Input>
           </FormItem>
         </Col>
       </Row>
 
       <Row>
-        <Col span="9" offset="2">
-          <FormItem label="调查单位" prop="dc_unit">
+        <Col span="10" offset="2">
+          <FormItem label="调查单位" prop="dc_unit" class="error-tip">
             <Select v-model="Diseases.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                    @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+                    @on-query-change="onDcUnitSelectQueryChange" clearable  >
               <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
             </Select>
           </FormItem>
         </Col>
-        <Col span="9">
-          <FormItem label="调查时间" prop="update_time">
+        <Col span="10">
+          <FormItem label="调查时间" prop="update_time" class="error-tip">
             <DatePicker v-model="Diseases.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
           </FormItem>
         </Col>
       </Row>
       <Row>
-        <Col span="9" offset="2">
-          <FormItem label="调查人" prop="investigate_username">
+        <Col span="10" offset="2">
+          <FormItem label="调查人" prop="investigate_username" class="error-tip">
             <Select v-model="Diseases.investigate_username" placeholder="名字" filterable
-                    @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                    @on-query-change="onDcUserSelectQueryChange" clearable >
               <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
             </Select>
           </FormItem>
@@ -445,8 +418,8 @@
       </Row>
 
     </Form>
-
-    <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
+<!--float_bar margin-top控制页面下端到float-bar的距离-->
+    <float_bar  v-role="['超级管理员','单位管理员','调查人员']" style="margin-top: 30px">
       <div style="text-align: center" v-show="isShow">
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
 
@@ -933,11 +906,42 @@ export default {
 .TextStyle >>> textarea.ivu-input {
   font-size: 12px;
 }
+/*margin-bottom控制formItem上下间隔距离
+  width控制formItem输入框的长度*/
+.ivu-form-item {
+  margin-bottom: 14px;
+  width: 90%;
+}
+
+.error-tip >>> div.ivu-form-item-error-tip {
+  padding-top: 0.5mm!important;
+}
+
+/*控制单选选项之间距离*/
 .ivu-radio-wrapper {
-  margin-right: 20px;
+  width: 100px;
+  margin-right: 25px;
+}
+/*复选框选项间隔*/
+.ivu-checkbox-wrapper {
+  width: 100px;
+  margin-right: 25px;
+}
+.ivu-date-picker {
+  width: 100%;
+}
+/*控制上传图片框大小*/
+.camera-style {
+  width: 100px;
+  height:100px;
+  line-height: 100px;
+}
+.pic-upload-list {
+  display: inline-block;
+  width:100px;
 }
 .demo-upload-list {
-  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  display: inline-block;width: 100px;height: 100px;text-align: center;line-height: 100px;
   border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
   position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
 }
@@ -966,7 +970,7 @@ export default {
 /*节点间距*/
 .my_timeline_item {
   display: inline-block;
-  width: 170px;
+  width: 130px;
 }
 .my_timeline_node {
   box-sizing: border-box;

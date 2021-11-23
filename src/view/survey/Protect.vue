@@ -21,79 +21,52 @@
         </div>
       </div>
 
-      <Form :label-width="143" label-position="right" :model="TreeInformation" inline >
-        <h4>古树基本信息</h4>
+      <Form :label-width="180" label-position="right" :model="TreeInformation" inline >
+        <h4>古树基本信息:</h4>
         <Row>
-          <Col  span="6" offset="2">
-            <FormItem label="古树编号">
+          <Col  span="11" offset="1">
+            <FormItem label="古树编号：">
               <Input disabled  v-model="tree_code" class="TextColor"></Input>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
-          <Col span="6" offset="2">
-            <FormItem label="科" prop="Base.family">
-              <Input v-model="TreeInformation.Base.family" disabled class="TextColor"></Input>
-            </FormItem>
-          </Col>
-          <Col span="6" >
-            <FormItem label="属" prop="Base.genus">
-              <Input v-model="TreeInformation.Base.genus" disabled class="TextColor"></Input>
-            </FormItem>
-          </Col>
-          <Col span="6" >
-            <FormItem label="中文名" prop="Base.zw_name">
+          <Col span="11" >
+            <FormItem label="中文名：" prop="Base.zw_name">
               <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
             </FormItem>
           </Col>
         </Row>
-
-        <Row>
-          <Col span="6" offset="2">
-            <FormItem label="拉丁名" prop="Base.ld_name">
-              <Input v-model="TreeInformation.Base.ld_name" disabled class="TextColor" ></Input>
-            </FormItem>
-          </Col>
-          <Col span="6">
-            <FormItem label="俗名" prop="Base.bm_name">
-              <Input v-model="TreeInformation.Base.bm_name" disabled class="TextColor">
-              </Input>
-            </FormItem>
-          </Col>
-        </Row>
       </Form>
-      <Divider></Divider>
-      <h4>已采取复壮保护措施情况与分析</h4>
-      <Form :label-width="198" label-position="right"  ref="protect_form" :model="Protect" :rules="ruleValidate" inline>
+      <Form :label-width="180" label-position="right"  ref="protect_form" :model="Protect" :rules="ruleValidate" inline>
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="调查单位" prop="dc_unit">
+          <Col span="11" offset="1">
+            <FormItem label="调查单位：" prop="dc_unit" class="error-tip">
               <Select v-model="Protect.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                      @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
+                      @on-query-change="onDcUnitSelectQueryChange" clearable  >
                 <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
               </Select>
             </FormItem>
           </Col>
-          <Col span="9">
-            <FormItem label="调查时间" prop="update_time">
+          <Col span="11">
+            <FormItem label="调查时间：" prop="update_time" class="error-tip">
               <DatePicker v-model="Protect.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="9" offset="1">
-            <FormItem label="调查人" prop="investigate_username">
+          <Col span="11" offset="1">
+            <FormItem label="调查人：" prop="investigate_username" class="error-tip">
               <Select v-model="Protect.investigate_username" placeholder="名字" filterable
-                      @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
+                      @on-query-change="onDcUserSelectQueryChange" clearable >
                 <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
               </Select>
             </FormItem>
           </Col>
         </Row>
+        <h4>已采取复壮保护措施情况与分析:</h4>
         <Row>
-          <Col offset="2" span="16">
-            <FormItem prop="protect">
-              <span slot="label" style="font-size: 13px">地上保护措施</span>
+          <Col offset="1">
+            <FormItem prop="protect" style="width: 100%">
+              <span slot="label" >地上保护措施：</span>
               <CheckboxGroup v-model="Protect.protect">
                 <Checkbox v-for="item in ProtectList" :label="item.value" :key="item.value"></Checkbox>
               </CheckboxGroup>
@@ -101,9 +74,9 @@
           </Col>
         </Row>
         <Row>
-          <Col offset="2" span="16">
-            <FormItem prop="soil_improve">
-              <span slot="label" style="font-size: 13px">地下土壤改良措施</span>
+          <Col offset="1">
+            <FormItem prop="soil_improve" style="width: 100%;">
+              <span slot="label" >地下土壤改良措施：</span>
               <CheckboxGroup v-model="Protect.soil_improve">
                 <Checkbox v-for="item in SoilImproveList" :label="item.value" :key="item.value"></Checkbox>
               </CheckboxGroup>
@@ -112,56 +85,287 @@
         </Row>
 
         <Row>
-          <Col offset="2">
+          <Col offset="1">
             <FormItem prop="is_block">
-              <span slot="label" style="font-size: 13px">是否封堵树洞</span>
+              <span slot="label" >是否封堵树洞：</span>
               <RadioGroup v-model="Protect.is_block">
                 <Radio v-for="item in IsBlockList" :label="item.value" :key="item.value">{{item.label}}</Radio>
               </RadioGroup>
             </FormItem>
           </Col>
         </Row>
+<!--        封堵、未封堵需要填的-->
+        <div v-if="Protect.is_block === 1">
+          <h4>封堵树洞：</h4>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="fit_status"  :key="Protect.fit_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+                <span slot="label" >与树体贴合情况：</span>
+                <RadioGroup v-model="Protect.fit_status">
+                  <Radio v-for="item in FitStatusList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
 
+          <Row>
+            <Col offset="1">
+              <FormItem prop="drain_hole" :key="Protect.drain_hole" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+                <span slot="label" >排水孔和排湿孔：</span>
+                <RadioGroup v-model="Protect.drain_hole">
+                  <Radio v-for="item in DrainHolesList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="tech_level">
+                <span slot="label" >工艺水平：</span>
+                <RadioGroup v-model="Protect.tech_level">
+                  <Radio v-for="item in TechLevelList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="outer">
+                <span slot="label">外层处理：</span>
+                <RadioGroup v-model="Protect.outer">
+                  <Radio v-for="item in OuterList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+        </div>
+        <div v-else>
+          <h4>未封堵树洞：</h4>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="clean_status" :key="Protect.clean_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+                <span slot="label" >内壁清理程度：</span>
+                <RadioGroup v-model="Protect.clean_status">
+                  <Radio v-for="item in CleanStatusList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="antiseptic" >
+                <span slot="label" >内壁防腐处理：</span>
+                <RadioGroup v-model="Protect.antiseptic">
+                  <Radio v-for="item in AntisepticList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+        </div>
         <Row>
-          <Col offset="2">
+          <Col offset="1">
             <FormItem prop="is_support">
-              <span slot="label" style="font-size: 13px">有无支撑</span>
+              <span slot="label" style="font-size: 13px">有无支撑：</span>
               <RadioGroup v-model="Protect.is_support">
                 <Radio v-for="item in IsSupportList" :label="item.value" :key="item.value">{{item.label}}</Radio>
               </RadioGroup>
             </FormItem>
           </Col>
         </Row>
+        <div v-if="Protect.is_support === 1">
 
+          <h4>支撑情况：</h4>
+          <Row>
+            <Col offset="1" span="11">
+              <FormItem prop="hard_support" :key="Protect.hard_support" :rules="[{required: true,  message: '请输入' }]">
+                <span slot="label" >硬支撑：</span>
+                <Input v-model="Protect.hard_support">
+                  <span slot="append">处</span>
+                </Input>
+              </FormItem>
+            </Col>
+            <Col span="11">
+              <FormItem prop="protaging" :key="Protect.protaging" :rules="[{required: true,  message: '请输入' }]">
+                <span slot="label" >拉纤：</span>
+                <Input v-model="Protect.protaging">
+                  <span slot="append">处</span>
+                </Input>
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col offset="1">
+              <FormItem prop="steady">
+                <span slot="label" >支撑稳固情况：</span>
+                <RadioGroup v-model="Protect.steady">
+                  <Radio v-for="item in SteadyList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="support_type" :key="Protect.support_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+                <span slot="label" >支撑类型：</span>
+                <RadioGroup v-model="Protect.support_type">
+                  <Radio v-for="item in SupportTypeList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="support_isrea">
+                <span slot="label" >支撑部位：</span>
+                <RadioGroup v-model="Protect.support_isrea">
+                  <Radio v-for="item in SupportIsreaList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="hoop_status" :key="Protect.hoop_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+                <span slot="label" >抱箍：</span>
+                <RadioGroup v-model="Protect.hoop_status">
+                  <Radio v-for="item in HoopStatusList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col offset="1">
+              <FormItem prop="rubber_is">
+                <span slot="label" >支撑工艺-橡胶垫设置：</span>
+                <RadioGroup v-model="Protect.rubber_is">
+                  <Radio v-for="item in RubberIsList" :label="item.value" :key="item.value">{{item.label}}</Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="hoop_is">
+                <span slot="label">支撑工艺-抱箍设置：</span>
+                <RadioGroup v-model="Protect.hoop_is">
+                  <Radio v-for="item in HoopIsList" :label="item.value" :key="item.value">{{item.label}}</Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+        </div>
         <Row>
-          <Col offset="2">
+          <Col offset="1">
             <FormItem prop="has_ditch">
-              <span slot="label" style="font-size: 13px">有无复壮沟</span>
+              <span slot="label" >有无复壮沟：</span>
               <RadioGroup v-model="Protect.has_ditch">
                 <Radio v-for="item in HasDitchList" :label="item.value" :key="item.value">{{item.label}}</Radio>
               </RadioGroup>
             </FormItem>
           </Col>
         </Row>
+        <div v-if="Protect.has_ditch === 1">
 
+          <h4>复壮沟：</h4>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="ditch_type" :key="Protect.ditch_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+                <span slot="label" >复壮沟类型：</span>
+                <RadioGroup v-model="Protect.ditch_type">
+                  <Radio v-for="item in DitchTypeList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1" span="11">
+              <FormItem prop="ditch_num" :key="Protect.ditch_num" :rules="[{required: true,  message: '请输入' }]">
+                <span slot="label" >数量：</span>
+                <Input v-model="Protect.ditch_num"><span slot="append">处</span></Input>
+              </FormItem>
+            </Col>
+            <Col span="11">
+              <FormItem prop="ditch_width" label="宽度：">
+                <Input v-model="Protect.ditch_width"><span slot="append">米</span></Input>
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col span="11" offset="1">
+              <FormItem prop="ditch_length" label="总长度：">
+                <span slot="label" >总长度：</span>
+                <Input v-model="Protect.ditch_length"><span slot="append">米</span></Input>
+              </FormItem>
+            </Col>
+            <Col span="11">
+              <FormItem prop="pipe_num" label="通气管：" :key="Protect.pipe_num" :rules="[{required: true, message: '请输入' }]">
+                <Input v-model="Protect.pipe_num"><span slot="append">处</span></Input>
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col offset="1">
+              <FormItem prop="matrix_constitute" label="基质组成：" style="width: 100%;">
+                <RadioGroup v-model="Protect.matrix_constitute">
+                  <Radio v-for="item in MatrixConstituteList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="position_is" label="位置设置：">
+                <RadioGroup v-model="Protect.position_is">
+                  <Radio v-for="item in PositionIsList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col offset="1" span="11">
+              <FormItem prop="well_num" label="渗井：" :key="Protect.well_num" :rules="[{required: true,  message: '请输入' }]">
+                <Input v-model="Protect.well_num"><span slot="append">处</span></Input>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset="1">
+              <FormItem prop="capillary_roots">
+                <span slot="label" >
+                  <Tooltip placement="top" max-width="200" >
+                <div slot="content">根据探根情况判断</div>
+              <Icon type="md-alert" size="15" color="#808695"/>
+            </Tooltip>毛细根生长情况：</span>
+                <RadioGroup v-model="Protect.capillary_roots">
+                  <Radio v-for="item in CapillaryRootsList" :label="item.value" :key="item.value"></Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+        </div>
         <Row>
-          <Col offset="2" span="18">
+          <Col offset="1" span="18">
             <FormItem prop="protect_eval">
-              <span slot="label" style="font-size: 13px">现有复壮保护措施评价</span>
-              <Input v-model="Protect.protect_eval" type="textarea" :autosize="true" style="width: 350px"
+              <span slot="label">现有复壮保护措施评价：</span>
+              <Input v-model="Protect.protect_eval" type="textarea" :autosize="true"
                      placeholder="（对现有复壮措施合理性给出评价和改进建议）" class="TextStyle"></Input>
             </FormItem>
           </Col>
         </Row>
 
         <Row>
-          <Col offset="2">
+          <Col offset="1">
             <FormItem prop="pic">
-            <span slot="label" style="font-size: 13px">
+            <span slot="label" >
               <Tooltip placement="top" max-width="200" >
                 <div slot="content">反映现有复壮保护措施的典型照片3-9张</div>
               <Icon type="md-alert" size="15" color="#808695"/>
-            </Tooltip>特征照片</span>
+            </Tooltip>特征照片(3-9张)：</span>
               <div class="demo-upload-list" v-for="(item,index) in PicUrlList" :key="index">
                 <img :src="'data:image/jpg;base64,'+item"  />
                 <div class="demo-upload-list-cover">
@@ -179,8 +383,8 @@
                 multiple
                 type="drag"
                 :action="UploadPicAPI"
-                style="display: inline-block;width:70px;">
-                <div style="width: 70px;height:70px;line-height: 70px;">
+                class="pic-upload-list">
+                <div class="camera-style">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
@@ -191,264 +395,6 @@
 
           </Col>
         </Row>
-        <div v-if="Protect.is_block === 1">
-        <Divider />
-        <h4>封堵树洞：</h4>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="fit_status"  :key="Protect.fit_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
-                <span slot="label" style="font-size: 13px">与树体贴合情况</span>
-                <RadioGroup v-model="Protect.fit_status">
-                  <Radio v-for="item in FitStatusList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2">
-              <FormItem prop="drain_hole" :key="Protect.drain_hole" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
-                <span slot="label" style="font-size: 13px">排水孔和排湿孔</span>
-                <RadioGroup v-model="Protect.drain_hole">
-                  <Radio v-for="item in DrainHolesList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="tech_level">
-                <span slot="label" style="font-size: 13px">工艺水平</span>
-                <RadioGroup v-model="Protect.tech_level">
-                  <Radio v-for="item in TechLevelList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="outer">
-                <span slot="label" style="font-size: 13px">外层处理</span>
-                <RadioGroup v-model="Protect.outer">
-                  <Radio v-for="item in OuterList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-        </div>
-        <div v-else>
-          <Divider />
-          <h4>未封堵树洞：</h4>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="clean_status" :key="Protect.clean_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
-                <span slot="label" style="font-size: 13px">内壁清理程度</span>
-                <RadioGroup v-model="Protect.clean_status">
-                  <Radio v-for="item in CleanStatusList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2">
-              <FormItem prop="antiseptic" >
-                <span slot="label" style="font-size: 13px">内壁防腐处理</span>
-                <RadioGroup v-model="Protect.antiseptic">
-                  <Radio v-for="item in AntisepticList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-        </div>
-
-        <div v-if="Protect.is_support === 1">
-          <Divider />
-          <h4>支撑情况：</h4>
-          <Row>
-            <Col offset="2" span="6">
-              <FormItem prop="hard_support" :key="Protect.hard_support" :rules="[{required: true,  message: '请输入' }]">
-                <span slot="label" style="font-size: 13px">硬支撑</span>
-                <InputNumber v-model="Protect.hard_support"
-                             :formatter="value => `${value}  处`"
-                             :parser="value => value.replace('  处', '')"></InputNumber>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem prop="protaging" :key="Protect.protaging" :rules="[{required: true,  message: '请输入' }]">
-                <span slot="label" style="font-size: 13px">拉纤</span>
-                <InputNumber v-model="Protect.protaging"
-                             :formatter="value => `${value}  处`"
-                             :parser="value => value.replace('  处', '')"></InputNumber>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2">
-              <FormItem prop="steady">
-                <span slot="label" style="font-size: 13px">支撑稳固情况</span>
-                <RadioGroup v-model="Protect.steady">
-                  <Radio v-for="item in SteadyList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="support_type" :key="Protect.support_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
-                <span slot="label" style="font-size: 13px">支撑类型</span>
-                <RadioGroup v-model="Protect.support_type">
-                  <Radio v-for="item in SupportTypeList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="support_isrea">
-                <span slot="label" style="font-size: 13px">支撑部位</span>
-                <RadioGroup v-model="Protect.support_isrea">
-                  <Radio v-for="item in SupportIsreaList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="hoop_status" :key="Protect.hoop_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
-                <span slot="label" style="font-size: 13px">抱箍</span>
-                <RadioGroup v-model="Protect.hoop_status">
-                  <Radio v-for="item in HoopStatusList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2">
-              <FormItem prop="rubber_is">
-                <span slot="label" style="font-size: 13px">支撑工艺：橡胶垫设置</span>
-                <RadioGroup v-model="Protect.rubber_is">
-                  <Radio v-for="item in RubberIsList" :label="item.value" :key="item.value">{{item.label}}</Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="hoop_is">
-                <span slot="label" style="font-size: 13px">支撑工艺：抱箍设置</span>
-                <RadioGroup v-model="Protect.hoop_is">
-                  <Radio v-for="item in HoopIsList" :label="item.value" :key="item.value">{{item.label}}</Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-        </div>
-
-        <div v-if="Protect.has_ditch === 1">
-          <Divider />
-          <h4>复壮沟：</h4>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="ditch_type" :key="Protect.ditch_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
-                <span slot="label" style="font-size: 13px">类型</span>
-                <RadioGroup v-model="Protect.ditch_type">
-                  <Radio v-for="item in DitchTypeList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2" span="6">
-              <FormItem prop="ditch_num" :key="Protect.ditch_num" :rules="[{required: true,  message: '请输入' }]">
-                <span slot="label" style="font-size: 13px">数量</span>
-                <InputNumber v-model="Protect.ditch_num"
-                             :formatter="value => `${value}  处`"
-                             :parser="value => value.replace('  处', '')"></InputNumber>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2" span="6">
-              <FormItem prop="ditch_width">
-                <span slot="label" style="font-size: 13px">宽度</span>
-                <InputNumber v-model="Protect.ditch_width"
-                             :step="0.01"
-                             :formatter="value => `${value}  m`"
-                             :parser="value => value.replace('  m', '')"></InputNumber>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem prop="ditch_length">
-                <span slot="label" style="font-size: 13px">总长度</span>
-                <InputNumber v-model="Protect.ditch_length"
-                             :step="0.01"
-                             :formatter="value => `${value}  m`"
-                             :parser="value => value.replace('  m', '')"></InputNumber>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2" span="6">
-              <FormItem prop="pipe_num" :key="Protect.pipe_num" :rules="[{required: true, message: '请输入' }]">
-                <span slot="label" style="font-size: 13px">通气管</span>
-                <InputNumber v-model="Protect.pipe_num"
-                             :formatter="value => `${value}  处`"
-                             :parser="value => value.replace('  处', '')"></InputNumber>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2">
-              <FormItem prop="matrix_constitute">
-                <span slot="label" style="font-size: 13px">基质组成</span>
-                <RadioGroup v-model="Protect.matrix_constitute">
-                  <Radio v-for="item in MatrixConstituteList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="position_is">
-                <span slot="label" style="font-size: 13px">位置设置</span>
-                <RadioGroup v-model="Protect.position_is">
-                  <Radio v-for="item in PositionIsList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col offset="2" span="6">
-              <FormItem prop="well_num" :key="Protect.well_num" :rules="[{required: true,  message: '请输入' }]">
-                <span slot="label" style="font-size: 13px">渗井</span>
-                <InputNumber v-model="Protect.well_num"
-                             :formatter="value => `${value}  处`"
-                             :parser="value => value.replace('  处', '')"></InputNumber>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col offset="2">
-              <FormItem prop="capillary_roots">
-                <span slot="label" style="font-size: 13px">
-                  <Tooltip placement="top" max-width="200" >
-                <div slot="content">根据探根情况判断</div>
-              <Icon type="md-alert" size="15" color="#808695"/>
-            </Tooltip>毛细根生长情况</span>
-                <RadioGroup v-model="Protect.capillary_roots">
-                  <Radio v-for="item in CapillaryRootsList" :label="item.value" :key="item.value"></Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-        </div>
       </Form>
       <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
       <div style="text-align: center" v-show="isShow">
@@ -881,9 +827,32 @@ export default {
 </script>
 
 <style scoped>
-.ivu-radio-wrapper {
-  margin-right: 20px;
+
+/*margin-bottom控制formItem上下间隔距离
+  width控制formItem输入框的长度*/
+.ivu-form-item {
+  margin-bottom: 14px;
+  width: 80%;
 }
+
+.error-tip >>> div.ivu-form-item-error-tip {
+  padding-top: 0.5mm!important;
+}
+
+/*控制单选选项之间距离*/
+.ivu-radio-wrapper {
+  width: 100px;
+  margin-right: 25px;
+}
+/*复选框选项间隔*/
+.ivu-checkbox-wrapper {
+  width: 100px;
+  margin-right: 25px;
+}
+.ivu-date-picker {
+  width: 100%;
+}
+
 .TextStyle >>> textarea.ivu-input {
   font-size: 12px;
 }
@@ -903,9 +872,19 @@ export default {
 .TextColor >>> .ivu-input[disabled], fieldset[disabled] .ivu-input {
   color: #999999 !important;
 }
+/*控制上传图片框大小*/
+.camera-style {
+  width: 100px;
+  height:100px;
+  line-height: 100px;
+}
+.pic-upload-list {
+  display: inline-block;
+  width:100px;
+}
 
 .demo-upload-list {
-  display: inline-block;width: 70px;height: 70px;text-align: center;line-height: 70px;
+  display: inline-block;width: 100px;height: 100px;text-align: center;line-height: 100px;
   border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;
   position: relative;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);margin-right: 4px;
 }
@@ -933,7 +912,7 @@ export default {
 /*节点间距*/
 .my_timeline_item {
   display: inline-block;
-  width: 170px;
+  width: 130px;
 }
 .my_timeline_node {
   box-sizing: border-box;

@@ -173,7 +173,7 @@ export default {
     onShowChange: function (show) {
       if (show) {
         if(this.access.includes('超级管理员')){
-          this.roles = ['超级管理员','单位管理员','养护人员','调查人员']
+          this.roles = ['超级管理员','单位管理员']
         }else {
           this.roles = ['养护人员','调查人员']
         }

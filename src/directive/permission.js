@@ -6,7 +6,7 @@ export default{
   inserted (el, binding, vnode) {
     const { value } = binding
     const access = store.getters && store.getters.access  // 注意这里access跳转到module下的user.js中，获取state.access数组
-    console.log('directive access',access)
+    //console.log('directive access',access)每有一个v-role就会输出一次
     if (value && value instanceof Array && value.length > 0) {
       const permissionRoles = value
 

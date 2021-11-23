@@ -8,7 +8,7 @@ import {
   restoreTrash,
   getUnreadCount
 } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import {setToken, getToken, localSave} from '@/libs/util'
 
 export default {
   state: {
@@ -111,6 +111,8 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
+        localSave('tagNaveList',[])//退出登录时，清空tagNavList快捷导航的缓存
+        //之前因为缓存没清，切换用户时，会记住上一个用户的导航栏
         // logout(state.token).then(() => {
         //   commit('setToken', '')
         //   commit('setAccess', [])

@@ -562,7 +562,7 @@ export const has_absoundList = [
 
 export const PathToList =  [
   {
-    timestamp: '《名木古树基本信息表》',
+    timestamp: '《基本信息》',
     color: '#999',
     fontsize: 10,
     size: '15',
@@ -571,7 +571,7 @@ export const PathToList =  [
     type: 'BasicInformation'
   },
   {
-    timestamp: '《生长环境评估分析》',
+    timestamp: '《生长环境分析》',
     color: '#999',
     fontsize: 10,
     size: '15',
@@ -590,7 +590,7 @@ export const PathToList =  [
     path_to: '/survey/GrowthVigor/'
   },
   {
-    timestamp: '《已采取复壮保护措施分析》',
+    timestamp: '《复壮措施分析》',
     color: '#999',
     fontsize: 9,
     size: '15',
@@ -599,7 +599,7 @@ export const PathToList =  [
     path_to: '/survey/Protect/'
   },
   {
-    timestamp: '《树体损伤情况评估》',
+    timestamp: '《树体损伤评估》',
     color: '#999',
     fontsize: 10,
     size: '15',
@@ -608,7 +608,7 @@ export const PathToList =  [
     path_to: '/survey/damage/'
   },
   {
-    timestamp: '《树体倾斜、空腐情况检测》',
+    timestamp: '《倾斜空腐检测》',
     color: '#999',
     fontsize: 10,
     size: '15',
@@ -617,7 +617,7 @@ export const PathToList =  [
     path_to: '/survey/Incline/'
   },
   {
-    timestamp: '《病虫害发生情况分析》',
+    timestamp: '《病虫害分析》',
     color: '#999',
     fontsize: 10,
     size: '15',
