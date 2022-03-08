@@ -124,7 +124,7 @@ export default [
     path: '/survey',
     name: 'survey',
     meta: {
-      title: '名木古树调查建档',
+      title: '名木古树建档',
       icon: 'ios-book',
       access: ['超级管理员', '单位管理员', '调查人员']
     },
@@ -135,17 +135,25 @@ export default [
         name: 'base_survey_page',
         meta: {
           icon: 'ios-document',
-          title: '名木古树信息',
+          title: '基本信息',
           access: ['超级管理员', '单位管理员', '调查人员']
         },
         component: () => import('@/view/survey/base_survey.vue')
       },
       {
-        path: 'right',
+        path: 'cover',
+        name: 'cover_page',
+        meta: {
+          title: '封面',
+          hideInMenu: true
+        },
+        component: () => import('@/view/survey/CoverPage.vue')
+      },
+      {
+        path: 'right/:tree_code',
         name: 'right_page',
         meta: {
-          icon: 'md-clipboard',
-          title: '名木古树调查填表',
+          title: '名木古树基本调查表',
           hideInMenu: true
         },
         component: () => import('@/view/survey/right.vue')
@@ -208,10 +216,20 @@ export default [
         path: 'update/BasicInformation/:tree_code',
         name: 'BaseInfo',
         meta: {
-          title: '名木古树基本信息',
+          title: '名木古树基本信息调查表',
           hideInMenu: true
         },
         component: () => import('@/view/survey/Modify/BasicInformation')
+
+      },
+      {
+        path: 'coverPage/:tree_code',
+        name: 'CoverPage',
+        meta: {
+          title: '封面',
+          hideInMenu: true
+        },
+        component: () => import('@/view/survey/Modify/CoverUpdatePage')
 
       }
     ]
@@ -232,7 +250,7 @@ export default [
         name: 'admin_yh_work_manage',
         meta: {
           icon: 'ios-document',
-          title: '养护任务结果管理',
+          title: '养护任务结果',
           access: ['单位管理员']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_work_manage')
@@ -242,7 +260,7 @@ export default [
         name: 'admin_yh_allot_manage',
         meta: {
           icon: 'ios-document',
-          title: '养护任务分配管理',
+          title: '养护任务分配',
           access: ['单位管理员']
         },
         component: () => import('@/view/YangHuManage/YhManage/yh_allot_manage')
@@ -275,7 +293,7 @@ export default [
         name: 'yh_options',
         path: 'yh_options',
         meta: {
-          title: '养护项目管理',
+          title: '养护项目分类',
           icon: "md-arrow-dropright-circle",
         },
         component: () => import('@/view/OptionManage/yh_classify_options/index')
@@ -285,7 +303,7 @@ export default [
         name: 'other',
         meta: {
           icon: 'ios-document',
-          title: '病虫害管理'
+          title: '病虫害分类'
         },
         component: () => import('@/view/OptionManage/other/index')
       },
@@ -294,7 +312,7 @@ export default [
         name: 'species',
         meta: {
           icon: 'ios-document',
-          title: '树种管理'
+          title: '树种分类'
         },
         component: () => import('@/view/OptionManage/SpeciesManage/index')
       }

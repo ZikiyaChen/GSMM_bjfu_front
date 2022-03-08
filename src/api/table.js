@@ -7,6 +7,87 @@ export const getTest = () => {
   })
 }
 
+//add Cover、basic
+export const AddCoverPage = (data) => {
+  return axios.request({
+    url: 'add_cover',
+    method: 'post',
+    data: data
+  })
+}
+
+export const AddGeo = (data) => {
+  return axios.request({
+    url: 'add_geo',
+    method: 'post',
+    data: data
+  })
+}
+export const AddDynamic = (data) => {
+  return axios.request({
+    url: 'add_dynamic',
+    method: 'post',
+    data: data
+  })
+}
+export const AddTreePic = (data) => {
+  return axios.request({
+    url: 'add_pic',
+    method: 'post',
+    data: data
+  })
+}
+export const AddBrand = (data) => {
+  return axios.request({
+    url: 'add_brand',
+    method: 'post',
+    data: data
+  })
+}
+
+export const AddEnvironment = (data) => {
+  return axios.request({
+    url: 'add_environment',
+    method: 'post',
+    data: data
+  })
+}
+export const AddGrowthVigor = (data) => {
+  return axios.request({
+    url: 'add_growth',
+    method: 'post',
+    data: data
+  })
+}
+export const AddFzbh = (data) => {
+  return axios.request({
+    url: 'add_fzbh',
+    method: 'post',
+    data: data
+  })
+}
+export const AddStss = (data) => {
+  return axios.request({
+    url: 'add_stss',
+    method: 'post',
+    data: data
+  })
+}
+export const AddQxkf = (data) => {
+  return axios.request({
+    url: 'add_qxkf',
+    method: 'post',
+    data: data
+  })
+}
+
+export const AddBchFx = (data) => {
+  return axios.request({
+    url: 'add_bchfx',
+    method: 'post',
+    data: data
+  })
+}
 export const AddBasicProperty = (data) => {
   return axios.request({
     url: 'http://127.0.0.1:5000/add_basic_property',
@@ -157,11 +238,12 @@ export const postClassTypes = (data) => {
     data: data
   })
 }
-export const getBasic = (tree_code) => {
+
+export const getBasic = (params) => {
   return axios.request({
-    url: 'basic/'+ tree_code,
+    url: 'basic',
     method: 'get',
-    tree_code: tree_code
+    params: params,
   })
 }
 
@@ -405,3 +487,13 @@ export const queryTreeBasic = (params) =>{
     params: params
   })
 }
+//批量审核
+export const BatchCheckTrees = (data) =>{
+  return axios.request({
+    url: 'batch_check',
+    method: 'put',
+    data: data
+  })
+}
+
+

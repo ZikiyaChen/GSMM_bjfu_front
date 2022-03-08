@@ -116,34 +116,41 @@ export default {
           title: '#',
           width: 50,
           key: 'index',
+          fixed: 'left'
         },
         {
           title: '用户名',
           key: 'username',
-          width: 110,
+          width: 170,
+          align: 'center',
           resizable: true,
+          fixed: 'left'
         },
         {
           title: '名字',
           key: 'name',
-          width: 110,
+          width: 170,
+          align: 'center',
           resizable: true
         },
         {
           title: '性别',
           key: 'sex',
           width: 70,
+          align: 'center',
           resizable: true,
         },
         {
           title: '单位',
           key: 'unit',
-          width: 120,
+          width: 170,
+          align: 'center',
           resizable: true,
         },
         {
           title: '身份',
-          width: 250,
+          width: 170,
+          aligen: 'center',
           resizable: true,
           render: function (h, params) {
             let tags = params.row.role_names.map((item) => {
@@ -192,31 +199,32 @@ export default {
         {
           title: '电话',
           key: 'tele',
-          width: 120,
+          width: 150,
+          align: 'center',
           resizable: true
         },
-        {
-          title: '单位管理员',
-          align: "center",
-          width: 120,
-          resizable: true,
-
-          render: function (h, params) {
-            if (params.row.is_unitAdmin) {
-              return h('Icon', { props: {
-                type: 'md-checkmark-circle'
-              },
-              style: {
-                color: '#19be6b',
-                fontSize: '30px',
-                textAlign: 'center'
-              }
-              })
-            } else {
-              return h('span')
-            }
-          }
-        },
+        // {
+        //   title: '单位管理员',
+        //   align: "center",
+        //   width: 120,
+        //   resizable: true,
+        //
+        //   render: function (h, params) {
+        //     if (params.row.is_unitAdmin) {
+        //       return h('Icon', { props: {
+        //         type: 'md-checkmark-circle'
+        //       },
+        //       style: {
+        //         color: '#19be6b',
+        //         fontSize: '30px',
+        //         textAlign: 'center'
+        //       }
+        //       })
+        //     } else {
+        //       return h('span')
+        //     }
+        //   }
+        // },
 
         {
           title: '密码',

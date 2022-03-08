@@ -177,7 +177,7 @@ export default {
           align: 'center',
           fixed: 'left',
           resizable: true,
-          width: 100,
+          width: 80,
           render: function (h, params) {
             return h('span', params.row.tree.zw_name)
           }

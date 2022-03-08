@@ -21,16 +21,11 @@
 
     <h2 slot="title" style="text-align: center">生长环境评价分析</h2>
     <Form :label-width="180" label-position="right" :model="TreeInformation" inline>
-      <h4>古树基本信息:</h4>
+
     <Row>
       <Col  span="11" offset="1">
         <FormItem label="古树编号：" >
           <Input disabled  v-model="tree_code" class="TextColor"></Input>
-        </FormItem>
-      </Col>
-      <Col span="11" >
-        <FormItem label="中文名：" prop="Base.zw_name" >
-          <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor" ></Input>
         </FormItem>
       </Col>
     </Row>
@@ -38,43 +33,43 @@
 
     <Form :label-width="180" label-position="right"  ref="environment_form" :model="environment" :rules="ruleValidate" inline >
 <!--      记住一定要加prop，不然验证不起作用-->
+<!--      <Row>-->
+<!--        <Col span="11" offset="1">-->
+<!--          <FormItem label="调查单位：" prop="dc_unit" class="error-tip">-->
+<!--            <Select v-model="environment.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"-->
+<!--                    @on-query-change="onDcUnitSelectQueryChange" clearable  >-->
+<!--              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--        <Col span="11">-->
+<!--          <FormItem label="调查时间：" prop="update_time" class="error-tip">-->
+<!--            <DatePicker v-model="environment.update_time"  type="datetime" placeholder="请选择日期" ></DatePicker>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
+<!--      <Row>-->
+<!--        <Col span="11" offset="1">-->
+<!--          <FormItem label="调查人：" prop="investigate_username" class="error-tip">-->
+<!--            <Select v-model="environment.investigate_username" placeholder="名字" filterable-->
+<!--                    @on-query-change="onDcUserSelectQueryChange" clearable>-->
+<!--              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
+      <div style="color: mediumseagreen;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >
+        <span>生长环境:</span>
+      </div>
       <Row>
-        <Col span="11" offset="1">
-          <FormItem label="调查单位：" prop="dc_unit" class="error-tip">
-            <Select v-model="environment.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                    @on-query-change="onDcUnitSelectQueryChange" clearable  >
-              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-        <Col span="11">
-          <FormItem label="调查时间：" prop="update_time" class="error-tip">
-            <DatePicker v-model="environment.update_time"  type="datetime" placeholder="请选择日期" ></DatePicker>
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span="11" offset="1">
-          <FormItem label="调查人：" prop="investigate_username" class="error-tip">
-            <Select v-model="environment.investigate_username" placeholder="名字" filterable
-                    @on-query-change="onDcUserSelectQueryChange" clearable>
-              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-      </Row>
-<h4>生长环境：</h4>
-      <Row>
-        <Col offset="1">
+        <Col offset="1" span="11">
           <FormItem label="生长环境类型：" prop="habitat_type">
             <RadioGroup v-model="environment.habitat_type">
               <Radio v-for="item in HabitatTypeList" :label="item.value" :key="item.value"></Radio>
             </RadioGroup>
           </FormItem>
         </Col>
-      </Row>
-      <Row>
-        <Col span="11" offset="1">
+        <Col span="11">
           <FormItem label="海拔：" prop="elevation">
             <Input v-model="environment.elevation" placeholder="请输入海拔（单位：米）" >
               <span slot="append"> 米 </span>
@@ -125,7 +120,7 @@
         <Col offset="1">
           <FormItem label="土壤污染：" prop="is_pollution">
             <RadioGroup v-model="environment.is_pollution">
-              <Radio v-for="item in IsPollutionList" :label="item.value" :key="item.value">{{item.label}}</Radio>
+              <Radio v-for="item in IsPollutionList" :label="item" :key="item" >{{item}}</Radio>
             </RadioGroup>
           </FormItem>
         </Col>
@@ -179,8 +174,9 @@
           </FormItem>
         </Col>
       </Row>
-
-      <h4>土壤营养元素含量：</h4>
+      <div style="color: mediumseagreen;  margin-left: 95px; margin-bottom: 5px; font-weight: bold" >
+        <span>土壤营养元素含量：</span>
+      </div>
       <Row>
         <Col span="11" offset="1" >
           <FormItem label="水解N：" prop="hydrolyze_N">
@@ -231,11 +227,11 @@
         <Col  span="11" offset="1">
           <FormItem label="是否埋干：" prop="is_buried" style="width: 100%;">
             <RadioGroup v-model="environment.is_buried">
-              <Radio v-for="item in IsBuriedList" :label="item.value" :key="item.value">{{item.label}}</Radio>
+              <Radio v-for="item in IsBuriedList" :key="item" :label="item">{{item}}</Radio>
             </RadioGroup>
           </FormItem>
         </Col>
-        <Col span="11" v-if="environment.is_buried === 1">
+        <Col span="11" v-if="environment.is_buried === '是'">
           <FormItem label="埋干深度：" prop="buried_depth">
             <Input v-model="environment.buried_depth" placeholder="请输入数据"></Input>
           </FormItem>
@@ -251,10 +247,14 @@
           </FormItem>
         </Col>
       </Row>
-<h4><Tooltip placement="right" max-width="200" >
-  <div slot="content" style="font-size: 12px; font-family: 宋体">按照《古树名木评价标准》（DB11_T478）的规定测定，满足规定要求的填5m，不满足的按实际填写，并反映在示意图中。</div>
-  <Icon type="md-alert" size="14" color="#808695"/>
-</Tooltip>保护范围四至:</h4>
+      <div style="color: mediumseagreen;  margin-left: 110px; margin-bottom: 5px; font-weight: bold" >
+        <Tooltip placement="right" max-width="200" >
+          <div slot="content" style="font-size: 12px; font-family: 宋体">按照《古树名木评价标准》（DB11_T478）的规定测定，满足规定要求的填5m，不满足的按实际填写，并反映在示意图中。</div>
+          <Icon type="md-alert" size="14" color="#808695"/>
+        </Tooltip>
+        <span>保护范围四至:</span>
+      </div>
+
       <Row>
         <Col span="11" offset="1">
           <FormItem prop="protect_E" label="东向："  class="error-tip">
@@ -264,7 +264,7 @@
           </FormItem>
         </Col>
         <Col span="11">
-          <FormItem label="西向" prop="protect_W">
+          <FormItem label="西向：" prop="protect_W" class="error-tip">
             <Input v-model="environment.protect_W"><span slot="append">米</span></Input>
           </FormItem>
         </Col>
@@ -272,12 +272,12 @@
 
       <Row>
         <Col span="11" offset="1">
-          <FormItem label="南向：" prop="protect_S">
+          <FormItem label="南向：" prop="protect_S" class="error-tip">
             <Input v-model="environment.protect_S"><span slot="append">米</span></Input>
           </FormItem>
         </Col>
         <Col span="11">
-          <FormItem label="北向：" prop="protect_N">
+          <FormItem label="北向：" prop="protect_N" class="error-tip">
             <Input v-model="environment.protect_N"><span slot="append">米</span></Input>
           </FormItem>
         </Col>
@@ -327,9 +327,9 @@
 
       <Row>
         <Col offset="1">
-          <FormItem label="生长环境总体评价：" prop="evaluation">
+          <FormItem label="生长环境总体评价：" prop="evaluation" style="width: 100%">
             <RadioGroup v-model="environment.evaluation">
-              <Radio v-for="item in EvaluationList" :label="item.value" :key="item.value"></Radio>
+              <Radio v-for="item in EvaluationList"  :key="item" :label="item">{{item}}</Radio>
             </RadioGroup>
           </FormItem>
         </Col>
@@ -347,22 +347,22 @@
         <Col offset="1">
           <FormItem label="保护范围内筑构物情况：" prop="has_structures">
             <RadioGroup v-model="environment.has_structures">
-              <Radio v-for="item in HasStructuresList" :label="item.value" :key="item.value">{{item.label}}</Radio>
+              <Radio v-for="item in HasStructuresList"  :key="item" :label="item">{{item}}</Radio>
             </RadioGroup>
           </FormItem>
         </Col>
       </Row>
-      <div v-if="environment.has_structures === 1">
+      <div v-if="environment.has_structures === '有'">
       <Row>
         <Col offset="1">
-          <FormItem label="筑构物类型：" prop="structures_type">
+          <FormItem label="筑构物类型：" prop="structures_type" class="error-tip">
             <Input v-model="environment.structures_type" placeholder="请输入筑构物类型" style="width: 300px"></Input>
           </FormItem>
         </Col>
       </Row>
-      <Row v-if="environment.has_structures === 1">
+      <Row v-if="environment.has_structures === '有'">
         <Col offset="1">
-          <FormItem label="筑构物影响：" prop="structures_affect">
+          <FormItem label="筑构物影响：" prop="structures_affect" class="error-tip">
             <Input v-model="environment.structures_affect" type="textarea" :autosize="true" placeholder="请填写筑构物对树体的影响（包括潜在影响）" style="width: 400px" class="TextStyle"></Input>
           </FormItem>
         </Col>
@@ -418,23 +418,31 @@
       </Row>
     </Form>
     <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
-    <div style="text-align: center" v-show="isShow">
-      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-      <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
-      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-      <router-link :to="{path: `/survey/base_survey`}">
-        <Button type="primary" style="margin-right: 30px">返回</Button>
-      </router-link>
-    </div>
-      <div style="text-align: center" v-show="isSubmit">
+      <div style="text-align: center">
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
         <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
-        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+        <Button  @click="SubmitTable" type="primary" style="margin-right: 30px">提交</Button>
         <router-link :to="{path: `/survey/base_survey`}">
           <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
       </div>
+<!--    <div style="text-align: center" v-show="isShow">-->
+<!--      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--      <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>-->
+<!--      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>-->
+<!--      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>-->
+<!--      <router-link :to="{path: `/survey/base_survey`}">-->
+<!--        <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--      </router-link>-->
+<!--    </div>-->
+<!--      <div style="text-align: center" v-show="isSubmit">-->
+<!--        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>-->
+<!--        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>-->
+<!--        <router-link :to="{path: `/survey/base_survey`}">-->
+<!--          <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--        </router-link>-->
+<!--      </div>-->
     </float_bar>
 
     <Modal
@@ -456,11 +464,12 @@ import { habitat_typeList, plainList, highlandList, is_pollutionList, variaList,
   is_buriedList, other_plantsList, evaluationList, has_structuresList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
+  AddEnvironment,
   AddGeAnalysis, getEnvironmentById,
   getNewGeAnalysis,
   getOneTreeBaseInfo,
   postTjxmRecord,
-   queryTjxmRecord, updateEnvironment,  updateTjxmRecord
+  queryTjxmRecord, updateEnvironment, updateTjxmRecord
 } from "@/api/table";
 import { ShowPic, UploadPicApi } from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
@@ -496,9 +505,9 @@ export default {
         t_id: 0,
         type: '生长环境评价分析',
         username: '',
-        status: '',
+        status: '已完成',
         type_yw: 'environment',
-        time: ''
+        tree_code: ''
       },
 
       TreeInformation: {
@@ -512,48 +521,45 @@ export default {
 
       environment: {
         id: 0,
-        investigate_username: '',
-        dc_unit: '',
-        elevation: 0, // 海拔
+        elevation: null, // 海拔
         habitat_type: '', // 生长环境类型
         plain_type: [], // 平原类型
         highland_type: '', // 山地类型
         aspect: '', // 坡向
-        slope: 0, // 坡度
+        slope: null, // 坡度
         slope_position: '', // 坡位
-        is_pollution: 0, // 土壤污染有无
+        is_pollution: null, // 土壤污染有无
         varia: '', // 土壤是否有杂物
         soil_texture: '', // 土壤质地
-        soil_capacity: 0, // 土壤容量
+        soil_capacity: null, // 土壤容量
         organic_content: '', // 有机质含量
         sample_result: '', // 采样测定结果
 
-        hydrolyze_N: 0, // 水解N
-        valid_P: 0, // 有效P
-        rapid_K: 0, // 速效K
-        saltness: 0, // 含盐量
-        ec_value: 0, // EC值
-        ph_value: 0, // PC值
+        hydrolyze_N: null, // 水解N
+        valid_P: null, // 有效P
+        rapid_K: null, // 速效K
+        saltness: null, // 含盐量
+        ec_value: null, // EC值
+        ph_value: null, // PC值
 
-        is_buried: 0, // 是否埋干
-        buried_depth: 0, // 埋干深度
-        root_water: 0, // 土壤含水量
+        is_buried: null, // 是否埋干
+        buried_depth: null, // 埋干深度
+        root_water: null, // 土壤含水量
 
-        protect_E: 0, // 保护范围四至 东向
-        protect_W: 0, // 西向
-        protect_S: 0, // 南向
-        protect_N: 0, // 北向
+        protect_E: null, // 保护范围四至 东向
+        protect_W: null, // 西向
+        protect_S: null, // 南向
+        protect_N: null, // 北向
         protect_pic: [], // 保护范围示意图
         other_plants: '', // 保护范围内其他植物
         evaluation: '', // 生长环境总体评价
         envoriment_problem: '', // 生长环境问题
 
-        has_structures: 0, // 保护范围内构筑物有无
+        has_structures: null, // 保护范围内构筑物有无
         structures_type: '', // 筑构物类型
         structures_affect: '', // 筑构物影响
         nutrient_status: '', // 土壤营养状况分析
         pic_path: [], // 特征照片
-        update_time: '',
         tree_code: ''
       },
       tree_code: this.$route.params.tree_code,
@@ -561,19 +567,16 @@ export default {
       HabitatTypeList: habitat_typeList,
       PlainList: plainList,
       HighLandList: highlandList,
-      IsPollutionList: is_pollutionList,
+      IsPollutionList: ['有','无'],
       VariaList: variaList,
       SoilTextureList: soil_textureList,
       OrganicContentList: organic_contentList,
-      IsBuriedList: is_buriedList,
+      IsBuriedList: ['是','否'],
       OtherPlantsList: other_plantsList,
-      EvaluationList: evaluationList,
-      HasStructuresList: has_structuresList,
+      EvaluationList: ['良好','差'],
+      HasStructuresList: ['有','无'],
 
       ruleValidate: {
-        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
-        dc_unit: [{ required: true, message: '请填写调查单位', trigger: 'change' }],
-        investigate_username: [{ required: true, message: '请填写调查人姓名', trigger: 'change' }],
         elevation: [{ required: true, message: '请填写海拔' }],
         habitat_type: [{ required: true, trigger: 'change', message: '请选择生长环境类型' }],
         plain_type: [{ required: true, type: 'array', min: 1, trigger: 'change', message: '请选择平原类型' }],
@@ -636,6 +639,68 @@ export default {
     },
     changeActive (index) {
       this.timeIndex = index;
+    },
+    checkData(){
+      if (this.environment.habitat_type === '平原') {
+        this.environment.highland_type = ''
+      } else {
+        this.environment.plain_type = []
+      }
+      if (this.environment.is_buried === '无') {
+        this.environment.buried_depth = null
+      }
+      if (this.environment.evaluation === '良好') {
+        this.environment.envoriment_problem = ''
+      }
+      if (this.environment.has_structures === '无') {
+        this.environment.structures_affect = ''
+        this.environment.structures_type = ''
+      }
+    },
+    add(){
+      AddEnvironment(this.environment).then(res => {
+        getNewGeAnalysis(this.tree_code).then(resp => {
+          this.tjxm_record.t_id = resp.data.new_ge_analysis.id
+          postTjxmRecord(this.tjxm_record).then(record => {
+            if (record.data.code === 200) {
+              this.$Message.success('提交成功')
+              this.fetchData()
+            } else {
+              this.$Message.error('失败')
+            }
+          })
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+
+    },
+    update(){
+      updateEnvironment(this.environment.id,this.environment).then(res=>{
+        if(res.data.code === 200){
+          this.$Message.success('成功')
+        }else {
+          this.$Message.error('失败')
+        }
+      })
+    },
+    //isShow=true post
+    //isShow=false put
+    async SubmitTable(){
+      this.environment.tree_code = this.tree_code
+      this.tjxm_record.tree_code = this.tree_code
+      await this.checkData()
+      this.$refs.environment_form.validate((valid) => {
+        if (valid) {
+          if(this.isShow){
+            this.add()
+          }else {
+            this.update()
+          }
+        }else {
+          this.$Message.error('请填写完整')
+        }
+      })
     },
 
     fetchData () {
@@ -715,13 +780,13 @@ export default {
           } else {
             this.environment.plain_type = []
           }
-          if (this.environment.is_buried === 0) {
-            this.environment.buried_depth = 0
+          if (this.environment.is_buried === '无') {
+            this.environment.buried_depth = null
           }
           if (this.environment.evaluation === '良好') {
             this.environment.envoriment_problem = ''
           }
-          if (this.environment.has_structures === 0) {
+          if (this.environment.has_structures === '无') {
             this.environment.structures_affect = ''
             this.environment.structures_type = ''
           }
@@ -901,12 +966,12 @@ export default {
   /*控制单选选项之间距离*/
 .ivu-radio-wrapper {
   width: 100px;
-  margin-right: 20px;
+  margin-right: 15px;
 }
 /*复选框选项间隔*/
 .ivu-checkbox-wrapper {
   width: 100px;
-  margin-right: 20px;
+  margin-right: 15px;
 }
 .ivu-date-picker {
   width: 100%;

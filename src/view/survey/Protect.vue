@@ -21,48 +21,40 @@
         </div>
       </div>
 
-      <Form :label-width="180" label-position="right" :model="TreeInformation" inline >
-        <h4>古树基本信息:</h4>
-        <Row>
-          <Col  span="11" offset="1">
-            <FormItem label="古树编号：">
-              <Input disabled  v-model="tree_code" class="TextColor"></Input>
-            </FormItem>
-          </Col>
-          <Col span="11" >
-            <FormItem label="中文名：" prop="Base.zw_name">
-              <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
       <Form :label-width="180" label-position="right"  ref="protect_form" :model="Protect" :rules="ruleValidate" inline>
         <Row>
           <Col span="11" offset="1">
-            <FormItem label="调查单位：" prop="dc_unit" class="error-tip">
-              <Select v-model="Protect.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                      @on-query-change="onDcUnitSelectQueryChange" clearable  >
-                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="11">
-            <FormItem label="调查时间：" prop="update_time" class="error-tip">
-              <DatePicker v-model="Protect.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
+            <FormItem label="古树编号：">
+               <Input disabled  v-model="tree_code" class="TextColor"></Input>
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col span="11" offset="1">
-            <FormItem label="调查人：" prop="investigate_username" class="error-tip">
-              <Select v-model="Protect.investigate_username" placeholder="名字" filterable
-                      @on-query-change="onDcUserSelectQueryChange" clearable >
-                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-        </Row>
-        <h4>已采取复壮保护措施情况与分析:</h4>
+<!--        <Row>-->
+<!--          <Col span="11" offset="1">-->
+<!--            <FormItem label="调查单位：" prop="dc_unit" class="error-tip">-->
+<!--              <Select v-model="Protect.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"-->
+<!--                      @on-query-change="onDcUnitSelectQueryChange" clearable  >-->
+<!--                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>-->
+<!--              </Select>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--          <Col span="11">-->
+<!--            <FormItem label="调查时间：" prop="update_time" class="error-tip">-->
+<!--              <DatePicker v-model="Protect.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Row>-->
+<!--          <Col span="11" offset="1">-->
+<!--            <FormItem label="调查人：" prop="investigate_username" class="error-tip">-->
+<!--              <Select v-model="Protect.investigate_username" placeholder="名字" filterable-->
+<!--                      @on-query-change="onDcUserSelectQueryChange" clearable >-->
+<!--                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>-->
+<!--              </Select>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
+
         <Row>
           <Col offset="1">
             <FormItem prop="protect" style="width: 100%">
@@ -96,7 +88,9 @@
         </Row>
 <!--        封堵、未封堵需要填的-->
         <div v-if="Protect.is_block === 1">
-          <h4>封堵树洞：</h4>
+          <div style="color: mediumseagreen;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >
+            <span>封堵树洞：</span>
+          </div>
           <Row>
             <Col offset="1">
               <FormItem prop="fit_status"  :key="Protect.fit_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
@@ -139,8 +133,10 @@
             </Col>
           </Row>
         </div>
-        <div v-else>
-          <h4>未封堵树洞：</h4>
+        <div v-else-if="Protect.is_block === 0">
+          <div style="color: mediumseagreen;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >
+            <span>未封堵树洞：</span>
+          </div>
           <Row>
             <Col offset="1">
               <FormItem prop="clean_status" :key="Protect.clean_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
@@ -174,7 +170,9 @@
         </Row>
         <div v-if="Protect.is_support === 1">
 
-          <h4>支撑情况：</h4>
+          <div style="color: mediumseagreen;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >
+            <span>支撑情况：</span>
+          </div>
           <Row>
             <Col offset="1" span="11">
               <FormItem prop="hard_support" :key="Protect.hard_support" :rules="[{required: true,  message: '请输入' }]">
@@ -268,7 +266,9 @@
         </Row>
         <div v-if="Protect.has_ditch === 1">
 
-          <h4>复壮沟：</h4>
+          <div style="color: mediumseagreen;  margin-left: 150px; margin-bottom: 5px; font-weight: bold" >
+            <span>复壮沟：</span>
+          </div>
           <Row>
             <Col offset="1">
               <FormItem prop="ditch_type" :key="Protect.ditch_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
@@ -397,23 +397,31 @@
         </Row>
       </Form>
       <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
-      <div style="text-align: center" v-show="isShow">
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
-        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-        <router-link :to="{path: `/survey/base_survey`}">
-          <Button type="primary" style="margin-right: 30px">返回</Button>
-        </router-link>
-      </div>
-        <div style="text-align: center" v-show="isSubmit">
-          <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+        <div style="text-align: center" >
           <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-          <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+          <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>
+          <Button  @click="SubmitTable" type="primary" style="margin-right: 30px">提交</Button>
           <router-link :to="{path: `/survey/base_survey`}">
             <Button type="primary" style="margin-right: 30px">返回</Button>
           </router-link>
         </div>
+<!--      <div style="text-align: center" v-show="isShow">-->
+<!--        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>-->
+<!--        <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>-->
+<!--        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>-->
+<!--        <router-link :to="{path: `/survey/base_survey`}">-->
+<!--          <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--        </router-link>-->
+<!--      </div>-->
+<!--        <div style="text-align: center" v-show="isSubmit">-->
+<!--          <Button @click="NextPage" type="primary" style="margin-right: 30px">下一页</Button>-->
+<!--          <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--          <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>-->
+<!--          <router-link :to="{path: `/survey/base_survey`}">-->
+<!--            <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--          </router-link>-->
+<!--        </div>-->
       </float_bar>
 
     </Card>
@@ -448,10 +456,11 @@ import {
 } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddFzbhAnalysis, getNewProtect,
+  AddFzbh,
+  AddFzbhAnalysis, AddGrowthVigor, getNewGrowthVigor, getNewProtect,
   getOneTreeBaseInfo, getProtect_By_id,
   postTjxmRecord,
-  queryTjxmRecord,  updateProtect, updateTjxmRecord
+  queryTjxmRecord, updateGrowthVigor, updateProtect, updateTjxmRecord
 } from "@/api/table";
 import Float_bar from "_c/FloatBar/float_bar";
 import { ShowPic, UploadPicApi } from "@/api/upload";
@@ -482,10 +491,9 @@ export default {
       tjxm_record: {
         t_id: 0,
         type: '已采取复壮保护措施情况与分析',
-        username: '',
-        status: '',
+        status: '已完成',
         type_yw: 'Protect',
-        time: ''
+        tree_code: ''
       },
       showNextPageModal: false,
       showPreviousPageModal: false,
@@ -521,7 +529,7 @@ export default {
         id: 0,
         protect: [], // 地上保护措施
         soil_improve: [], // 地下土壤改良措施
-        is_block: 0, // 是否封堵树洞
+        is_block: null, // 是否封堵树洞
 
         fit_status: '', // （封堵）与树体贴合情况
         drain_hole: '', // （封堵）排水孔和排湿孔
@@ -531,33 +539,30 @@ export default {
         clean_status: '', // *（未封堵）内壁清理程度
         antiseptic: '', // *（未封堵）内壁防腐处理
 
-        is_support: 0, // *是否存在支撑
-        hard_support: 0, // *（有支撑）硬支撑几处
-        protaging: 0, // *（有支撑）拉纤几处
+        is_support: null, // *是否存在支撑
+        hard_support: null, // *（有支撑）硬支撑几处
+        protaging: null, // *（有支撑）拉纤几处
         steady: '', // （有支撑）稳固情况
         support_type: '', // *（有支撑）支撑类型
         support_isrea: '', // （有支撑）支撑部位是否合理
         hoop_status: '', // *（有支撑）抱箍情况
-        rubber_is: 0, // （有支撑）橡胶垫设置是否合理
-        hoop_is: 0, // （有支撑）抱箍设置是否合理
+        rubber_is: null, // （有支撑）橡胶垫设置是否合理
+        hoop_is: null, // （有支撑）抱箍设置是否合理
 
-        has_ditch: 0, // 复壮沟有无
+        has_ditch: null, // 复壮沟有无
         ditch_type: '', // *（有）复壮沟类型
-        ditch_num: 0, // *（有）复壮沟数量
-        ditch_width: 0, // 复壮沟宽度
-        ditch_length: 0, // 复壮沟总长度
-        pipe_num: 0, // *（有）通气管数量
+        ditch_num: null, // *（有）复壮沟数量
+        ditch_width: null, // 复壮沟宽度
+        ditch_length: null, // 复壮沟总长度
+        pipe_num: null, // *（有）通气管数量
         matrix_constitute: '', // 复壮沟基质组成
         position_is: '', // 复壮沟位置设置是否合理
-        well_num: 0, // *（有）渗井数量
+        well_num: null, // *（有）渗井数量
         capillary_roots: '', // 复壮沟毛细根生长情况
 
         protect_eval: '', // 现有复壮保护措施评价
         pic: [], // 特征照片
-        update_time: '',
         tree_code: '',
-        investigate_username: '',
-        dc_unit: ''
       },
       ruleValidate: {
         protect: [{ required: true, message: '请选择' }],
@@ -611,6 +616,51 @@ export default {
     changeActive (index) {
       this.timeIndex = index;
     },
+
+    add(){
+      AddFzbh(this.Protect).then(res => {
+        getNewProtect(this.tree_code).then(resp => {
+          this.tjxm_record.t_id = resp.data.new_Fzbh.id
+          postTjxmRecord(this.tjxm_record).then(record => {
+            if (record.data.code === 200) {
+              this.$Message.success('提交成功')
+              this.fetchData()
+            } else {
+              this.$Message.error('失败')
+            }
+          })
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+
+    },
+    update(){
+      updateProtect(this.Protect.id,this.Protect).then(res=>{
+        if(res.data.code === 200){
+          this.$Message.success('成功')
+        }else {
+          this.$Message.error('失败')
+        }
+      })
+    },
+
+    async SubmitTable(){
+      this.Protect.tree_code = this.tree_code
+      this.tjxm_record.tree_code = this.tree_code
+      this.$refs.protect_form.validate((valid) => {
+        if (valid) {
+          if(this.isShow){
+            this.add()
+          }else {
+            this.update()
+          }
+        }else {
+          this.$Message.error('请填写完整')
+        }
+      })
+    },
+
 
     fetchData () {
       this.dcUnits = []

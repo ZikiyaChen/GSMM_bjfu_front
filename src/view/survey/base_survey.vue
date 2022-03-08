@@ -34,25 +34,31 @@
       </FormItem>
 
       <FormItem label="调查人" >
-        <Select v-model="query.dc_username" placeholder="调查人姓名" filterable
-                @on-query-change="ondcUserUnitQueryChange" clearable style="width: 120px">
-          <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
-        </Select>
+        <Input v-model="query.investigator" style="width:120px" clearable></Input>
+<!--        <Select v-model="query.dc_username" placeholder="调查人姓名" filterable-->
+<!--                @on-query-change="ondcUserUnitQueryChange" clearable style="width: 120px">-->
+<!--          <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>-->
+<!--        </Select>-->
       </FormItem>
 
-      <FormItem label="体检单位" >
-        <Select v-model="query.dc_unit" placeholder="请选择" clearable style="width: 120px">
+      <FormItem label="调查单位" v-role="['超级管理员']">
+        <Select v-model="query.CompanyB" placeholder="请选择" clearable style="width: 120px">
           <Option v-for="item  in Unit" :value="item.unit" :key="item.unit">{{item.unit}}</Option>
         </Select>
       </FormItem>
-      <FormItem label="管护单位" >
+      <FormItem label="管护单位" v-role="['超级管理员']">
         <Select v-model="query.gh_unit" placeholder="请选择" clearable style="width: 120px">
           <Option v-for="item  in Unit" :value="item.unit" :key="item.unit">{{item.unit}}</Option>
         </Select>
       </FormItem>
       <FormItem label="签订责任书" >
         <Select v-model="query.is_signed" placeholder="是否签订" clearable style="width: 120px">
-        <Option v-for="item  in signList" :value="item.value" :key="item.value">{{item.label}}</Option>
+        <Option v-for="item  in signList" :value="item" :key="item">{{item}}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="审核状态" >
+        <Select v-model="query.dw_CheckState"  clearable style="width: 120px">
+          <Option v-for="item  in CheckStateList" :value="item" :key="item">{{item}}</Option>
         </Select>
       </FormItem>
 
@@ -63,20 +69,26 @@
                     clearable style="width: 250px"></DatePicker>
       </FormItem>
 
+
+
       <FormItem >
         <Button type="primary" @click=" onSearch">查询</Button>
       </FormItem>
 
       <FormItem>
-      <router-link :to="{path: `/survey/right`}" v-role="['超级管理员','单位管理员','调查人员']" >
+      <router-link :to="{path: `/survey/cover`}" v-role="['超级管理员','单位管理员','调查人员']" >
         <Button type="success" style="margin-right: 30px">新增古树</Button>
       </router-link>
+      </FormItem>
+      <FormItem v-role="['单位管理员','超级管理员']">
+        <Button type="primary" style="margin-right: 30px" @click="()=>{this.ShowDwCheckModal=true}">批量审核</Button>
       </FormItem>
     </Form>
 
 
 
-    <Table :columns="columns" :data="tableData" border max-height="500" :loading="loadingTable"></Table>
+    <Table :columns="columns" :data="tableData" border max-height="500" :loading="loadingTable"
+           @on-selection-change="SelectTreesChange"></Table>
     <div style="margin: 10px; overflow: hidden">
       <div style="float: right;">
         <Page :total="total"  :current="pages._page" :page-size="pages._per_page" show-total
@@ -107,26 +119,36 @@
     </Modal>
 
   </Card>
+  <dw-check-modal
+    :show="ShowDwCheckModal"
+    @onOK="onDwCheckModalOK"
+    @onCancel="onDwCheckModalCancel">
+
+  </dw-check-modal>
 </div>
 </template>
 
 <script>
 
-import { deleteOneTree,  queryTreeBasicProperty } from '@/api/table'
+import {BatchCheckTrees, deleteOneTree, queryTreeBasicProperty} from '@/api/table'
 import tjxm_record_extend_table from "@/view/survey/components/tjxm_record_extend_table";
 
 import name from "@/view/tools-methods/name.json"
 import { ownerList, SignList } from "@/view/survey/right_base_options";
 import {queryUnits, queryUnitUsers} from "@/api/user";
 import {GetKe, GetShu, GetZhong} from "@/api/tree_species";
+import DwCheckModal from "@/view/survey/components/dwCheckModal";
 
 
 export default {
   name: "base_survey",
-  components: {  tjxm_record_extend_table },
+  components: {DwCheckModal,  tjxm_record_extend_table },
   data () {
     return {
+      selected_trees:[],
+      ShowDwCheckModal: false,
       dcUsers: [],
+      CheckStateList:['已审核','未审核'],
       investigate_time_range: undefined,
 
       deleteConfirmModal: false,
@@ -139,10 +161,13 @@ export default {
         tree_code_like: undefined,
         family: undefined,
         genus: undefined,
+        investigator: undefined,
         zw_name: undefined,
         owner: undefined,
-        dc_unit: undefined,
-        gh_unit: undefined
+        CompanyB: undefined,
+        gh_unit: undefined,
+        dc_status: '已完成',
+        dw_CheckState: undefined,
       },
       Unit: [],
 
@@ -150,7 +175,7 @@ export default {
       ShuList: [],
       NameList: [],
       OwnerList: ownerList,
-      signList: SignList,
+      signList: ['是','否'],
       total: 0,
       pages: {
         _page: 1,
@@ -162,6 +187,9 @@ export default {
         genus: undefined,
         zw_name: undefined,
         ld_name: undefined,
+
+        dw_CheckState: '',
+        dw_CheckResult: '',
 
         dynamic_property: {
           real_age: undefined,
@@ -191,6 +219,12 @@ export default {
         //     })
         //   }
         // },
+        {
+          type: 'selection',
+          width: 60,
+          fixed:'left',
+          align: 'center'
+        },
         {
           title: '古树编号',
           align: 'center',
@@ -252,7 +286,7 @@ export default {
           resizable: true,
           width: 115,
           render: function (h, params) {
-            return h('span', params.row.dynamic_property.real_age)
+            return h('span', params.row.real_age)
           }
         },
         {
@@ -261,7 +295,7 @@ export default {
           resizable: true,
           width: 100,
           render: function (h, params) {
-            return h('span', params.row.dynamic_property.height)
+            return h('span', params.row.height)
           }
         },
         {
@@ -297,7 +331,7 @@ export default {
           resizable: true,
           width: 90,
           render: function (h, params) {
-            return h('span', params.row.gh_user.name)
+            return h('span', params.row.ghr_name)
           }
         },
         {
@@ -316,7 +350,7 @@ export default {
           width: '150px',
           resizable: true,
           render: function (h, params) {
-            return h('span', params.row.investigate_time)
+            return h('span', params.row.accessStartTime)
           }
         },
         {
@@ -325,7 +359,7 @@ export default {
           resizable: true,
           width: 90,
           render: function (h, params) {
-            return h('span', params.row.dc_unit)
+            return h('span', params.row.CompanyB)
           }
         },
         {
@@ -334,7 +368,38 @@ export default {
           resizable: true,
           width: 90,
           render: function (h, params) {
-            return h('span', params.row.dc_user.name)
+            return h('span', params.row.investigator)
+          }
+        },
+        {
+          title: '单位审核状态',
+          align: 'center',
+          resizable: true,
+          fixed: 'right',
+          width: 110,
+          render: function (h, params) {
+            if(params.row.dw_CheckState === '未审核'){
+              return h('Tag', { props: { color: 'red' } }, params.row.dw_CheckState)
+            }else {
+              return h('Tag', { props: { color: 'blue' } }, params.row.dw_CheckState)
+            }
+
+          }
+        },
+        {
+          title: '单位审核结果',
+          align: 'center',
+          resizable: true,
+          width: 120,
+          render: function (h, params) {
+            if(params.row.dw_CheckResult === '审核通过'){
+              return h('Tag', { props: { color: 'blue' } }, '通过')
+            }else if(params.row.dw_CheckResult === '审核不通过'){
+              return h('Tag', { props: { color: 'red' } }, '不通过')
+            }else {
+              return h('span','')
+            }
+
           }
         },
         {
@@ -354,8 +419,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    console.log('pp', params.row)
-                    this.$router.push({ path: `/survey/update/BasicInformation/${params.row.tree_code}` })
+                    this.$router.push({ path: `/survey/coverPage/${params.row.tree_code}` })
                   }
                 }
               }, '查看'),
@@ -430,14 +494,38 @@ export default {
     }
   },
   methods: {
+    onDwCheckModalOK(data){
+      let new_data = {
+        trees_code: this.selected_trees,
+        check: data
+      }
+      BatchCheckTrees(new_data).then(res=>{
+        if(res.data.code === 200){
+          this.$Message.success('批量审核成功')
+          this.fetchData()
+        }else {
+          this.$Message.error('批量审核失败')
+        }
+      })
+      this.ShowDwCheckModal = false
+    },
+    onDwCheckModalCancel(){
+      this.ShowDwCheckModal = false
+    },
+
     //导出古树调查报告--下载
     //window.location.href 告诉您浏览器当前URL位置的属性。更改属性的值将重定向页面。
     //window.open 打开一个新的窗口并跳转到URL
     onExportReport(tree_code){
-      // window.location.href='http://8.140.170.84:35000/export_report/'+tree_code
-      window.location.href='http://localhost:5000/export_report/'+tree_code
+      window.location.href='http://8.140.170.84:35000/export_report/'+tree_code
+  // /*    window.location.href='http://localhost:5000/export_report/'+tree_code*/
     },
-
+    SelectTreesChange(selection){
+      console.log('select',selection)
+      this.selected_trees = selection.map((item) => {
+        return item.tree_code
+      })
+    },
 
     onPageSizeChange(page_size){
       console.log('page_size',page_size)
@@ -456,11 +544,11 @@ export default {
     //时间范围查询，时间范围发生变化时
     DateTimeChange(value){
       if(value[0]!==''&&value[1]!=='') {
-        this.query.investigate_time_gte = value[0]
-        this.query.investigate_time_lte = value[1]
+        this.query.accessStartTime_gte = value[0]
+        this.query.accessStartTime_lte = value[1]
       }else {
-        this.query.investigate_time_gte = undefined
-        this.query.investigate_time_lte = undefined
+        this.query.accessStartTime_gte = undefined
+        this.query.accessStartTime_lte = undefined
       }
     },
     //删除确认------

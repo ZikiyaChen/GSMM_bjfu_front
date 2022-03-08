@@ -82,7 +82,8 @@ export default {
       total: 0,
       query:{
         level: undefined,
-        zw_name: undefined
+        zw_name: undefined,
+        dc_status: '已完成',
       },
 
       NameList: [],

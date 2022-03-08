@@ -11,9 +11,8 @@
           <p>科：{{this.treeInfo.family}}</p>
           <p>属：{{this.treeInfo.genus}}</p>
           <p>古树等级：{{this.treeInfo.level}}</p>
-          <p>树龄：{{this.treeInfo.dynamic_property.real_age}}年</p>
-          <p>经度：{{this.treeInfo.geo_property.longitude}}</p>
-          <p>纬度：{{this.treeInfo.geo_property.latitude}}</p>
+          <p>树龄：{{this.treeInfo.real_age}}年</p>
+          <p>树高：{{this.treeInfo.height}}米</p>
           <p>地址：{{this.treeInfo.place_name}}</p>
           <p>管护单位：{{this.treeInfo.gh_unit}}</p>
         </Col>

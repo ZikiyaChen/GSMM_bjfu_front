@@ -22,26 +22,24 @@
     </div>
 
     <Form :label-width="220" label-position="right" :model="TreeInformation" inline >
-      <h4>古树基本信息</h4>
+
       <Row>
         <Col  span="11" >
           <FormItem label="古树编号：">
             <Input disabled  v-model="tree_code" class="TextColor"></Input>
           </FormItem>
         </Col>
-        <Col span="11" >
-          <FormItem label="中文名：" prop="Base.zw_name">
-            <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
-          </FormItem>
-        </Col>
+
       </Row>
     </Form>
 
     <Form :label-width="220" label-position="right"  ref="damage_form" :model="Damage" :rules="ruleValidate" inline>
-      <h4>树干基部：</h4>
+      <div style="color: mediumseagreen;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >
+        <span>树干基部:</span>
+      </div>
       <Row>
         <Col >
-          <FormItem prop="base1">
+          <FormItem prop="base1" class="error-tip">
             <span slot="label" >
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">仅树皮有缺陷、腐朽等受害，计算最大受害部位与树干周长比，&le;1/3为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -89,7 +87,7 @@
 
       <Row>
         <Col>
-          <FormItem prop="base2">
+          <FormItem prop="base2" class="error-tip">
             <span slot="label">
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">若木质部产生开裂、缺损或其他受害，钢棒插入的长度 &#60; 开裂部位处树干半径，则判断为木质部开裂未达心材，测量计算最大受害部位与树干周长比，&le;1/3判定为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -137,7 +135,7 @@
 
       <Row>
         <Col>
-          <FormItem prop="base3">
+          <FormItem prop="base3" class="error-tip">
             <span slot="label">
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">若木质部产生开裂、缺损或其他受害，钢棒插入的长度 &ge; 开裂部位处树干半径，则判断为木质部开裂达到心材，测量计算最大受害部位与树干周长比，&le;1/3判定为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -183,10 +181,13 @@
         </Col>
       </Row>
 
-      <h4>树干：</h4>
+
+      <div style="color: mediumseagreen;  margin-left: 160px; margin-bottom: 5px; font-weight: bold" >
+        <span>树干:</span>
+      </div>
       <Row>
         <Col >
-          <FormItem prop="trunk1">
+          <FormItem prop="trunk1" class="error-tip">
             <span slot="label" >
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">仅树皮有缺陷、腐朽等受害，计算最大受害部位与树干周长比，&le;1/3为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -234,7 +235,7 @@
 
       <Row>
         <Col>
-          <FormItem prop="trunk2">
+          <FormItem prop="trunk2" class="error-tip">
             <span slot="label" >
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">若木质部产生开裂、缺损或其他受害，钢棒插入的长度 &#60; 开裂部位处树干半径，则判断为木质部开裂未达心材，测量计算最大受害部位与树干周长比，&le;1/3判定为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -282,7 +283,7 @@
 
       <Row>
         <Col>
-          <FormItem prop="trunk3">
+          <FormItem prop="trunk3" class="error-tip">
             <span slot="label">
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">若木质部产生开裂、缺损或其他受害，钢棒插入的长度 &ge; 开裂部位处树干半径，则判断为木质部开裂达到心材，测量计算最大受害部位与树干周长比，&le;1/3判定为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -328,11 +329,12 @@
         </Col>
       </Row>
 
-
-      <h4>构成骨架大枝：</h4>
+      <div style="color: mediumseagreen;  margin-left: 110px; margin-bottom: 5px; font-weight: bold" >
+        <span>构成骨架大枝：</span>
+      </div>
       <Row>
         <Col>
-          <FormItem prop="skeleton1">
+          <FormItem prop="skeleton1" class="error-tip">
             <span slot="label">
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">仅树皮有缺陷、腐朽等受害，计算最大受害部位与树干周长比，&le;1/3为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -380,7 +382,7 @@
 
       <Row>
         <Col>
-          <FormItem prop="skeleton2">
+          <FormItem prop="skeleton2" class="error-tip">
             <span slot="label" >
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">若木质部产生开裂、缺损或其他受害，钢棒插入的长度 &#60; 开裂部位处树干半径，则判断为木质部开裂未达心材，测量计算最大受害部位与树干周长比，&le;1/3判定为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -428,7 +430,7 @@
 
       <Row>
         <Col>
-          <FormItem prop="skeleton3">
+          <FormItem prop="skeleton3" class="error-tip">
             <span slot="label">
               <Tooltip placement="right" max-width="200" >
                 <div slot="content">若木质部产生开裂、缺损或其他受害，钢棒插入的长度 &ge; 开裂部位处树干半径，则判断为木质部开裂达到心材，测量计算最大受害部位与树干周长比，&le;1/3判定为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -474,7 +476,9 @@
         </Col>
       </Row>
 
-      <h4>评价：</h4>
+      <div style="color: mediumseagreen;  margin-left: 160px; margin-bottom: 5px; font-weight: bold" >
+        <span>评价：</span>
+      </div>
       <Row>
         <Col span="18">
           <FormItem prop="protect_eval">
@@ -484,53 +488,61 @@
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col span="11" >
-          <FormItem label="调查单位：" prop="dc_unit" style="margin-bottom: 17px" class="error-tip">
-            <Select v-model="Damage.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                    @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >
-              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-        <Col span="11">
-          <FormItem label="调查时间：" prop="update_time">
-            <DatePicker v-model="Damage.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span="11" >
-          <FormItem label="调查人：" prop="investigate_username" >
-            <Select v-model="Damage.investigate_username" placeholder="名字" filterable
-                    @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">
-              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-      </Row>
+<!--      <Row>-->
+<!--        <Col span="11" >-->
+<!--          <FormItem label="调查单位：" prop="dc_unit" style="margin-bottom: 17px" class="error-tip">-->
+<!--            <Select v-model="Damage.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"-->
+<!--                    @on-query-change="onDcUnitSelectQueryChange" clearable style="width: 200px" >-->
+<!--              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--        <Col span="11">-->
+<!--          <FormItem label="调查时间：" prop="update_time">-->
+<!--            <DatePicker v-model="Damage.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
+<!--      <Row>-->
+<!--        <Col span="11" >-->
+<!--          <FormItem label="调查人：" prop="investigate_username" >-->
+<!--            <Select v-model="Damage.investigate_username" placeholder="名字" filterable-->
+<!--                    @on-query-change="onDcUserSelectQueryChange" clearable style="width: 200px">-->
+<!--              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
     </Form>
     <float_bar v-role="['超级管理员','单位管理员','调查人员']">
-      <div style="text-align: center" v-show="isShow">
+      <div style="text-align: center" >
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
         <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
+        <Button  @click="SubmitTable" type="primary" style="margin-right: 30px">提交</Button>
         <router-link :to="{path: `/survey/base_survey`}">
           <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
       </div>
+<!--      <div style="text-align: center" v-show="isShow">-->
+<!--        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--        <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>-->
+<!--        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>-->
+<!--        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>-->
+<!--        <router-link :to="{path: `/survey/base_survey`}">-->
+<!--          <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--        </router-link>-->
+<!--      </div>-->
 
-      <div style="text-align: center" v-show="isSubmit" >
-        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-        <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
+<!--      <div style="text-align: center" v-show="isSubmit" >-->
+<!--        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--        <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>-->
 
-        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+<!--        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>-->
 
-        <router-link :to="{path: `/survey/base_survey`}">
-          <Button type="primary" style="margin-right: 30px">返回</Button>
-        </router-link>
-      </div>
+<!--        <router-link :to="{path: `/survey/base_survey`}">-->
+<!--          <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--        </router-link>-->
+<!--      </div>-->
     </float_bar>
 
   </Card>
@@ -560,10 +572,11 @@
 import { damageList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
+  AddEnvironment, AddStss,
   AddStssAnalysis,
-  getDamage,
+  getDamage, getNewGeAnalysis,
   getOneTreeBaseInfo, postTjxmRecord,
-  queryTjxmRecord, updateDamage
+  queryTjxmRecord, updateDamage, updateEnvironment
 } from "@/api/table";
 import {DeletePic, ShowPic, UploadPicApi} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
@@ -601,10 +614,9 @@ export default {
       tjxm_record: {
         t_id: 0,
         type: '树体损伤情况评估',
-        username: '',
-        status: '',
+        tree_code: '',
+        status: '已完成',
         type_yw: 'damage',
-        time: ''
       },
 
       PicUrlList_base1: [],
@@ -642,8 +654,6 @@ export default {
 
       Damage: {
         id: 0,
-        investigate_username: '',
-        dc_unit: '',
         base1: '', // 树干基部-树皮损伤比例
         pic_base1: [], // (照片)树干基部-树皮损伤比例
         base2: '', // 树干基部-木质部损伤（未达心材）比例
@@ -666,7 +676,6 @@ export default {
         pic_ske3: [], // (照片)构成骨架大枝-木质部（达到心材）比例
 
         damage_status: '', // 损伤情况评价
-        update_time: '',
         tree_code: ''
       },
       ruleValidate: {
@@ -733,6 +742,52 @@ export default {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
       })
     },
+
+    add(){
+      AddStss(this.Damage).then(res => {
+        getDamage({'tree_code':this.tree_code}).then(resp => {
+          this.tjxm_record.t_id = resp.data.tree_damage.id
+          postTjxmRecord(this.tjxm_record).then(record => {
+            if (record.data.code === 200) {
+              this.$Message.success('提交成功')
+              this.fetchData()
+            } else {
+              this.$Message.error('失败')
+            }
+          })
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+
+    },
+    update(){
+      updateDamage(this.Damage.id,this.Damage).then(res=>{
+        if(res.data.code === 200){
+          this.$Message.success('成功')
+        }else {
+          this.$Message.error('失败')
+        }
+      })
+    },
+    //isShow=true post
+    //isShow=false put
+    async SubmitTable(){
+      this.Damage.tree_code = this.tree_code
+      this.tjxm_record.tree_code = this.tree_code
+      this.$refs.damage_form.validate((valid) => {
+        if (valid) {
+          if(this.isShow){
+            this.add()
+          }else {
+            this.update()
+          }
+        }else {
+          this.$Message.error('请填写完整')
+        }
+      })
+    },
+
     fetchData () {
       this.dcUnits = []
       this.dcUsers = []
@@ -882,7 +937,7 @@ export default {
         console.log('%%%%', res)
         if (res.data.total !== 0) {
           // this.$router.push({ path: `/survey/update/Protect/${this.tree_code}` })
-          this.$router.push({ path: `/survey/damage/${this.tree_code}` })
+          this.$router.push({ path: `/survey/Incline/${this.tree_code}` })
         } else {
           this.showNextPageModal = true
           // this.$Message.error('该古树的生长环境评价分析尚未填写，请填写')
@@ -1222,7 +1277,8 @@ export default {
 }
 
 .error-tip >>> div.ivu-form-item-error-tip {
-  padding-top: 0.5mm!important;
+  padding-top: 0.1mm !important;
+  padding-left: 45% !important;
 }
 
 /*控制单选选项之间距离*/

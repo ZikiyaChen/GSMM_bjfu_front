@@ -19,50 +19,44 @@
           </ul>
         </div>
       </div>
-      <Form :label-width="180" label-position="right" :model="TreeInformation" inline >
-        <h4>古树基本信息:</h4>
-        <Row>
-          <Col  span="11" offset="1">
-            <FormItem label="古树编号：">
-              <Input disabled  v-model="tree_code" class="TextColor"></Input>
-            </FormItem>
-          </Col>
-          <Col span="11" >
-            <FormItem label="中文名：" prop="Base.zw_name">
-              <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
 
 
       <Form :label-width="180" label-position="right"  ref="GrowthVigor_form" :model="GrowthVigor" :rules="ruleValidate" inline>
+<!--        <Row>-->
+<!--          <Col span="11" offset="1">-->
+<!--            <FormItem label="调查单位：" prop="dc_unit" class="error-tip">-->
+<!--              <Select v-model="GrowthVigor.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"-->
+<!--                      @on-query-change="onDcUnitSelectQueryChange" clearable  >-->
+<!--                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>-->
+<!--              </Select>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--          <Col span="11">-->
+<!--            <FormItem label="调查时间：" prop="update_time" class="error-tip">-->
+<!--              <DatePicker v-model="GrowthVigor.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Row>-->
+<!--          <Col span="11" offset="1">-->
+<!--            <FormItem label="调查人：" prop="investigate_username" class="error-tip">-->
+<!--              <Select v-model="GrowthVigor.investigate_username" placeholder="名字" filterable-->
+<!--                      @on-query-change="onDcUserSelectQueryChange" clearable >-->
+<!--                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>-->
+<!--              </Select>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
         <Row>
-          <Col span="11" offset="1">
-            <FormItem label="调查单位：" prop="dc_unit" class="error-tip">
-              <Select v-model="GrowthVigor.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                      @on-query-change="onDcUnitSelectQueryChange" clearable  >
-                <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="11">
-            <FormItem label="调查时间：" prop="update_time" class="error-tip">
-              <DatePicker v-model="GrowthVigor.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
-            </FormItem>
-          </Col>
+        <Col  span="11" offset="1">
+          <FormItem label="古树编号：">
+            <Input disabled  v-model="tree_code" class="TextColor"></Input>
+          </FormItem>
+        </Col>
         </Row>
-        <Row>
-          <Col span="11" offset="1">
-            <FormItem label="调查人：" prop="investigate_username" class="error-tip">
-              <Select v-model="GrowthVigor.investigate_username" placeholder="名字" filterable
-                      @on-query-change="onDcUserSelectQueryChange" clearable >
-                <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-        </Row>
-        <h4>生长势分析：</h4>
+        <div style="color: mediumseagreen;  margin-left: 130px; margin-bottom: 5px; font-weight: bold" >
+          <span>生长势分析：</span>
+        </div>
 <!--        <div style="color: #2d8cf0;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >-->
 <!--          <span>生长势分析:</span>-->
 <!--        </div>-->
@@ -150,8 +144,9 @@
 <!--        <div style="color: #2d8cf0;  margin-left: 75px; margin-bottom: 5px; font-weight: bold" >-->
 <!--        <span>叶绿素荧光(光合潜能):</span>-->
 <!--        </div>-->
-        <h4>叶绿素荧光(光合潜能):</h4>
-
+        <div style="color: mediumseagreen;  margin-left: 75px; margin-bottom: 5px; font-weight: bold" >
+          <span>叶绿素荧光(光合潜能):</span>
+        </div>
         <Row>
           <Col offset="1" span="7">
             <FormItem prop="Fo" style="width: 100%;">
@@ -223,26 +218,33 @@
         </Row>
       </Form>
       <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
-      <div style="text-align: center" v-show="isShow">
-        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-        <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-        <router-link :to="{path: `/survey/base_survey`}">
-          <Button type="primary" style="margin-right: 30px">返回</Button>
-        </router-link>
-      </div>
-
-        <div style="text-align: center" v-show="isSubmit">
+        <div style="text-align: center">
           <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
           <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-
-          <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
-
+          <Button  @click="SubmitTable" type="primary" style="margin-right: 30px">提交</Button>
           <router-link :to="{path: `/survey/base_survey`}">
             <Button type="primary" style="margin-right: 30px">返回</Button>
           </router-link>
         </div>
+<!--      <div style="text-align: center" v-show="isShow">-->
+<!--        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--        <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>-->
+<!--        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>-->
+<!--        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>-->
+<!--        <router-link :to="{path: `/survey/base_survey`}">-->
+<!--          <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--        </router-link>-->
+<!--      </div>-->
+<!--        <div style="text-align: center" v-show="isSubmit">-->
+<!--          <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--          <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>-->
+
+<!--          <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>-->
+
+<!--          <router-link :to="{path: `/survey/base_survey`}">-->
+<!--            <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--          </router-link>-->
+<!--        </div>-->
       </float_bar>
     </Card>
 
@@ -275,10 +277,11 @@ import {
 } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddGpAnalysis, getGrowthVigorById,
+  AddEnvironment,
+  AddGpAnalysis, AddGrowthVigor, getGrowthVigorById, getNewGeAnalysis,
   getNewGrowthVigor,
   getOneTreeBaseInfo,
-  postTjxmRecord, queryTjxmRecord, updateGrowthVigor,  updateTjxmRecord
+  postTjxmRecord, queryTjxmRecord, updateEnvironment, updateGrowthVigor, updateTjxmRecord
 } from "@/api/table"
 import {DeletePic, ShowPic, UploadPicApi} from "@/api/upload";
 import { checkDecimal } from "@/view/tools-methods/someValidateRule";
@@ -320,10 +323,9 @@ export default {
       tjxm_record: {
         t_id: 0,
         type: '生长势分析',
-        username: '',
-        status: '',
+        status: '已完成',
         type_yw: 'GrowthVigor',
-        time: ''
+        tree_code: ''
       },
       ShootTypeList: shoot_typeList,
       ShootList1: shootList1,
@@ -339,24 +341,18 @@ export default {
         normal_blade_rate: '', // 正常叶片率
         blade_persistent: '', // 叶片宿存（常绿树）
         growth_vigor: '', // 生长势总体评价
-        chlorophyll: 0, // 叶片叶绿素含量
-        Fo: 0,
-        Fm: 0,
-        photosynthetic: 0, // Fo Fm计算
+        chlorophyll: null, // 叶片叶绿素含量
+        Fo: null,
+        Fm: null,
+        photosynthetic: null, // Fo Fm计算
         pic_path: [],
-        update_time: '',
-        tree_code: '',
-        investigate_username: '',
-        dc_unit: ''
+        tree_code: ''
       },
 
       ruleValidate: {
         normal_blade_rate: [{ required: true, trigger: 'change', message: '请选择' }],
         blade_persistent: [{ required: true, trigger: 'change', message: '请选择' }],
         growth_vigor: [{ required: true, trigger: 'change', message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'change', message: '请选择调查人姓名' }],
-        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
-        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
         Fo: [{ validator: checkDecimal, isNegative: false, maxValue: 10000, decimal: 5, trigger: 'blur' }],
         chlorophyll: [{ validator: checkDecimal, isNegative: false, maxValue: 100, decimal: 3, trigger: 'blur' }],
         Fm: [{ validator: checkDecimal, isNegative: false, maxValue: 10000, decimal: 5, trigger: 'blur' }]
@@ -403,6 +399,50 @@ export default {
     },
     changeActive (index) {
       this.timeIndex = index;
+    },
+
+    addGv(){
+      AddGrowthVigor(this.GrowthVigor).then(res => {
+        getNewGrowthVigor(this.tree_code).then(resp => {
+          this.tjxm_record.t_id = resp.data.new_growth_vigor.id
+          postTjxmRecord(this.tjxm_record).then(record => {
+            if (record.data.code === 200) {
+              this.$Message.success('提交成功')
+              this.fetchData()
+            } else {
+              this.$Message.error('失败')
+            }
+          })
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+
+    },
+    updateGv(){
+      updateGrowthVigor(this.GrowthVigor.id,this.GrowthVigor).then(res=>{
+        if(res.data.code === 200){
+          this.$Message.success('成功')
+        }else {
+          this.$Message.error('失败')
+        }
+      })
+    },
+
+    async SubmitTable(){
+      this.GrowthVigor.tree_code = this.tree_code
+      this.tjxm_record.tree_code = this.tree_code
+      this.$refs.GrowthVigor_form.validate((valid) => {
+        if (valid) {
+          if(this.isShow){
+            this.addGv()
+          }else {
+            this.updateGv()
+          }
+        }else {
+          this.$Message.error('请填写完整')
+        }
+      })
     },
 
     fetchData () {

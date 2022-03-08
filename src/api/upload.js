@@ -1,8 +1,8 @@
 import axios from "@/libs/api.request";
 
 
-export const UploadPicApi =   'http://localhost:5000/uploadpic'
-// export const UploadPicApi = 'http://8.140.170.84:35000/uploadpic'
+// export const UploadPicApi =   'http://localhost:5000/uploadpic'
+export const UploadPicApi = 'http://8.140.170.84:35000/uploadpic'
 
 export const DeletePic = (file_name) =>{
   return axios.request({

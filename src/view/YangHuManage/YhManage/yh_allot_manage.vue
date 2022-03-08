@@ -41,14 +41,16 @@
 
         <FormItem >
           <Button type="primary" @click="onSearch">查询</Button>
+          <Button
+            type="info"
+            @click="handleTaskAssignmentClick"
+            style="margin-left: 15px">
+            任务分配
+          </Button>
         </FormItem>
+
       </Form>
-      <Button
-        type="info"
-        @click="handleTaskAssignmentClick"
-        style="margin-bottom: 15px">
-        任务分配
-      </Button>
+
       <Table stripe :columns="columns" :data="data" border></Table>
       <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">

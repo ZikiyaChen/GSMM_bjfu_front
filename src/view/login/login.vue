@@ -8,9 +8,9 @@
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <login-form @on-success-valid="handleSubmit"></login-form>
-          <p class="login-tip">
-            <Alert type="error" v-show="flag" show-icon>用户名或密码错误</Alert>
-          </p>
+<!--          <p class="login-tip">-->
+<!--            <Alert type="error" v-show="flag" show-icon>用户名或密码错误</Alert>-->
+<!--          </p>-->
         </div>
       </Card>
     </div>
@@ -38,19 +38,23 @@ export default {
     ]),
     handleSubmit ({ username, password }) {
       this.handleLogin({ username, password }).then(res => {
-        console.log('handleLogin',res)
-        console.log('logintoken',getToken())
-        if(!getToken()){
-          this.flag = true
-        } else {
-          this.flag = false
-          this.getUserInfo().then(res => {
+        console.log('handleLogin',getToken())
+        if(getToken()!==''){
+          // this.flag = false
+          this.getUserInfo().then(resp => {
             this.$router.push({
               name: this.$config.homeName
             })
           })
         }
-
+      }).catch((e)=>{
+        // this.flag = true
+        console.log('e', e)
+        this.$Message.error({
+          content: '用户名或密码错误',
+          duration: 10,
+          closable: true
+        });
       })
     }
   }

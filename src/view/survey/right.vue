@@ -674,7 +674,7 @@ export default {
       },
 
       TreeInformation: {
-        tree_code: "110131",
+        tree_code: this.$route.params.tree_code,
         Base: {
           dizhi: undefined,
           investigate_time: '', // 调查日期

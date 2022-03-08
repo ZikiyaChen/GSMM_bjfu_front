@@ -21,26 +21,20 @@
     </div>
 
     <Form :label-width="200" label-position="right" :model="TreeInformation" inline >
-      <h4>古树基本信息：</h4>
+
       <Row>
         <Col  span="10"  offset="2">
           <FormItem label="古树编号：">
             <Input disabled  v-model="tree_code" class="TextColor"></Input>
           </FormItem>
         </Col>
-        <Col span="10" >
-          <FormItem label="中文名：" prop="Base.zw_name">
-            <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
-          </FormItem>
-        </Col>
       </Row>
     </Form>
 
-    <h4>树体倾斜、空腐情况检测：</h4>
     <Form :label-width="200" label-position="right"  ref="Incline_form" :model="Incline" :rules="ruleValidate" inline>
       <Row>
         <Col offset="2">
-          <FormItem prop="base_loose">
+          <FormItem prop="base_loose" class="error-tip">
                 <span slot="label">
                   <Tooltip placement="right-start" max-width="200" >
                 <div slot="content">用力推树干，若树干根基部出现晃动现象，则判断为”重度“；否则记为”无“。</div>
@@ -88,7 +82,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="root_rot">
+          <FormItem prop="root_rot" class="error-tip">
                 <span slot="label">
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">用钢棒斜向下45&#176;戳探树干根基部一周至少4个点，若可深入其表层或心材，测量钢棒插入的长度，&le;5cm判定为”轻度“，5-20cm为”中度“，>20cm为”重度“，否则记为”无“。</div>
@@ -136,7 +130,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="root_bare">
+          <FormItem prop="root_bare" class="error-tip">
                 <span slot="label">
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">根部裸露或隆起时，则测量裸露根系占树埯面积的比，&le;1/3判定为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；若超出树埯，则判定为”重度“；否则记为”无“；无树埯时，记录裸露总长度。</div>
@@ -192,7 +186,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="has_absound">
+          <FormItem prop="has_absound" class="error-tip">
                 <span slot="label">
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">用木槌敲击，若有异常音，记为”有“；否则记为”无“。</div>
@@ -207,7 +201,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="trunk_inclined">
+          <FormItem prop="trunk_inclined" class="error-tip">
                 <span slot="label">
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">测量倾斜程度，&le;5为”轻度“，5&deg;-15&deg;为"中度"，>15&deg;为"重度"；否则记为"无"。</div>
@@ -256,7 +250,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="has_abbranch">
+          <FormItem prop="has_abbranch" class="error-tip">
                 <span slot="label">
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">观察树干分枝点部位处，仅存在龟裂或卷皮现象为”轻度“，出现腐烂现象但未形成明显空洞为”中度“，可见明显空洞为”重度“；否则记为”无“。</div>
@@ -305,7 +299,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="lopsided">
+          <FormItem prop="lopsided" class="error-tip">
                 <span slot="label">
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">偏冠度&le;1/3为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -353,7 +347,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="deadwood">
+          <FormItem prop="deadwood" class="error-tip">
                 <span slot="label" >
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">枯枝率&le;1/3为”轻度“，1/3-1/2为”中度“，>1/2为”重度“；否则记为”无“。</div>
@@ -401,7 +395,7 @@
 
       <Row>
         <Col offset="2">
-          <FormItem prop="twig">
+          <FormItem prop="twig" class="error-tip">
                 <span slot="label" >
                   <Tooltip placement="top" max-width="200" >
                 <div slot="content">1个判定为”轻度“，2或3个为”中度“，>3个为”重度“；否则记为”无“。</div>
@@ -416,7 +410,7 @@
       <Row>
         <Col offset="2">
           <FormItem prop="pic_8">
-            <span slot="label" >枝条整理留茬特征照片</span>
+            <span slot="label" >枝条整理留茬特征照片：</span>
             <div class="demo-upload-list" v-for="(item,index) in PicUrlList8" :key="index">
               <img :src="'data:image/jpg;base64,'+item"  />
               <div class="demo-upload-list-cover">
@@ -447,7 +441,7 @@
         </Col>
       </Row>
       <Row>
-        <Col offset="2" span="10">
+        <Col offset="2" span="10" >
           <FormItem prop="empty_rot_rate">
             <span slot="label">
               <Tooltip placement="top" max-width="200" >
@@ -468,53 +462,61 @@
         </Col>
       </Row>
 
-      <Row>
-        <Col span="10" offset="2">
-          <FormItem label="调查单位" prop="dc_unit" class="error-tip">
-            <Select v-model="Incline.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                    @on-query-change="onDcUnitSelectQueryChange" clearable  >
-              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-        <Col span="10">
-          <FormItem label="调查时间" prop="update_time">
-            <DatePicker v-model="Incline.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span="10" offset="2">
-          <FormItem label="调查人" prop="investigate_username">
-            <Select v-model="Incline.investigate_username" placeholder="名字" filterable
-                    @on-query-change="onDcUserSelectQueryChange" clearable >
-              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-      </Row>
+<!--      <Row>-->
+<!--        <Col span="10" offset="2">-->
+<!--          <FormItem label="调查单位" prop="dc_unit" class="error-tip">-->
+<!--            <Select v-model="Incline.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"-->
+<!--                    @on-query-change="onDcUnitSelectQueryChange" clearable  >-->
+<!--              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--        <Col span="10">-->
+<!--          <FormItem label="调查时间" prop="update_time">-->
+<!--            <DatePicker v-model="Incline.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
+<!--      <Row>-->
+<!--        <Col span="10" offset="2">-->
+<!--          <FormItem label="调查人" prop="investigate_username">-->
+<!--            <Select v-model="Incline.investigate_username" placeholder="名字" filterable-->
+<!--                    @on-query-change="onDcUserSelectQueryChange" clearable >-->
+<!--              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
 
     </Form>
     <float_bar  v-role="['超级管理员','单位管理员','调查人员']">
-    <div style="text-align: center" v-show="isShow">
-      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-      <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
-      <router-link :to="{path: `/survey/base_survey`}">
-        <Button type="primary" style="margin-right: 30px">返回</Button>
-      </router-link>
-    </div>
+      <div style="text-align: center" >
+        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
+        <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
+        <Button  @click="SubmitTable" type="primary" style="margin-right: 30px">提交</Button>
+        <router-link :to="{path: `/survey/base_survey`}">
+          <Button type="primary" style="margin-right: 30px">返回</Button>
+        </router-link>
+      </div>
+<!--    <div style="text-align: center" v-show="isShow">-->
+<!--      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--      <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>-->
+<!--      <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>-->
+<!--      <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>-->
+<!--      <router-link :to="{path: `/survey/base_survey`}">-->
+<!--        <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--      </router-link>-->
+<!--    </div>-->
 
-    <div style="text-align: center" v-show="isSubmit">
-      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-      <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>
-      <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+<!--    <div style="text-align: center" v-show="isSubmit">-->
+<!--      <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--      <Button @click="NextPage" type="primary"  style="margin-right: 30px">下一页</Button>-->
+<!--      <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>-->
 
-      <router-link :to="{path: `/survey/base_survey`}">
-        <Button type="primary" style="margin-right: 30px">返回</Button>
-      </router-link>
-    </div>
+<!--      <router-link :to="{path: `/survey/base_survey`}">-->
+<!--        <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--      </router-link>-->
+<!--    </div>-->
     </float_bar>
   </Card>
 
@@ -543,10 +545,11 @@
 import { base_looseList, damageList, has_absoundList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
+  AddEnvironment, AddQxkf,
   AddqxkfDetect,
-  getIncline,
+  getIncline, getNewGeAnalysis,
   getOneTreeBaseInfo, postTjxmRecord,
-  queryTjxmRecord,  updateIncline, updateTjxmRecord
+  queryTjxmRecord, updateEnvironment, updateIncline, updateTjxmRecord
 } from "@/api/table";
 import { ShowPic, UploadPicApi } from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
@@ -611,16 +614,13 @@ export default {
       tjxm_record: {
         t_id: 0,
         type: '树体倾斜、空腐情况检测',
-        username: '',
-        status: '',
+        status: '已完成',
         type_yw: 'Incline',
-        time: ''
+        tree_code: ''
       },
 
       Incline: {
         id: 0,
-        investigate_username: '',
-        dc_unit: '',
         base_loose: '', // *树基松动结果
         pic_1: [], // *树基松动照片
         root_rot: '', // *根部腐朽结果
@@ -641,7 +641,6 @@ export default {
         pic_8: [], // 枝条整理留茬照片
         empty_rot_rate: 0, // 主干空腐率
         qxkf_eval: '', // 倾斜空腐情况评价
-        update_time: '',
         tree_code: ''
       },
       ruleValidate: {
@@ -654,9 +653,6 @@ export default {
         lopsided: [{ required: true, trigger: 'change', message: '请选择' }],
         deadwood: [{ required: true, trigger: 'change', message: '请选择' }],
         twig: [{ required: true, trigger: 'change', message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'change', message: '请填写调查人姓名' }],
-        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
-        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }]
       }
     }
   },
@@ -795,6 +791,52 @@ export default {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
       })
     },
+
+    add(){
+      AddQxkf(this.Incline).then(res => {
+        getIncline({'tree_code':this.tree_code}).then(resp => {
+          this.tjxm_record.t_id = resp.data.tree_Incline.id
+          postTjxmRecord(this.tjxm_record).then(record => {
+            if (record.data.code === 200) {
+              this.$Message.success('提交成功')
+              this.fetchData()
+            } else {
+              this.$Message.error('失败')
+            }
+          })
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+
+    },
+    update(){
+      updateIncline(this.Incline.id,this.Incline).then(res=>{
+        if(res.data.code === 200){
+          this.$Message.success('成功')
+        }else {
+          this.$Message.error('失败')
+        }
+      })
+    },
+    //isShow=true post
+    //isShow=false put
+    async SubmitTable(){
+      this.Incline.tree_code = this.tree_code
+      this.tjxm_record.tree_code = this.tree_code
+      this.$refs.Incline_form.validate((valid) => {
+        if (valid) {
+          if(this.isShow){
+            this.add()
+          }else {
+            this.update()
+          }
+        }else {
+          this.$Message.error('请填写完整')
+        }
+      })
+    },
+
 
     TiJiao () {
       this.Incline.tree_code = this.tree_code
@@ -1101,7 +1143,7 @@ export default {
 }
 
 .error-tip >>> div.ivu-form-item-error-tip {
-  padding-top: 0.5mm!important;
+  padding-top: 0.1mm!important;
 }
 
 /*控制单选选项之间距离*/

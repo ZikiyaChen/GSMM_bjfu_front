@@ -21,22 +21,18 @@
     </div>
 
     <Form :label-width="180" label-position="right" :model="TreeInformation" inline >
-      <h4>古树基本信息</h4>
       <Row>
         <Col  span="10" offset="2">
           <FormItem label="古树编号：">
             <Input disabled  v-model="tree_code" class="TextColor"></Input>
           </FormItem>
         </Col>
-        <Col span="10" >
-          <FormItem label="中文名：" prop="Base.zw_name">
-            <Input v-model="TreeInformation.Base.zw_name" disabled class="TextColor"></Input>
-          </FormItem>
-        </Col>
       </Row>
     </Form>
     <Form :label-width="180" label-position="right"  ref="Diseases_form" :model="Diseases" :rules="ruleValidate" inline>
-      <h4>树干基部：</h4>
+      <div style="color: mediumseagreen;  margin-left: 200px; margin-bottom: 5px; font-weight: bold" >
+        <span>树干基部：</span>
+      </div>
       <Row>
         <Col offset="2">
           <FormItem prop="bmoth_status">
@@ -116,7 +112,9 @@
 
         </Col>
       </Row>
-      <h4>树干：</h4>
+      <div style="color: mediumseagreen;  margin-left: 220px; margin-bottom: 5px; font-weight: bold" >
+        <span>树干：</span>
+      </div>
       <Row>
         <Col offset="2">
           <FormItem prop="tmoth_status">
@@ -188,8 +186,9 @@
 
         </Col>
       </Row>
-
-      <h4>构成骨架大枝：</h4>
+      <div style="color: mediumseagreen;  margin-left: 170px; margin-bottom: 5px; font-weight: bold" >
+        <span>构成骨架大枝：</span>
+      </div>
       <Row>
         <Col offset="2">
           <FormItem prop="smoth_status">
@@ -262,8 +261,9 @@
         </Col>
       </Row>
 
-
-      <h4>叶片：</h4>
+      <div style="color: mediumseagreen;  margin-left: 220px; margin-bottom: 5px; font-weight: bold" >
+        <span>叶片：</span>
+      </div>
       <Row>
         <Col offset="2">
           <FormItem prop="blade_status">
@@ -321,8 +321,9 @@
         </Col>
       </Row>
 
-
-      <h4>枝梢：</h4>
+      <div style="color: mediumseagreen;  margin-left: 220px; margin-bottom: 5px; font-weight: bold" >
+        <span>枝梢：</span>
+      </div>
       <Row>
         <Col offset="2">
           <FormItem prop="branch_status">
@@ -378,8 +379,9 @@
 
         </Col>
       </Row>
-
-      <h4>评价：</h4>
+      <div style="color: mediumseagreen;  margin-left: 220px; margin-bottom: 5px; font-weight: bold" >
+        <span>评价：</span>
+      </div>
       <Row>
         <Col offset="2" span="18">
           <FormItem prop="total_eval">
@@ -391,53 +393,61 @@
         </Col>
       </Row>
 
-      <Row>
-        <Col span="10" offset="2">
-          <FormItem label="调查单位" prop="dc_unit" class="error-tip">
-            <Select v-model="Diseases.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"
-                    @on-query-change="onDcUnitSelectQueryChange" clearable  >
-              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-        <Col span="10">
-          <FormItem label="调查时间" prop="update_time" class="error-tip">
-            <DatePicker v-model="Diseases.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>
-          </FormItem>
-        </Col>
-      </Row>
-      <Row>
-        <Col span="10" offset="2">
-          <FormItem label="调查人" prop="investigate_username" class="error-tip">
-            <Select v-model="Diseases.investigate_username" placeholder="名字" filterable
-                    @on-query-change="onDcUserSelectQueryChange" clearable >
-              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>
-            </Select>
-          </FormItem>
-        </Col>
-      </Row>
+<!--      <Row>-->
+<!--        <Col span="10" offset="2">-->
+<!--          <FormItem label="调查单位" prop="dc_unit" class="error-tip">-->
+<!--            <Select v-model="Diseases.dc_unit" placeholder="选择调查单位名称" filterable @on-clear="GetUnits"-->
+<!--                    @on-query-change="onDcUnitSelectQueryChange" clearable  >-->
+<!--              <Option v-for="item in dcUnits" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--        <Col span="10">-->
+<!--          <FormItem label="调查时间" prop="update_time" class="error-tip">-->
+<!--            <DatePicker v-model="Diseases.update_time"  type="datetime" placeholder="请选择日期"></DatePicker>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
+<!--      <Row>-->
+<!--        <Col span="10" offset="2">-->
+<!--          <FormItem label="调查人" prop="investigate_username" class="error-tip">-->
+<!--            <Select v-model="Diseases.investigate_username" placeholder="名字" filterable-->
+<!--                    @on-query-change="onDcUserSelectQueryChange" clearable >-->
+<!--              <Option v-for="item in dcUsers" :value="item.username" :key="item.name">{{ item.name }}</Option>-->
+<!--            </Select>-->
+<!--          </FormItem>-->
+<!--        </Col>-->
+<!--      </Row>-->
 
     </Form>
 <!--float_bar margin-top控制页面下端到float-bar的距离-->
     <float_bar  v-role="['超级管理员','单位管理员','调查人员']" style="margin-top: 30px">
-      <div style="text-align: center" v-show="isShow">
+      <div style="text-align: center" >
         <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
 
-        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>
-        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>
+        <Button  @click="SubmitTable" type="primary" style="margin-right: 30px">提交</Button>
         <router-link :to="{path: `/survey/base_survey`}">
           <Button type="primary" style="margin-right: 30px">返回</Button>
         </router-link>
       </div>
+<!--      <div style="text-align: center" v-show="isShow">-->
+<!--        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
 
-      <div style="text-align: center" v-show="isSubmit">
-        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>
-        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>
+<!--        <Button  @click="Submit" type="primary" style="margin-right: 30px">提交</Button>-->
+<!--        <Button  @click="Save" type="primary" style="margin-right: 30px">保存</Button>-->
+<!--        <router-link :to="{path: `/survey/base_survey`}">-->
+<!--          <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--        </router-link>-->
+<!--      </div>-->
 
-        <router-link :to="{path: `/survey/base_survey`}">
-          <Button type="primary" style="margin-right: 30px">返回</Button>
-        </router-link>
-      </div>
+<!--      <div style="text-align: center" v-show="isSubmit">-->
+<!--        <Button @click="PreviousPage" type="primary" style="margin-right: 30px">上一页</Button>-->
+<!--        <Button  @click="SubmitUpdate" type="primary" style="margin-right: 30px">提交修改</Button>-->
+
+<!--        <router-link :to="{path: `/survey/base_survey`}">-->
+<!--          <Button type="primary" style="margin-right: 30px">返回</Button>-->
+<!--        </router-link>-->
+<!--      </div>-->
     </float_bar>
   </Card>
 
@@ -457,11 +467,11 @@
 import { damageList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddBchAnalysis,
-  getDiseases,
+  AddBchAnalysis, AddBchFx, AddEnvironment,
+  getDiseases, getNewGeAnalysis,
   getOneTreeBaseInfo,
   postTjxmRecord,
-  queryTjxmRecord, updateDiseases, updateTjxmRecord
+  queryTjxmRecord, updateDiseases, updateEnvironment, updateTjxmRecord
 } from "@/api/table"
 import { ShowPic , UploadPicApi} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
@@ -520,16 +530,13 @@ export default {
       tjxm_record: {
         t_id: 0,
         type: '病虫害情况分析',
-        username: '',
-        status: '',
+        tree_code: '',
+        status: '已完成',
         type_yw: 'Diseases',
-        time: ''
       },
 
       Diseases: {
         id: 0,
-        investigate_username: '',
-        dc_unit: '',
         bmoth_status: '', // 树干基部-蛀干害虫情况
         bmoth_name: '', // 树干基部-害虫名称
         bdisease_status: '', // 树干基部-病害情况
@@ -557,7 +564,6 @@ export default {
         branch_pic: [], // 枝梢-特征照片
 
         total_eval: '', // 总体评价
-        update_time: '',
         tree_code: ''
       },
       ruleValidate: {
@@ -569,10 +575,6 @@ export default {
         sdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
         blade_status: [{ required: true, trigger: 'change', message: '请选择' }],
         branch_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'change', message: '请填写调查人姓名' }],
-        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位名称' }],
-        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }]
-
       }
     }
   },
@@ -706,7 +708,50 @@ export default {
         })
       }
     }, //* ****
+    add(){
+      AddBchFx(this.Diseases).then(res => {
+        getDiseases({'tree_code':this.tree_code}).then(resp => {
+          this.tjxm_record.t_id = resp.data.tree_Bch.id
+          postTjxmRecord(this.tjxm_record).then(record => {
+            if (record.data.code === 200) {
+              this.$Message.success('提交成功')
+              this.fetchData()
+            } else {
+              this.$Message.error('失败')
+            }
+          })
+        })
+      }).catch(err => {
+        console.log(err)
+      })
 
+    },
+    update(){
+      updateDiseases(this.Diseases.id,this.Diseases).then(res=>{
+        if(res.data.code === 200){
+          this.$Message.success('成功')
+        }else {
+          this.$Message.error('失败')
+        }
+      })
+    },
+    //isShow=true post
+    //isShow=false put
+    async SubmitTable(){
+      this.Diseases.tree_code = this.tree_code
+      this.tjxm_record.tree_code = this.tree_code
+      this.$refs.Diseases_form.validate((valid) => {
+        if (valid) {
+          if(this.isShow){
+            this.add()
+          }else {
+            this.update()
+          }
+        }else {
+          this.$Message.error('请填写完整')
+        }
+      })
+    },
     TiJiao () {
       this.Diseases.tree_code = this.tree_code
       this.$refs.Diseases_form.validate((valid) => {

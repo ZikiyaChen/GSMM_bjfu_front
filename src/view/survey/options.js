@@ -562,6 +562,15 @@ export const has_absoundList = [
 
 export const PathToList =  [
   {
+    timestamp: '《封面》',
+    color: '#999',
+    fontsize: 10,
+    size: '15',
+    bgcolor: '#e4e7ed',
+    path_to: '/survey/coverPage/',
+    type: 'Cover'
+  },
+  {
     timestamp: '《基本信息》',
     color: '#999',
     fontsize: 10,
