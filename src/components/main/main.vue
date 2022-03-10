@@ -1,5 +1,6 @@
 <template>
-  <Layout style="height: 100%" class="main">
+  <Layout style="height: 100%" class="main"
+          v-if="userInfo.userInfo.is_admin === true || userInfo.userInfo.is_unitAdmin===true">
     <Sider hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}">
       <side-menu accordion ref="sideMenu" :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
@@ -16,7 +17,7 @@
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
           <user :message-unread-count="unreadCount" :user-avatar="userAvatar"/>
           <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
-          <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>
+<!--          <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>-->
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
 
           <span style="margin-right: 30px;font-size: medium" >
@@ -44,7 +45,74 @@
       </Content>
     </Layout>
   </Layout>
+
+
+  <Layout style="height: 100%" v-else>
+    <Header class="header-con" style="color: white; background-color: #001529;height: 60px;line-height: 60px">
+
+      <div class="menu-style">
+        <Menu mode="horizontal" theme="dark" :active-name="menuName">
+          <MenuItem name="home" :to="{name:'home'}">
+            <Icon type="ios-paper" />
+            地图首页
+          </MenuItem>
+          <MenuItem name="base_survey_page" :to="{name:'base_survey_page'}"
+                    v-if="userInfo.userInfo.is_dc ===true">
+            <Icon type="ios-paper" />
+            基本信息
+          </MenuItem>
+          <MenuItem name="yh_own_work" :to="{name:'yh_own_work'}"
+                    v-if="userInfo.userInfo.is_yh === true">
+            <Icon type="ios-paper" />
+            个人养护
+          </MenuItem>
+          <MenuItem name="UserInfo" :to="{name:'UserInfo',params:{username:userInfo.userInfo.username}}">
+            <Icon type="ios-paper" />
+            个人信息
+          </MenuItem>
+        </Menu>
+      </div>
+
+      <div class="logo-style">
+        <div><span style="font-size: 20px;padding-left: 5px;color: #eeeeee;">
+          <img :src="maxLogo" key="max-logo" style="float: left; height: 40px;width: 40px;margin-top: 10px" />
+          古树名木管理系统</span></div>
+      </div>
+      <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange" style="width: 100%">
+
+        <user :message-unread-count="unreadCount" :user-avatar="userAvatar"/>
+        <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px" :lang="local"/>
+<!--        <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>-->
+        <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
+
+        <span style="margin-right: 30px;font-size: medium; color: white" >
+              Hi {{this.userInfo.userInfo.unit}}  的  {{this.userInfo.userInfo.name}}, 您好!
+            </span>
+      </header-bar>
+
+    </Header>
+
+    <Content style="height: 100%">
+      <Layout class="main-layout-con" style="height: 100%">
+<!--            <div class="tag-nav-wrapper">-->
+<!--              <tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>-->
+<!--            </div>-->
+      <Header style="background-color: white;height: 40px; line-height: 40px">
+          <tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>
+      </Header>
+        <Content class="content-wrapper">
+          <keep-alive :include="cacheList">
+            <router-view/>
+          </keep-alive>
+          <ABackTop :height="100" :bottom="80" :right="50" container=".content-wrapper"></ABackTop>
+        </Content>
+      </Layout>
+    </Content>
+
+
+  </Layout>
 </template>
+
 <script>
 
 import SideMenu from './components/side-menu'
@@ -83,6 +151,7 @@ export default {
       maxLogo,
       isFullscreen: false,
       name: undefined,
+      menuName: 'home',
     }
   },
   computed: {
@@ -165,9 +234,7 @@ export default {
       this.turnToPage(item)
     },
     getName(){
-      getUserInfo().then((res=>{
-        this.name = res.data.current_user.name
-      }))
+     console.log('xx',this.userInfo.userInfo)
     }
   },
   watch: {
@@ -189,6 +256,16 @@ export default {
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
+    //刷新调查人员和养护人员的menu的activeName
+    console.log('route',this.$route)
+    if(this.$route.name === 'home'||this.$route.name === 'yh_own_work'){
+      this.menuName = this.$route.name
+    }else if(this.$route.matched[0].name === 'survey'){
+      this.menuName = 'base_survey_page'
+    }else if(this.$route.matched[0].name === 'usersCenter'){
+      this.menuName = 'UserInfo'
+    }
+
 
     this.setTagNavList()
     this.setHomeRoute(routers)
@@ -210,3 +287,14 @@ export default {
   }
 }
 </script>
+<style>
+.menu-style {
+  position: relative;
+  float: left;
+}
+.logo-style {
+  position: relative;
+  float: left;
+  margin-left: 20%;
+}
+</style>

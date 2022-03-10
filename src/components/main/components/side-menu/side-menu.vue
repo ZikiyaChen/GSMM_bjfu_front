@@ -70,7 +70,7 @@ export default {
   },
   data () {
     return {
-      openedNames: []
+      openedNames: ['admin_yh_manage','system']//侧边栏子菜单默认展开
     }
   },
   methods: {
