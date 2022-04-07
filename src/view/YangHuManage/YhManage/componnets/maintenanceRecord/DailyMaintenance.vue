@@ -32,11 +32,13 @@
 
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
-import { getMaintenanceProjects } from "@/api/yh_manage";
+import { getUnitMaintenanceProjects } from "@/api/yh_manage";
 import { mapState } from 'vuex'
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: 'DailyMaintenance',
+  mixins: [UserMixin],
   components: {
     BasicForm
   },
@@ -78,7 +80,7 @@ export default {
         this.model = this.dailyMaintenanceData.project
       }
 
-      getMaintenanceProjects('日常养护管理').then(message => {
+      getUnitMaintenanceProjects({yh_type:'日常养护管理',unit:this.unit}).then(message => {
         for (let item of message.data.projects) {
           this.projects.push(item.project)
         }
