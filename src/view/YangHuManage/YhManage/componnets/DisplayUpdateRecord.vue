@@ -124,8 +124,8 @@ export default {
             otherFormData.project = specificRecord.project
             break;
           case '修剪':
-            otherFormData.reasons = specificRecord.project.split(',')
-            otherFormData.methods = specificRecord.method.split(',')
+            otherFormData.reasons = specificRecord.project
+            otherFormData.methods = specificRecord.method
             otherFormData.direction = specificRecord.orientation
             otherFormData.diameter = specificRecord.diameter
             otherFormData.length = specificRecord.length
@@ -133,21 +133,21 @@ export default {
             break;
           case '树体保护措施':
             otherFormData.contentStr = specificRecord.property
-            otherFormData.projects = specificRecord.project.split(',')
-            otherFormData.methods = specificRecord.method.split(',')
+            otherFormData.projects = specificRecord.project
+            otherFormData.methods = specificRecord.method
             break;
           case '生长环境保护与改善':
             otherFormData.contentStr = specificRecord.property
-            otherFormData.projects = specificRecord.project.split(',')
-            otherFormData.methods = specificRecord.method.split(',')
+            otherFormData.projects = specificRecord.project
+            otherFormData.methods = specificRecord.method
             break;
           case '病虫害防治':
-            otherFormData.contentType = specificRecord.project.split(',')
-            otherFormData.methods = specificRecord.method.split(',')
+            otherFormData.contentType = specificRecord.project
+            otherFormData.methods = specificRecord.method
             otherFormData.potionConcentration = specificRecord.concentration
             otherFormData.releasedCreaturesQuantity = specificRecord["bio_num "]
-            otherFormData.trapper = specificRecord.trap_name.split(',')
-            otherFormData.pestName = specificRecord.pest_name.split(',')
+            otherFormData.trapper = specificRecord.trap_name
+            otherFormData.pestName = specificRecord.pest_name
             otherFormData.effects = specificRecord.efficiency
             break;
           case '巡查工作':

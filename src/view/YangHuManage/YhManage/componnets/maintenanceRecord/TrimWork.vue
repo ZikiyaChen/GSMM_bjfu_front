@@ -62,7 +62,9 @@
           placeholder="请选择保护方法"
           :deault-label="protection.modal"
           @on-change="handleProtectionChange">
-          <Option v-for="item in protection.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <OptionGroup v-for="project in protection.projects" :label="project" :key="project">
+          <Option v-for="item in protection.methods[project]" :value="item.id" :key="item.id">{{ item.method }}</Option>
+          </OptionGroup>
         </Select>
       </FormItem>
     </basic-form>
@@ -71,11 +73,13 @@
 
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
-import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+import { getUnitMaintenanceProjects, queryUnitYhMethods } from "@/api/yh_manage";
 import { mapState } from "vuex";
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: 'TrimWork',
+  mixins: [UserMixin],
   components: {
     BasicForm
   },
@@ -102,8 +106,9 @@ export default {
       },
       protection: {
         modal: [],
-        methods: [],
-        methodsStr: ''
+        methods: {},
+        methodsStr: '',
+        projects: []
       }
     }
   },
@@ -119,6 +124,13 @@ export default {
       this.explain.directionStr = value
     },
     handleReasonChange (option) {
+      console.log(option)
+      if(option.length !== 0) {
+        queryUnitYhMethods({yh_type: '修剪', projects: option, unit: this.unit}).then(res => {
+          this.protection.methods = res.data.methods
+          this.protection.projects = res.data.projects
+        })
+      }
       this.reason.projectsStr = option.join(',')
     },
     handleDirectionChange (option) {
@@ -142,7 +154,7 @@ export default {
   },
   created () {
     const initializeTrimWorkProjects = () => {
-      getMaintenanceProjects('修剪').then(message => {
+      getUnitMaintenanceProjects({yh_type:'修剪',unit: this.unit}).then(message => {
         for (let item of message.data.projects) {
           this.reason.projects.push(item.project)
         }
@@ -169,16 +181,18 @@ export default {
     initializeExplainDirection()
 
     const initializeProtectionMethods = () => {
-      queryYhOptions().then(message => {
-        let classify = message.data.yh_classify
-        for (let item of classify) {
-          if (item.yh_type === '修剪') {
-            this.protection.methods.push({
-              label: item.method,
-              value: item.method
-            })
-          }
-        }
+      queryUnitYhMethods({yh_type:'修剪',projects: this.otherFormData.reasons, unit: this.unit}).then(message => {
+        this.protection.methods = message.data.methods
+        this.protection.projects = message.data.projects
+        // let classify = message.data.yh_classify
+        // for (let item of classify) {
+        //   if (item.yh_type === '修剪') {
+        //     this.protection.methods.push({
+        //       label: item.method,
+        //       value: item.method
+        //     })
+        //   }
+        // }
       })
     }
     initializeProtectionMethods()

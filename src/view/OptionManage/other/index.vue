@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Card>
     <h1>病虫害名称</h1>
     <br>
     <Button @click="showAddPestModal=true" type="primary" style="margin-bottom: 20px">添加病虫害名称</Button>
@@ -21,6 +22,7 @@
 
       </template>
     </Table>
+    </Card>
     <AddPestNameModal
       :show="showAddPestModal"
       @onOK="AddPestNameok"

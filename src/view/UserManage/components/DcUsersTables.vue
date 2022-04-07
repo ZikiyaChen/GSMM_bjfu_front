@@ -1,43 +1,19 @@
 <template>
   <div>
-    <Card>
-      <h1>用户管理</h1>
-      <br>
-      <Form :label-width="80" :model="query" inline>
-        <FormItem label="用户姓名：" prop="name">
-          <Input style="width: 180px" v-model="query.name_like" placeholder="请输入用户名字"  clearable>
-          </Input>
-        </FormItem>
+    <Button type="primary" style="margin-bottom: 5px" @click="()=>{this.showAddNewUserModal=true}">
+      新增调查账号</Button>
+    <Table border stripe :columns="columns" :data="data" max-height="500"></Table>
 
-        <FormItem label="单位：" prop="unit" v-role="['超级管理员']">
-          <AutoComplete
-            v-model="query.unit"
-            placeholder="输入或选择"
-            style="width: 180px"
-            clearable>
-            <Option v-for="item in units" :value="item.unit" :key="item.unit">{{ item.unit }}</Option>
-          </AutoComplete>
-        </FormItem>
 
-        <FormItem >
-          <Button type="primary" @click=" onSearch">查询</Button>
-        </FormItem>
-        <FormItem>
-        <Button type="primary" @click="()=>{this.showAddNewUserModal=true}">新增</Button>
-        </FormItem>
-
-      </Form>
-
-      <Table border stripe :columns="columns" :data="data" max-height="500"></Table>
-      <div style="margin: 10px;overflow: hidden">
-        <div style="float: right;">
-          <Page :total="total"  :current="pages._page" :page-size="pages._per_page" show-total
-                @on-change="onPageChange"
-                show-elevator show-sizer :page-size-opts="[10,20,30]" @on-page-size-change="onPageSizeChange"></Page>
-        </div>
+    <div style="margin: 10px;overflow: hidden">
+      <div style="float: right;">
+        <Page :total="total"  :current="pages._page" :page-size="pages._per_page" show-total
+              @on-change="onPageChange"
+              show-elevator show-sizer :page-size-opts="[10,20,30]" @on-page-size-change="onPageSizeChange"></Page>
       </div>
+    </div>
 
-    </Card>
+
     <UpdateUserInfo
       :show="showUserUpdateModal"
       @onOK="onUpdateUserModalOK"
@@ -70,7 +46,7 @@
       </div>
     </Modal>
 
-<!--    重置密码，修改密码-->
+    <!--    重置密码，修改密码-->
     <UpdatePassword
       :show="changepass_visible"
       @onOk="ChangePassword"
@@ -78,23 +54,26 @@
     </UpdatePassword>
   </div>
 </template>
-
 <script>
-import {AddUser, changePassword, deleteUser, queryUnits, queryUnitUsers, updateUser} from "@/api/user";
-import AddNewUserModal from "@/view/UserManage/components/AddNewUserModal";
+
 import UpdateUserInfo from "@/view/Userinfo/components/UpdateUserInfo";
+import AddNewUserModal from "@/view/UserManage/components/AddNewUserModal";
 import RightDeleteTree from "@/view/survey/NoticeModal/RightDeleteTree";
-import UserMixin from "@/mixin/UserMixin";
 import UpdatePassword from "@/view/Userinfo/components/UpdatePassword";
+import UserMixin from "@/mixin/UserMixin";
+import {AddUser, changePassword, deleteUser,  queryUnitUsers, updateUser} from "@/api/user";
+
+
 export default {
-  name: "index",
   components: { UpdateUserInfo, AddNewUserModal, RightDeleteTree,UpdatePassword },
   mixins: [UserMixin],
-  data () {
+  name: 'DcUsersTables',
+  data(){
     let that = this
+
     return {
-      userType: 'admin',
-      addTitle: '添加单位管理员账号',
+      userType: 'dc',
+      addTitle: '新增调查账号',
       changepass_visible: false,
 
       units: [],
@@ -103,7 +82,8 @@ export default {
       deleteConfirmModal: false,
       query: {
         name_like: undefined,
-        unit: undefined
+        create_by: undefined,
+        is_dc: true
       },
       selected_username: undefined,
       delete_username: undefined,
@@ -137,76 +117,19 @@ export default {
           align: 'center',
           resizable: true
         },
+
+
+
         {
-          title: '性别',
-          key: 'sex',
-          width: 70,
+          title: '账号使用有效时间',
           align: 'center',
           resizable: true,
+          width: 260,
+          render: function (h, params) {
+            return h('span', params.row.start_time + ' 至 '+ params.row.end_time)
+          }
         },
-        {
-          title: '单位',
-          key: 'unit',
-          width: 170,
-          align: 'center',
-          resizable: true,
-        },
-        // {
-        //   title: '身份',
-        //   width: 170,
-        //   aligen: 'center',
-        //   resizable: true,
-        //   render: function (h, params) {
-        //     let tags = params.row.role_names.map((item) => {
-        //       return h('Tag', item)
-        //     })
-        //     return h('span', tags)
-        //   },
-        //
-        //   filters: [
-        //     {
-        //       label: '超级管理员',
-        //       value: 'is_admin'
-        //     },
-        //     {
-        //       label: '单位管理员',
-        //       value: 'is_unitAdmin'
-        //     },
-        //     {
-        //       label: '养护人员',
-        //       value: 'is_yh'
-        //     },
-        //     {
-        //       label: '调查人员',
-        //       value: 'is_dc'
-        //     }
-        //   ],
-        //   filterMultiple: true, // 使用多选
-        //   filterRemote: function (value, row) {
-        //     //  value是数组类型  每次都先把query中的除了unit和name_like之外的字段删除掉，不然会记住上一次筛选时的字段
-        //     for (var key in that.query) {
-        //       if (key !== 'name_like' || key !== 'unit') {
-        //         delete that.query[key]
-        //       }
-        //     }
-        //     if (value.length === 0) { // 选择“全部”时， value数组为空
-        //       console.log('query', that.query)
-        //       that.fetchData()
-        //     } else {
-        //       for (const elem of value) {
-        //         that.query[elem] = true
-        //       }
-        //       that.fetchData()
-        //     }
-        //   }
-        // },
-        {
-          title: '电话',
-          key: 'tele',
-          width: 150,
-          align: 'center',
-          resizable: true
-        },
+
         {
           title: '工作区域',
           align: 'center',
@@ -221,12 +144,26 @@ export default {
 
           }
         },
+        {
+          title: '单位',
+          key: 'unit',
+          width: 170,
+          align: 'center',
+          resizable: true,
+        },
 
+        {
+          title: '电话',
+          key: 'tele',
+          width: 180,
+          align: 'center',
+          resizable: true
+        },
         {
           title: '密码',
           align: 'center',
           fixed: 'right',
-          width: 100,
+          width: 120,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -252,7 +189,7 @@ export default {
           title: '操作',
           align: 'center',
           fixed: 'right',
-          width: 190,
+          width: 200,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -291,7 +228,6 @@ export default {
             ])
           }
         },
-
         {
           title: '账号状态',
           key: "available",
@@ -334,11 +270,10 @@ export default {
             );
           }
         }
-
       ]
     }
   },
-  methods: {
+  methods:{
     //修改密码
     ChangePassword: function (passwd) {
       changePassword(this.selected_username, { 'password': passwd }).then((resp) => {
@@ -372,10 +307,6 @@ export default {
     fetchData: function () {
       // 数据表发生变化请求数据
       // query.unit清空后，会变成'',查到的是空
-      if (this.query.unit === '') {
-        this.query.unit = undefined
-      }
-
       let args = { ...this.query, ...this.pages }
       return queryUnitUsers(args).then((resp) => {
         this.data = resp.data.users
@@ -394,6 +325,8 @@ export default {
 
     onAddModalOK (user) {
       console.log('adduser', user)
+      user['is_dc'] = true
+      console.log('adduser1', user)
       AddUser(user).then((res) => {
         if (res.data.code === 200) {
           this.$Message.success('添加用户成功')
@@ -430,20 +363,18 @@ export default {
     onUpdateUserModalCancel () {
       this.showUserUpdateModal = false
     }
-
   },
-  mounted () {
+  mounted() {
+    this.query.create_by = this.userInfo.userInfo.username
     queryUnitUsers({ ...this.pages, ...this.query }).then((resp) => {
       this.data = resp.data.users
       this.total = resp.data.total
     })
-    queryUnits().then(res => {
-      this.units = res.data.units
-    })
+
+  },
+  created() {
+
   }
+
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -41,7 +41,9 @@
               :default-label="handleMethod.model"
               v-model="handleMethod.model"
               @on-change="handleMethodChange">
-              <Option v-for="item in handleMethod.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <OptionGroup v-for="project in handleMethod.projects" :label="project" :key="project">
+              <Option v-for="item in handleMethod.methods[project]" :value="item.id" :key="item.id">{{ item.method }}</Option>
+              </OptionGroup>
             </Select>
           </Col>
         </Row>
@@ -52,12 +54,14 @@
 
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
-import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+import { getUnitMaintenanceProjects, queryUnitYhMethods} from "@/api/yh_manage";
 import { mapState } from "vuex";
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: 'EnvironmentProtection',
   components: { BasicForm },
+  mixins: [UserMixin],
   computed: {
     ...mapState('maintenanceForm', {
       showFlag: state => state.showFlag,
@@ -79,7 +83,8 @@ export default {
       },
       handleMethod: {
         model: [],
-        methods: [],
+        methods: {},
+        projects: [],
         methodsStr: ''
       }
     }
@@ -92,6 +97,10 @@ export default {
       this.measureQuality.contentStr = value
     },
     handleProjectNameChange (option) {
+      queryUnitYhMethods({yh_type:'生长环境保护与改善',projects:option,unit:this.unit}).then(res=>{
+        this.handleMethod.projects = res.data.projects
+        this.handleMethod.methods = res.data.methods
+      })
       this.projectName.projectsStr = option.join(',')
     },
     handleMethodChange (option) {
@@ -119,7 +128,7 @@ export default {
     initializeMeasureQuality()
 
     const initializeProjectName = () => {
-      getMaintenanceProjects('生长环境保护与改善').then(message => {
+      getUnitMaintenanceProjects({yh_type:'生长环境保护与改善',unit:this.unit}).then(message => {
         for (let item of message.data.projects) {
           this.projectName.projects.push({
             label: item.project,
@@ -131,16 +140,19 @@ export default {
     initializeProjectName()
 
     const initializeHandleMethod = () => {
-      queryYhOptions().then(message => {
-        let classify = message.data.yh_classify
-        for (let item of classify) {
-          if (item.yh_type === '生长环境保护与改善') {
-            this.handleMethod.methods.push({
-              label: item.method,
-              value: item.method
-            })
-          }
-        }
+      queryUnitYhMethods({yh_type:'生长环境保护与改善',projects:this.otherFormData.projects,
+        unit:this.unit}).then(message => {
+        this.handleMethod.projects = message.data.projects
+        this.handleMethod.methods = message.data.methods
+        // let classify = message.data.yh_classify
+        // for (let item of classify) {
+        //   if (item.yh_type === '生长环境保护与改善') {
+        //     this.handleMethod.methods.push({
+        //       label: item.method,
+        //       value: item.method
+        //     })
+        //   }
+        // }
       })
     }
     initializeHandleMethod()

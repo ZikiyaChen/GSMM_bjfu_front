@@ -1,5 +1,6 @@
 import axios from '@/libs/api.request'
 import { getToken } from "@/libs/util";
+import params from "@/view/argu-page/params";
 
 export const login = ({ username, password }) => {
   const data = {
@@ -193,6 +194,15 @@ export const queryUnits = (params) => {
   return axios.request({
     url: '/query_units',
     method: 'get',
+    params: params
+  })
+}
+
+//调查任务
+export const queryDcWorks = (params) => {
+  return axios.request({
+    url:'dc_works',
+    method:'get',
     params: params
   })
 }

@@ -74,7 +74,7 @@ export default {
       city:'北京市',
       map_district: null,
       polygons: [],
-      map: null,
+      // map: null,
       pages: {
         _page: 1,
         _per_page: 50
@@ -109,7 +109,10 @@ export default {
     }
   },
   created() {
-    this.initNameList()
+    // this.initNameList()
+    // GetDistrict().then(res=>{
+    //   console.log('map',res)
+    // })
   },
   mounted () {
     this.getTree()
@@ -117,7 +120,9 @@ export default {
       this.loadmap(); // 加载地图和相关
       // this.CityCover(this.city)
       this.initMarkers()
-      this.drawBackGround()
+      // this.drawBackGround()
+      // let place={dis:'平谷区',level:'district'}
+      // this.drawPolygon(place)
 
     },500)
 
@@ -224,7 +229,9 @@ export default {
     loadmap () {
 
       console.log('11',this.tree)
-      this.map = new AMap.Map('container', { // eslint-disable-line no-unused-vars
+      // let map = new AMap.Map('container', {
+      let that = this
+      that.map = new AMap.Map('container', { // eslint-disable-line no-unused-vars
         resizeEnable: true,
         zoom: 9
       });
@@ -270,6 +277,47 @@ export default {
         });
         polygon.setPath(pathArray);
         that.map.add(polygon)
+      })
+    },
+
+
+
+    drawPolygon(place) {
+      let that = this
+      AMap.plugin('AMap.DistrictSearch', function () {
+        // 创建行政区查询对象
+        var district = new AMap.DistrictSearch({
+          // 返回行政区边界坐标等具体信息
+          extensions: 'all',
+          // 设置查询行政区级别为 区
+          level: place.level,
+          showbiz:true,
+        })
+
+        district.search(place.dis, function (status, result) {
+          // 获取朝阳区的边界信息
+          var bounds = result.districtList[0].boundaries
+          var polygons = []
+          if (bounds) {
+            for (var i = 0, l = bounds.length; i < l; i++) {
+              //生成行政区划polygon
+              var polygon = new AMap.Polygon({
+                map: that.map,
+                strokeWeight: 1,
+                path: bounds[i],
+                fillOpacity: 0.7,
+                fillColor: '#CCF3FF',
+                strokeColor: '#CC66CC'
+              })
+              polygons.push(polygon)
+            }
+            // 地图自适应
+            // that.map.setCity(place.dis)
+            that.map.setFitView(polygons)
+            that.map.setZoom(11)
+
+          }
+        })
       })
     },
 

@@ -80,6 +80,13 @@ export const AddYhOptions = (data) => {
     data: data
   })
 }
+export const AddUnitYhOptions = (data) => {
+  return axios.request({
+    url: 'insert_unit_yh_classify',
+    method: 'post',
+    data: data,
+  })
+}
 
 export const updateYhOptions = (id, data) => {
   return axios.request({
@@ -89,9 +96,27 @@ export const updateYhOptions = (id, data) => {
     data: data
   })
 }
+
+
+export const updateUnitYhOptions = (id, data) => {
+  return axios.request({
+    url: 'update_unit_yh_classify/' + id,
+    method: 'put',
+    id: id,
+    data: data
+  })
+}
+
 export const deleteYhOptions = (id) => {
   return axios.request({
     url: 'delete_yh_classify/' + id,
+    method: 'delete',
+    id: id
+  })
+}
+export const deleteUnitYhOptions = (id) => {
+  return axios.request({
+    url: 'delete_unit_yh_classify/' + id,
     method: 'delete',
     id: id
   })
@@ -181,6 +206,14 @@ export const getMaintenanceProjects = (maintenanceType) => {
   })
 }
 
+export const getUnitMaintenanceProjects = (params) => {
+  return axios.request({
+    url: 'query_unit_projects',
+    method: 'get',
+    params: params,
+  })
+}
+
 // 获取病虫害名称
 export const getPestName = () => {
   return axios.request({
@@ -251,3 +284,26 @@ export const insertRecordByTypeAssignment = (type, id, data) => {
   })
 }
 
+export const queryUnitYhClassify = (params) => {
+  return axios.request({
+    url: 'yh_classify_unit',
+    method: 'get',
+    params: params
+  })
+}
+
+export const queryYhOptionCascader = (params) => {
+  return axios.request({
+    url: 'yh_options',
+    method: 'get',
+    params: params
+  })
+}
+
+export const queryUnitYhMethods = (data) => {
+  return axios.request({
+    url: 'yh_methods',
+    method: 'post',
+    data: data
+  })
+}

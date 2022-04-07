@@ -211,3 +211,13 @@ export const yhfz_statusList = [
     value: '其他'
   }
 ]
+export const placeTypeList =[
+  {
+    value:'1',
+    label:'行政区',
+  },
+  {
+    value: '2',
+    label: '园区',
+  }
+]

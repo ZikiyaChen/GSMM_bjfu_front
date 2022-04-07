@@ -49,14 +49,17 @@
           <Col span="24">
             <Select
               multiple
+              :max-tag-count="8"
               v-model="handleMethod.model"
               :default-label="handleMethod.model"
               @on-change="handleMethodChange">
-              <Option v-for="item in handleMethod.methods"
-                      :value="item.value"
-                      :key="item.value">
-                {{ item.label }}
+              <OptionGroup v-for="project in handleMethod.projects" :label="project" :key="project">
+              <Option v-for="item in handleMethod.methods[project]"
+                      :value="item.id"
+                      :key="item.id">
+                {{item.method }} ({{ project}})
               </Option>
+              </OptionGroup>
             </Select>
           </Col>
         </Row>
@@ -67,11 +70,13 @@
 
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
-import { getMaintenanceProjects, queryYhOptions } from "@/api/yh_manage";
+import {getUnitMaintenanceProjects, queryUnitYhMethods, queryYhOptions} from "@/api/yh_manage";
 import { mapState } from "vuex";
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: 'TreeProtection',
+  mixins: [UserMixin],
   components: {
     BasicForm
   },
@@ -83,6 +88,7 @@ export default {
   },
   data () {
     return {
+
       measureQuality: {
         model: '',
         content: ['日常维护', '单项工程'],
@@ -95,8 +101,9 @@ export default {
       },
       handleMethod: {
         model: [],
-        methods: [],
-        methodsStr: ''
+        methods: {},
+        methodsStr: '',
+        projects: []
       }
     }
   },
@@ -106,20 +113,14 @@ export default {
     },
     handleMeasureQualityChange (value) {
       this.measureQuality.contentStr = value
+
     },
     handleProtectionMeasureChange (option) {
+      console.log(option)
       if(option.length !== 0) {
-        queryYhOptions({yh_type: '树体保护措施', project: option[option.length-1]}).then(res => {
-          this.handleMethod.methods = []
-          let classify = res.data.yh_classify
-          for (let item of classify) {
-            if (item.yh_type === '树体保护措施') {
-              this.handleMethod.methods.push({
-                label: item.method,
-                value: item.method
-              })
-            }
-          }
+        queryUnitYhMethods({yh_type: '树体保护措施', projects: option, unit: this.unit}).then(res => {
+          this.handleMethod.methods = res.data.methods
+          this.handleMethod.projects = res.data.projects
         })
       }
       this.protectionMeasure.projectsStr = option.join(',')
@@ -151,7 +152,7 @@ export default {
     initializeMeasureQuality()
 
     const initializeProtectionMeasureProjects = () => {
-      getMaintenanceProjects('树体保护措施').then(message => {
+      getUnitMaintenanceProjects({yh_type:'树体保护措施',unit:this.unit}).then(message => {
         for (let item of message.data.projects) {
           this.protectionMeasure.projects.push({
             label: item.project,
@@ -179,17 +180,22 @@ export default {
 
     const initializeHandleMethod = () => {
       console.log('@',this.otherFormData.projects)
+      console.log('#',this.otherFormData)
       if(this.otherFormData.projects !== undefined) {
-        queryYhOptions({yh_type: '树体保护措施', project: this.otherFormData.projects[0]}).then(message => {
-          let classify = message.data.yh_classify
-          for (let item of classify) {
-            if (item.yh_type === '树体保护措施') {
-              this.handleMethod.methods.push({
-                label: item.method,
-                value: item.method
-              })
-            }
-          }
+        queryUnitYhMethods({yh_type: '树体保护措施', projects: this.otherFormData.projects,
+          unit: this.unit}).then(message => {
+          this.handleMethod.methods = message.data.methods
+          this.handleMethod.projects = message.data.projects
+
+          // let classify = message.data.yh_classify
+          // for (let item of classify) {
+          //   if (item.yh_type === '树体保护措施') {
+          //     this.handleMethod.methods.push({
+          //       label: item.method,
+          //       value: item.method
+          //     })
+          //   }
+          // }
         })
       }
     }

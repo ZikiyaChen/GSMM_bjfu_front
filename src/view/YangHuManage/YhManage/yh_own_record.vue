@@ -206,7 +206,7 @@ export default {
           align: "center",
 
           resizable: true,
-          width: 110,
+          width: 200,
           render: function (h, params) {
             return h('span', params.row.projects)
           }
@@ -216,7 +216,7 @@ export default {
           align: "center",
 
           resizable: true,
-          width: 110,
+          width: 130,
           render: function (h, params) {
             return h('span', params.row.yh_user.name)
           }

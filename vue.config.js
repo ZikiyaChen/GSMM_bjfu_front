@@ -30,7 +30,15 @@ module.exports = {
         secure: false, // 如果是https接口，需要配置这个参数
         changeOrigin: true, // 如果接口跨域，需要进行这个参数配置；changeOrigin为true，本地就会虚拟一个服务替我们接受或转发请求，这样就不会有跨域的问题了
         pathRewrite: { '^/api': '' } // url中 “http://127.0.0.1:5000/” 由 “/api”代替
-      }
+      },
+      // '/amap': {
+      //   target: 'https://restapi.amap.com/v3/config/',
+      //   changeOrigin: true,
+      //   ws:true,
+      //   pathRewrite: {
+      //     '^/amap': ''
+      //   }
+      // }
     }
   },
   // Project deployment base

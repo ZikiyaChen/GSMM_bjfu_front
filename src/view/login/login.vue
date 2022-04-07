@@ -39,6 +39,7 @@ export default {
     handleSubmit ({ username, password }) {
       this.handleLogin({ username, password }).then(res => {
         console.log('handleLogin',getToken())
+        console.log('login',res)
         if(getToken()!==''){
           // this.flag = false
           this.getUserInfo().then(resp => {
@@ -49,12 +50,14 @@ export default {
         }
       }).catch((e)=>{
         // this.flag = true
-        console.log('e', e)
+        console.log(e.response) //打印错误信息返回值
         this.$Message.error({
-          content: '用户名或密码错误',
+          content: e.response.data.msg,
           duration: 10,
           closable: true
         });
+
+
       })
     }
   }

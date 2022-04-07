@@ -19,6 +19,8 @@ import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
 import vRegion from 'v-region'
 import VueAMap from "vue-amap";
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 // 实际打包时应该不引入mock
 /* eslint-disable */
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
@@ -29,6 +31,9 @@ Vue.use(ViewUI, {
 })
 Vue.use(TreeTable)
 Vue.use(VOrgTree)
+
+
+Vue.use(ElementUI);
 
 /**
  * @description 注册admin内置插件

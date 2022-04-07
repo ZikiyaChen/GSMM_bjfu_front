@@ -38,14 +38,14 @@
       <Form :label-width="90" >
         <FormItem label="养护类型">
           <AutoComplete v-model="inputType" :data="TypeList" placeholder="请输入养护类型"
-                      clearable icon="ios-arrow-dropdown-circle"  @on-change="TypeChange">
+                        clearable icon="ios-arrow-dropdown-circle"  @on-change="TypeChange">
           </AutoComplete>
         </FormItem>
         <FormItem label="具体养护项目">
           <AutoComplete v-model="inputProject" placeholder="请输入具体养护项目" clearable :data="ProjectArr"
                         icon="ios-arrow-dropdown-circle"  @on-change="ProjectChange"></AutoComplete>
-<!--          <Input v-model="inputProject" placeholder="请输入具体养护项目" style="margin:5px">-->
-<!--          </Input>-->
+          <!--          <Input v-model="inputProject" placeholder="请输入具体养护项目" style="margin:5px">-->
+          <!--          </Input>-->
         </FormItem>
         <FormItem label="处理方法">
           <Input v-model="inputMethod" placeholder="请输入处理方法" />
@@ -78,10 +78,18 @@
 </template>
 
 <script>
-import {queryYhOptions, AddYhOptions, deleteYhOptions, updateYhOptions, getMaintenanceProjects} from '@/api/yh_manage'
+import {
+  AddUnitYhOptions,
+  deleteUnitYhOptions,
+  updateUnitYhOptions,
+  getUnitMaintenanceProjects,
+  queryUnitYhClassify
+} from '@/api/yh_manage'
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: "index",
+  mixins: [UserMixin],
   data () {
     return {
       TypeList: ['日常养护管理','修剪','树体保护措施','病虫害防治', '生长环境保护与改善','巡查工作'],
@@ -152,7 +160,7 @@ export default {
     // yh_type改变时，project下拉框选项改变
     TypeChange(value){
       if(this.TypeList.includes(value)){
-        getMaintenanceProjects(value).then(res=>{
+        getUnitMaintenanceProjects({yh_type:value, unit:this.unit}).then(res=>{
           let ProjectList= res.data.projects
           this.ProjectArr = []
           ProjectList.forEach((item, index, array) => {
@@ -167,7 +175,7 @@ export default {
 
     },
     getYhClassifyData () {
-      queryYhOptions().then(result => {
+      queryUnitYhClassify({unit:this.unit}).then(result => {
         this.content = result.data.yh_classify
       })
     },
@@ -186,7 +194,8 @@ export default {
       data['yh_type'] = this.editType
       data['project'] = this.editProject
       data['method'] = this.editMethod
-      updateYhOptions(this.editRowId, data).then((result) => {
+      data['unit'] = this.unit
+      updateUnitYhOptions(this.editRowId, data).then((result) => {
         if (result.data.code === 200) {
           this.$Message.success('信息修改成功')
           this.editIndex = -1
@@ -198,7 +207,7 @@ export default {
     },
 
     handleDelete (row) {
-      deleteYhOptions(row.id).then((result) => {
+      deleteUnitYhOptions(row.id).then((result) => {
         if (result.data.code === 200) {
           this.$Message.success('信息删除成功')
           this.reload()
@@ -229,8 +238,9 @@ export default {
       yhClassify.yh_type = this.inputType
       yhClassify.project = this.inputProject
       yhClassify.method = this.inputMethod
+      yhClassify.unit = this.unit
       console.log(yhClassify)
-      AddYhOptions(yhClassify).then(
+      AddUnitYhOptions(yhClassify).then(
         (result) => {
           if (result.data.code === 200) {
             this.$Message.success('信息添加成功')
@@ -345,3 +355,4 @@ export default {
 <style scoped>
 
 </style>
+

@@ -79,14 +79,24 @@ export default [
       hideInBread: true,
     },
     children: [
+      // {
+      //   path: '/home',
+      //   name: 'home',
+      //   meta: {
+      //     icon: 'md-home',
+      //     title: '首页'
+      //   },
+      //   component: () => import('@/view/Maphome/home')
+      // },
+
       {
         path: '/home',
         name: 'home',
         meta: {
           icon: 'md-home',
-          title: '首页'
+          title: '首页地图'
         },
-        component: () => import('@/view/Maphome/home')
+        component: () => import('@/view/Maphome/homeMap')
       }
       // {
       //   path: '/homeTest',
@@ -286,7 +296,7 @@ export default [
     meta: {
       title: '系统管理',
       icon: "md-flower",
-      access: ['超级管理员']
+      access: ['超级管理员','单位管理员']
     },
     children: [
       {
@@ -295,15 +305,37 @@ export default [
         meta: {
           title: '养护项目分类',
           icon: "md-arrow-dropright-circle",
+          access: ['超级管理员']
         },
         component: () => import('@/view/OptionManage/yh_classify_options/index')
+      },
+      {
+        name: 'yh_option',
+        path: 'yh_option',
+        meta: {
+          title: '养护项目分类',
+          icon: "md-arrow-dropright-circle",
+          access: ['单位管理员']
+        },
+        component: () => import('@/view/OptionManage/Yh_Classify_Unit/index')
+      },
+      {
+        name: 'yh_option11',
+        path: 'yh_option11',
+        meta: {
+          title: '级联多选',
+          icon: "md-arrow-dropright-circle",
+          access: ['超级管理员']
+        },
+        component: () => import('@/view/YangHuManage/Cascader-multi/Cascader-multi-text')
       },
       {
         path: 'other',
         name: 'other',
         meta: {
           icon: 'ios-document',
-          title: '病虫害分类'
+          title: '病虫害分类',
+          access: ['超级管理员']
         },
         component: () => import('@/view/OptionManage/other/index')
       },
@@ -312,9 +344,21 @@ export default [
         name: 'species',
         meta: {
           icon: 'ios-document',
-          title: '树种分类'
+          title: '树种分类',
+          access: ['超级管理员']
         },
         component: () => import('@/view/OptionManage/SpeciesManage/index')
+      },
+
+      {
+        path: 'map',
+        name: 'map',
+        meta: {
+          icon: 'ios-document',
+          title: '区域设置',
+          access: ['超级管理员']
+        },
+        component: () => import('@/view/MapDraw/index.vue')
       }
     ]
   },
@@ -380,9 +424,19 @@ export default [
         meta: {
           title: '用户管理',
           icon: 'md-people',
-          access: ['超级管理员', '单位管理员']
+          access: ['超级管理员']
         },
         component: () => import('@/view/UserManage/index')
+      },
+      {
+        name: 'ManageUser',
+        path: 'ManageUser',
+        meta: {
+          title: '用户管理-测试',
+          icon: 'md-people',
+          access: ['单位管理员']
+        },
+        component: () => import('@/view/UserManage/TabUserIndex')
       },
       {
         path: 'userinfo/:username',

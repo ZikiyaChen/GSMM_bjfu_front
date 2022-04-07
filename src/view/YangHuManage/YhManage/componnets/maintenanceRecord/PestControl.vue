@@ -15,7 +15,7 @@
               :default-label="controlType.model"
               v-model="controlType.model"
               @on-change="handleControlTypeChange">
-              <Option v-for="item in controlType.types" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option v-for="item in controlType.types" :value="item.project" :key="item.project">{{ item.project }}</Option>
             </Select>
           </Col>
         </Row>
@@ -31,7 +31,9 @@
               :default-label="controlMethod.model"
               v-model="controlMethod.model"
               @on-change="handleControlMethodChange">
-              <Option v-for="item in controlMethod.methods" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <OptionGroup v-for="project in controlMethod.projects" :label="project" :key="project">
+              <Option v-for="item in controlMethod.methods[project]" :value="item.id" :key="item.id">{{ item.method }}</Option>
+              </OptionGroup>
             </Select>
           </Col>
         </Row>
@@ -91,11 +93,13 @@
 
 <script>
 import BasicForm from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/layout/BasicForm";
-import { getPestName, queryYhOptions } from "@/api/yh_manage";
+import {getPestName, getUnitMaintenanceProjects, queryUnitYhMethods} from "@/api/yh_manage";
 import { mapState } from "vuex";
+import UserMixin from "@/mixin/UserMixin";
 
 export default {
   name: 'PestControl',
+  mixins: [UserMixin],
   components: {
     BasicForm
   },
@@ -109,13 +113,14 @@ export default {
     return {
       controlType: {
         model: [],
-        types: ['生物防治', '物理防治', '化学防治'],
+        types: [],
         typesStr: ''
       },
       controlMethod: {
         model: [],
-        methods: [],
-        methodsStr: ''
+        methods: {},
+        methodsStr: '',
+        projects:[]
       },
       potionConcentration: '',
       releasedCreaturesQuantity: '',
@@ -141,6 +146,10 @@ export default {
       this.$emit('cancelOrConfirm', 'cancel', null)
     },
     handleControlTypeChange (option) {
+      queryUnitYhMethods({yh_type:'病虫害防治',projects:option,unit:this.unit}).then(res=>{
+        this.controlMethod.methods = res.data.methods
+        this.controlMethod.projects = res.data.projects
+      })
       this.controlType.typesStr = option.join(',')
     },
     handleControlMethodChange (option) {
@@ -171,27 +180,28 @@ export default {
   },
   created () {
     const initializeControlTypes = () => {
-      this.controlType.types = this.controlType.types.map(item => {
-        return {
-          label: item,
-          value: item
-        }
+      getUnitMaintenanceProjects({yh_type:'病虫害防治',unit: this.unit}).then(message => {
+        this.controlType.types = message.data.projects
       })
     }
     initializeControlTypes()
 
     const initializeControlMethod = () => {
-      queryYhOptions().then(message => {
-        let classify = message.data.yh_classify
-        for (let item of classify) {
-          if (item.yh_type === '病虫害防治') {
-            this.controlMethod.methods.push({
-              label: item.method,
-              value: item.method
-            })
-          }
-        }
+      queryUnitYhMethods({yh_type:'病虫害防治',projects:this.otherFormData.contentType,unit:this.unit}).then(res=>{
+        this.controlMethod.methods = res.data.methods
+        this.controlMethod.projects = res.data.projects
       })
+      // queryYhOptions().then(message => {
+      //   let classify = message.data.yh_classify
+      //   for (let item of classify) {
+      //     if (item.yh_type === '病虫害防治') {
+      //       this.controlMethod.methods.push({
+      //         label: item.method,
+      //         value: item.method
+      //       })
+      //     }
+      //   }
+      // })
     }
     initializeControlMethod()
 

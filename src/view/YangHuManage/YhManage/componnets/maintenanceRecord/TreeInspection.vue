@@ -49,10 +49,10 @@
       <Row>
         <Col span="9">
           <FormItem label="生长状态描述">折枝
-          <Select
+            <Select
             :default-label="growthStatus.model"
             v-model="growthStatus.model"
-            @on-change="handleFoldingBranchesChange" style="width: 150px">
+            @on-change="handleFoldingBranchesChange" style="width: 120px">
             <Option v-for="item in growthStatus.foldingBranches"
                     :value="item.value"
                     :key="item.value">{{ item.label }}
@@ -61,7 +61,7 @@
           </FormItem>
         </Col>
         <Col span="7">
-          <FormItem label="方向">
+          <FormItem label="方向" label-width="80">
           <Input
             v-model="growthStatus.direction"
             placeholder="方向"></Input>
@@ -69,7 +69,7 @@
         </Col>
 
 
-        <Col span="8">
+        <Col span="8" label-width="80">
           <FormItem label="长度">
           <Input
 
@@ -80,16 +80,18 @@
       </Row>
       <Row>
         <Col span="9">
-          <FormItem>直径
+          <FormItem label-width="105" label="直径">
           <Input
-            style="width: 150px"
+            style="width: 120px"
             v-model="growthStatus.diameter"
-            placeholder="直径"></Input>
+            placeholder="直径">
+            <span slot="append">cm</span>
+          </Input>
           </FormItem>
         </Col>
 
         <Col span="7">
-          <FormItem label="周边环境">
+          <FormItem label="周边环境" label-width="80">
 <!--          <Input-->
 <!--            style="padding-right:2px"-->
 <!--            v-model="growthStatus.surroundings"-->
@@ -106,7 +108,7 @@
           </FormItem>
         </Col>
         <Col span="8">
-          <FormItem label="生长现状">
+          <FormItem label="生长现状" label-width="80">
 <!--          <Input-->
 <!--            style="padding-right:2px"-->
 <!--            v-model="growthStatus.growStatus"-->
