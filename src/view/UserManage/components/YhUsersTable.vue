@@ -343,7 +343,12 @@ export default {
     }
   },
   mounted() {
-    this.query.create_by = this.userInfo.userInfo.username
+    // this.query.create_by = this.userInfo.userInfo.username
+    if(this.userInfo.userInfo.is_reader){
+      this.query.create_by = 'admin'
+    }else {
+      this.query.create_by = this.userInfo.userInfo.username
+    }
     queryUnitUsers({ ...this.pages, ...this.query }).then((resp) => {
       this.data = resp.data.users
       this.total = resp.data.total

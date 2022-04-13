@@ -676,7 +676,7 @@ export default {
       TreeInformation: {
         tree_code: this.$route.params.tree_code,
         Base: {
-          dizhi: undefined,
+          dizhi: {},
           investigate_time: '', // 调查日期
           zw_name: '', // 中文名（即树种）
           ld_name: '', // 拉丁名
@@ -809,6 +809,7 @@ export default {
     }
   },
   mounted () {
+    this.TreeInformation.Base.dizhi = this.userInfo.userInfo.districts
     // 初始化
     queryUnits().then(res => {
       this.ghUnits = res.data.units
@@ -1050,6 +1051,7 @@ export default {
         }
       })
     },
+
 
     Submit: function () {
       this.$refs.Tree_form.validate((valid) => {

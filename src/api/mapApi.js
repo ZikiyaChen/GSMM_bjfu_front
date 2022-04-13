@@ -9,10 +9,11 @@ import params from "@/view/argu-page/params";
 //     method: 'post',
 //   })
 // }
-// export const GetDistrict = () => {
+// export const GetDistrict = (data) => {
 //   return axios.request({
 //     url:'districtsss',
-//     method:'get'
+//     method:'get',
+//     data:data
 //   })
 // }
 export const AddPolygonPath = (data)=> {

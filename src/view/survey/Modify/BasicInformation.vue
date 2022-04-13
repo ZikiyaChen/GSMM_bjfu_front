@@ -622,10 +622,13 @@ import { checkLat, checkLon } from "@/view/tools-methods/someValidateRule";
 import { PathToList } from "@/view/survey/options";
 import { queryUnits, queryUsers} from "@/api/user";
 import {QuerySpecies} from "@/api/tree_species";
+import UserMixin from "@/mixin/UserMixin";
+import AMap from "AMap";
 
 
 export default {
   name: "BasicInformation",
+  mixins: [UserMixin],
   components: { Float_bar },
   data: function () {
     return {
@@ -1255,9 +1258,72 @@ export default {
         this.$Message.error('失败')
       })
     },
+
+    initLevel(){
+      var level = ''
+      var keyword = ''
+      if(this.userInfo.userInfo.district_type === '1'){
+        keyword = this.userInfo.userInfo.province
+        level = 'province'
+      }else if(this.userInfo.userInfo.district_type === '2'){
+        level = 'city'
+        keyword = this.userInfo.userInfo.city
+      }else if(this.userInfo.userInfo.district_type === '3'){
+        level = 'district'
+        keyword = this.userInfo.userInfo.area
+      }
+      return level,keyword
+    },
+    async isPointRing(){
+      var ring = []
+      // var level, keyword = this.initLevel()
+      var level = ''
+      var keyword = ''
+      var point = [this.TreeInformation.Position.longitude,this.TreeInformation.Position.latitude]
+      if(this.userInfo.userInfo.district_type === '1'){
+        keyword = this.userInfo.userInfo.province
+        level = 'province'
+      }else if(this.userInfo.userInfo.district_type === '2'){
+        level = 'city'
+        keyword = this.userInfo.userInfo.city
+      }else if(this.userInfo.userInfo.district_type === '3'){
+        level = 'district'
+        keyword = this.userInfo.userInfo.area
+      }
+      if(this.userInfo.userInfo.work_place_type === '2'){
+        ring = this.userInfo.userInfo.work_place.polygon_paths
+        var inRing = window.AMap.GeometryUtil.isPointInRing(point, ring);
+        console.log('1',inRing)
+        return inRing
+      }else {
+        console.log('level,keyword',level,keyword)
+        await AMap.plugin('AMap.DistrictSearch', function () {
+          // 创建行政区查询对象
+          var district = new AMap.DistrictSearch({
+            // 返回行政区边界坐标等具体信息
+            extensions: 'all',
+            // 设置查询行政区级别为 区
+            level: level
+          })
+
+          district.search(keyword, function(status, result) {
+            // 获取边界信息
+            ring = result.districtList[0].boundaries
+            console.log('2', ring)
+            var inRing = window.AMap.GeometryUtil.isPointInRing(point, ring);
+            console.log('2',inRing)
+            return inRing
+          })
+        })
+      }
+
+      // var inRing = window.AMap.GeometryUtil.isPointInRing(
+      //   [this.TreeInformation.Position.longitude,this.TreeInformation.Position.latitude], ring);
+      // return inRing
+    },
     //提交----如果没有基本信息isShow=true，先update basic,再post dynamic\pic\brand\geo等，最后post tjxm_record
     //   ----如果有基本信息isShow = false, 先update basic, 再update dynamic......,最后update tjxm_record
-    SubmitTreeInfo(){
+    async SubmitTreeInfo(){
       this.TreeInformation.Dong.tree_code = this.tree_code
       this.TreeInformation.Brand.tree_code = this.tree_code
       this.TreeInformation.Pic.tree_code = this.tree_code
@@ -1267,6 +1333,11 @@ export default {
       this.TreeInformation.Base.dw_CheckState ='未审核'
       this.TreeInformation.Base.admin_CheckState = '未审核'
       this.TreeInformation.Base.dc_status = '已完成'
+      //判断该树是否在工作区域内
+      // var xx =await this.isPointRing().then( res=>{
+      //   console.log(res)
+      // })
+
       this.$refs.Tree_form.validate((valid) => {
         console.log('valid',valid)
         if (valid) {
@@ -1283,6 +1354,7 @@ export default {
       })
     },
     async UpdateTree(){
+      console.log('update')
       await updateBasic(this.tree_code,this.TreeInformation.Base).then(res=>{
         if(res.data.code !== 200){
           this.$Message.error('失败')
@@ -1489,6 +1561,8 @@ export default {
     this.getQrcode()
     this.GetGhUnit()
     this.initZwNameList()
+
+    this.TreeInformation.Base.dizhi = this.userInfo.userInfo.districts
 
 
     console.log('******', this.TreeInformation.Base.treetype)

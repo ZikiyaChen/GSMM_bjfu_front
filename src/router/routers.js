@@ -319,16 +319,16 @@ export default [
         },
         component: () => import('@/view/OptionManage/Yh_Classify_Unit/index')
       },
-      {
-        name: 'yh_option11',
-        path: 'yh_option11',
-        meta: {
-          title: '级联多选',
-          icon: "md-arrow-dropright-circle",
-          access: ['超级管理员']
-        },
-        component: () => import('@/view/YangHuManage/Cascader-multi/Cascader-multi-text')
-      },
+      // {
+      //   name: 'yh_option11',
+      //   path: 'yh_option11',
+      //   meta: {
+      //     title: '级联多选',
+      //     icon: "md-arrow-dropright-circle",
+      //     access: ['超级管理员']
+      //   },
+      //   component: () => import('@/view/YangHuManage/Cascader-multi/Cascader-multi-text')
+      // },
       {
         path: 'other',
         name: 'other',
@@ -432,7 +432,7 @@ export default [
         name: 'ManageUser',
         path: 'ManageUser',
         meta: {
-          title: '用户管理-测试',
+          title: '用户管理',
           icon: 'md-people',
           access: ['单位管理员']
         },

@@ -80,6 +80,8 @@ export default {
       tree_markers: [],
       treeicon:undefined,
 
+      cluster: undefined,//点汇聚对象
+
       tree:[],
       treeInfo:{},
       city:'北京市',
@@ -224,10 +226,8 @@ export default {
       let that = this
 
       console.log('tree',this.tree)
+      that.tree_markers = []
       for (var i = 0, marker; i < this.tree.length; i++) { // 因为我需要展示多个 所以必须使用循环
-
-        // let pic = await this.getPic(this.tree[i])
-
         var infoWindow = new AMap.InfoWindow({
           offset: new AMap.Pixel(0, -30),
         });
@@ -284,6 +284,8 @@ export default {
                            hover{background: #5599FF;}">查看详情</Button>
                            </div>
                           </div>`;
+        //将创建的点标记添加到已有的地图实例中
+        that.tree_markers.push(marker)
         marker.on("click", markerClick);
       }
       function markerClick(e) {
@@ -356,7 +358,24 @@ export default {
 
       await this.initPolygon()
       await this.initMarker()
+      await this.addCluster()
       // await this.drawBackGround()
+
+    },
+
+    addCluster(){
+      let that = this
+
+      if(that.cluster){
+        that.cluster.setMap(null)
+      }
+      that.map.plugin(["AMap.MarkerClusterer"],function() {
+        that.cluster = new AMap.MarkerClusterer(that.map, that.tree_markers, {
+          gridSize:80 //默认点汇聚样式
+        });
+      });
+
+
 
     },
 
