@@ -3,7 +3,7 @@
   <Card>
     <h2 slot="title" style="text-align: center">树体损伤情况评估</h2>
 
-    <div class="timeLine" style="overflow: hidden;">
+    <div class="timeLine" style="overflow: hidden" >
 
       <div class="ul_box">
         <ul class="my_timeline" ref="mytimeline" style="margin-left: 10px;">
@@ -21,20 +21,17 @@
       </div>
     </div>
 
-    <Form :label-width="220" label-position="right" :model="TreeInformation" inline >
+    <Form :label-width="400" label-position="right" :model="TreeInformation" inline >
 
       <Row>
-        <Col  span="11" >
-          <FormItem label="古树编号：">
+          <FormItem label="古树编号：" style="width: 60%">
             <Input disabled  v-model="tree_code" class="TextColor"></Input>
           </FormItem>
-        </Col>
-
       </Row>
     </Form>
 
-    <Form :label-width="220" label-position="right"  ref="damage_form" :model="Damage" :rules="ruleValidate" inline>
-      <div style="color: mediumseagreen;  margin-left: 140px; margin-bottom: 5px; font-weight: bold" >
+    <Form :label-width="400" label-position="right"  ref="damage_form" :model="Damage" :rules="ruleValidate" inline >
+      <div style="color: mediumseagreen;  margin-left: 320px; margin-bottom: 5px; font-weight: bold" >
         <span>树干基部:</span>
       </div>
       <Row>
@@ -51,39 +48,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col >
-          <FormItem prop="pic_base1">
-            <span slot="label" >特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_base1" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_base1(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_base1(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_base1"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_base1">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_base1" style="width: 100%" />
-            </Modal>
-          </FormItem>
 
-        </Col>
-      </Row>
 
       <Row>
         <Col>
@@ -99,39 +64,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <FormItem prop="pic_base2">
-            <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_base2" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_base2(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_base2(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_base2"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_base2">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_base2" style="width: 100%" />
-            </Modal>
-          </FormItem>
 
-        </Col>
-      </Row>
 
       <Row>
         <Col>
@@ -149,40 +82,16 @@
       </Row>
       <Row>
         <Col>
-          <FormItem prop="pic_base3">
+          <FormItem prop="pic_base">
             <span slot="label" >特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_base3" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_base3(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_base3(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_base3"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_base3">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_base3" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Damage.pic_base" @delete="deletePicBase" @onUpload="uploadPicBase">
+            </UploadPicCom>
           </FormItem>
-
         </Col>
       </Row>
 
 
-      <div style="color: mediumseagreen;  margin-left: 160px; margin-bottom: 5px; font-weight: bold" >
+      <div style="color: mediumseagreen;  margin-left: 350px; margin-bottom: 5px; font-weight: bold" >
         <span>树干:</span>
       </div>
       <Row>
@@ -199,39 +108,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col >
-          <FormItem prop="pic_trunk1">
-            <span slot="label" >特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_trunk1" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_trunk1(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_trunk1(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_trunk1"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_t1">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_t1" style="width: 100%" />
-            </Modal>
-          </FormItem>
 
-        </Col>
-      </Row>
 
       <Row>
         <Col>
@@ -247,39 +124,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <FormItem prop="pic_trunk2">
-            <span slot="label">特征照片</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_trunk2" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_trunk2(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_trunk2(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_trunk2"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_t2">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_t2" style="width: 100%" />
-            </Modal>
-          </FormItem>
 
-        </Col>
-      </Row>
 
       <Row>
         <Col>
@@ -297,39 +142,16 @@
       </Row>
       <Row>
         <Col>
-          <FormItem prop="pic_trunk3">
+          <FormItem prop="pic_trunk">
             <span slot="label" >特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_trunk3" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_trunk3(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_trunk3(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_trunk3"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_t3">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_t3" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Damage.pic_trunk" @delete="deletePicTrunk" @onUpload="uploadPicTrunk">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
       </Row>
 
-      <div style="color: mediumseagreen;  margin-left: 110px; margin-bottom: 5px; font-weight: bold" >
+      <div style="color: mediumseagreen;  margin-left: 290px; margin-bottom: 5px; font-weight: bold" >
         <span>构成骨架大枝：</span>
       </div>
       <Row>
@@ -346,39 +168,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col >
-          <FormItem prop="pic_ske1">
-            <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_ske1" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_ske1(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_ske1(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_ske1"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_s1">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_s1" style="width: 100%" />
-            </Modal>
-          </FormItem>
 
-        </Col>
-      </Row>
 
       <Row>
         <Col>
@@ -394,39 +184,7 @@
           </FormItem>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <FormItem prop="pic_ske2">
-            <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_ske2" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_ske2(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_ske2(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_ske2"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_s2">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_s2" style="width: 100%" />
-            </Modal>
-          </FormItem>
 
-        </Col>
-      </Row>
 
       <Row>
         <Col>
@@ -444,39 +202,100 @@
       </Row>
       <Row>
         <Col>
-          <FormItem prop="pic_ske3">
+          <FormItem prop="pic_ske">
             <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_ske3" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_ske3(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_ske3(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_ske3"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_s3">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_s3" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Damage.pic_ske" @delete="deletePicSke" @onUpload="uploadPicSke">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
       </Row>
 
-      <div style="color: mediumseagreen;  margin-left: 160px; margin-bottom: 5px; font-weight: bold" >
+      <div style="color: mediumseagreen;  margin-left: 350px; margin-bottom: 5px; font-weight: bold" >
+        <span>树洞：</span>
+      </div>
+      <Row>
+        <Col>
+          <FormItem prop="has_hole" class="error-tip">
+            <span slot="label" >
+              <Tooltip placement="right" max-width="200" >
+                <div slot="content">存在树洞，则记为“有”；否则记为“无”</div>
+              <Icon type="md-alert" size="14" color="#808695"/>
+            </Tooltip>有无树洞：</span>
+            <RadioGroup v-model="Damage.has_hole">
+              <Radio v-for="item in hasHoleList" :label="item" :key="item"></Radio>
+            </RadioGroup>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <FormItem prop="pic_hole">
+            <span slot="label">树洞特征照片：</span>
+            <UploadPicCom :img-name-list="Damage.pic_hole" @delete="deletePicHole" @onUpload="uploadPicHole">
+            </UploadPicCom>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <div style="color: mediumseagreen;  margin-left: 350px; margin-bottom: 5px; font-weight: bold" >
+        <span>树冠：</span>
+      </div>
+
+      <Row>
+        <Col>
+          <FormItem prop="pic_crown">
+            <span slot="label">树冠特征照片：</span>
+            <UploadPicCom :img-name-list="Damage.pic_crown" @delete="deletePicCrown" @onUpload="uploadPicCrown">
+            </UploadPicCom>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <div style="color: mediumseagreen;  margin-left: 320px; margin-bottom: 5px; font-weight: bold" >
+        <span>树体劈裂：</span>
+      </div>
+      <Row>
+        <Col>
+          <FormItem prop="has_splitting" class="error-tip">
+            <span slot="label" >
+              <Tooltip placement="right" max-width="200" >
+                <div slot="content">存在则记为“有”；否则记为“无”</div>
+              <Icon type="md-alert" size="14" color="#808695"/>
+            </Tooltip>有无树体劈裂：</span>
+            <RadioGroup v-model="Damage.has_splitting">
+              <Radio v-for="item in hasHoleList" :label="item" :key="item"></Radio>
+            </RadioGroup>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <FormItem prop="pic_splitting">
+            <span slot="label">树体劈裂特征照片：</span>
+            <UploadPicCom :img-name-list="Damage.pic_splitting" @delete="deletePicSplitting" @onUpload="uploadPicSplitting">
+            </UploadPicCom>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <div style="color: mediumseagreen;  margin-left: 260px; margin-bottom: 5px; font-weight: bold" >
+        <span>枝条存在掉落危险：</span>
+      </div>
+      <Row>
+        <Col>
+          <FormItem prop="pic_falling">
+            <span slot="label">枝条存在掉落危险特征照片：</span>
+            <UploadPicCom :img-name-list="Damage.pic_falling" @delete="deletePicFalling" @onUpload="uploadPicFalling">
+            </UploadPicCom>
+          </FormItem>
+        </Col>
+      </Row>
+
+
+      <div style="color: mediumseagreen;  margin-left: 350px; margin-bottom: 5px; font-weight: bold" >
         <span>评价：</span>
       </div>
       <Row>
@@ -572,22 +391,23 @@
 import { damageList, PathToList } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddEnvironment, AddStss,
+  AddStss,
   AddStssAnalysis,
-  getDamage, getNewGeAnalysis,
+  getDamage,
   getOneTreeBaseInfo, postTjxmRecord,
-  queryTjxmRecord, updateDamage, updateEnvironment
+  queryTjxmRecord, updateDamage,
 } from "@/api/table";
-import {DeletePic, ShowPic, UploadPicApi} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 export default {
   name: "damage",
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar },
   data () {
     return {
-      UploadPicAPI: UploadPicApi,
+
+
       timeIndex: 0,
       timeLineList: PathToList,
 
@@ -599,6 +419,7 @@ export default {
       DamageList: damageList,
 
       showImageUrl: '',
+      hasHoleList: ['有','无'],
 
       dcUnits: [],
       dcUsers: [],
@@ -619,77 +440,51 @@ export default {
         type_yw: 'damage',
       },
 
-      PicUrlList_base1: [],
-      PicUrlList_base2: [],
-      PicUrlList_base3: [],
-
-      i_base1: 0,
-      i_base2: 0,
-      i_base3: 0,
-      visible_base1: false,
-      visible_base2: false,
-      visible_base3: false,
-
-      PicUrlList_trunk1: [],
-      PicUrlList_trunk2: [],
-      PicUrlList_trunk3: [],
-
-      i_trunk1: 0,
-      i_trunk2: 0,
-      i_trunk3: 0,
-      visible_t1: false,
-      visible_t2: false,
-      visible_t3: false,
-
-      PicUrlList_ske1: [],
-      PicUrlList_ske2: [],
-      PicUrlList_ske3: [],
-
-      i_ske1: 0,
-      i_ske2: 0,
-      i_ske3: 0,
-      visible_s1: false,
-      visible_s2: false,
-      visible_s3: false,
-
       Damage: {
         id: 0,
         base1: '', // 树干基部-树皮损伤比例
-        pic_base1: [], // (照片)树干基部-树皮损伤比例
+        pic_base: [], // (照片)树干基部-
         base2: '', // 树干基部-木质部损伤（未达心材）比例
-        pic_base2: [], // (照片)树干基部-木质部损伤（未达心材）比例
+
         base3: '', // 树干基部-木质部损伤（达到心材）比例
-        pic_base3: [], // (照片)树干基部-木质部损伤（达到心材）比例
+
 
         trunk1: '', // 树干-树皮损伤比例
-        pic_trunk1: [], // (照片)树干-树皮损伤比例
+        pic_trunk: [], // (照片)树干-
         trunk2: '', // 树干-木质部（未达心材）比例
-        pic_trunk2: [], // (照片)树干-木质部（未达心材）比例
+
         trunk3: '', // 树干-木质部（达到心材）损伤比例
-        pic_trunk3: [], // (照片)树干-木质部（达到心材）损伤比例
+
 
         skeleton1: '', // 构成骨架大枝-树皮损伤比例
-        pic_ske1: [], // (照片)构成骨架大枝-树皮损伤比例
+        pic_ske: [], // (照片)构成骨架大枝
         skeleton2: '', // 构成骨架大枝-木质部（未达心材）比例
-        pic_ske2: [], // (照片)构成骨架大枝-木质部（未达心材）比例
+
         skeleton3: '', // 构成骨架大枝-木质部（达到心材）比例
-        pic_ske3: [], // (照片)构成骨架大枝-木质部（达到心材）比例
+
+        has_hole: '', // 有无树洞
+        pic_hole: [], //树洞图片
+        pic_crown: [], //树冠图片
+        has_splitting: '', //有无树体劈裂
+        pic_splitting: [], // 树体劈裂图片
+        pic_falling: [], //枝条掉落危险图片
+
 
         damage_status: '', // 损伤情况评价
         tree_code: ''
       },
       ruleValidate: {
-        base1: [{ required: true, trigger: 'change', message: '请选择' }],
-        base2: [{ required: true, trigger: 'change', message: '请选择' }],
-        base3: [{ required: true, trigger: 'change', message: '请选择' }],
-
-        trunk1: [{ required: true, trigger: 'change', message: '请选择' }],
-        trunk2: [{ required: true, trigger: 'change', message: '请选择' }],
-        trunk3: [{ required: true, trigger: 'change', message: '请选择' }],
-
-        skeleton1: [{ required: true, trigger: 'change', message: '请选择' }],
-        skeleton2: [{ required: true, trigger: 'change', message: '请选择' }],
-        skeleton3: [{ required: true, trigger: 'change', message: '请选择' }],
+        // base1: [{ required: true, trigger: 'change', message: '请选择' }],
+        // base2: [{ required: true, trigger: 'change', message: '请选择' }],
+        // base3: [{ required: true, trigger: 'change', message: '请选择' }],
+        //
+        // trunk1: [{ required: true, trigger: 'change', message: '请选择' }],
+        // trunk2: [{ required: true, trigger: 'change', message: '请选择' }],
+        // trunk3: [{ required: true, trigger: 'change', message: '请选择' }],
+        //
+        // skeleton1: [{ required: true, trigger: 'change', message: '请选择' }],
+        // skeleton2: [{ required: true, trigger: 'change', message: '请选择' }],
+        // skeleton3: [{ required: true, trigger: 'change', message: '请选择' }],
 
         investigate_username: [{ required: true, trigger: 'change', message: '请填写调查人姓名' }],
         dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
@@ -743,8 +538,9 @@ export default {
       })
     },
 
-    add(){
-      AddStss(this.Damage).then(res => {
+    async add(){
+      let res1 = await AddStss(this.Damage)
+      if(res1.data.code === 200){
         getDamage({'tree_code':this.tree_code}).then(resp => {
           this.tjxm_record.t_id = resp.data.tree_damage.id
           postTjxmRecord(this.tjxm_record).then(record => {
@@ -756,9 +552,7 @@ export default {
             }
           })
         })
-      }).catch(err => {
-        console.log(err)
-      })
+      }
 
     },
     update(){
@@ -800,7 +594,7 @@ export default {
             this.Damage = res.data.tree_damage
             this.dcUnits.push({ 'unit': res.data.tree_damage.dc_unit })
             this.dcUsers.push(res.data.tree_damage.dc_user)
-            this.fetchPic()
+
           })
         } else {
           this.isShow = true
@@ -811,80 +605,6 @@ export default {
         }
       })
     },
-    fetchPic () {
-      this.PicUrlList_base1 = []
-      this.PicUrlList_base2 = []
-      this.PicUrlList_base3 = []
-      this.PicUrlList_trunk1 = []
-      this.PicUrlList_trunk2 = []
-      this.PicUrlList_trunk3 = []
-      this.PicUrlList_ske1 = []
-      this.PicUrlList_ske2 = []
-      this.PicUrlList_ske3 = []
-      if (this.Damage.pic_base1.length !== 0) {
-        this.Damage.pic_base1.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_base1.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_base2.length !== 0) {
-        this.Damage.pic_base2.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_base2.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_base3.length !== 0) {
-        this.Damage.pic_base3.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_base3.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_trunk1.length !== 0) {
-        this.Damage.pic_trunk1.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_trunk1.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_trunk2.length !== 0) {
-        this.Damage.pic_trunk2.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_trunk2.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_trunk3.length !== 0) {
-        this.Damage.pic_trunk3.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_trunk3.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_ske1.length !== 0) {
-        this.Damage.pic_ske1.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_ske1.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_ske2.length !== 0) {
-        this.Damage.pic_ske2.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_ske2.push(resp.data)
-          })
-        })
-      }
-      if (this.Damage.pic_ske3.length !== 0) {
-        this.Damage.pic_ske3.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_ske3.push(resp.data)
-          })
-        })
-      }
-    }, //* ****
 
     Update () {
       this.$refs.damage_form.validate((valid) => {
@@ -1018,252 +738,60 @@ export default {
       this.TiJiao()
     },
 
-    handleMaxSize (file) {
-      this.$Notice.warning({
-        title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
-      })
+    // 树干基部
+    deletePicBase(value){
+      this.Damage.pic_base = value
     },
-    // 特征照片base1
-    handleView_base1 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_base1 = true
-    },
-    handleRemoveList_base1 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_base1[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_base1.splice(index, 1)
-      this.PicUrlList_base1.splice(index, 1)
-    },
-    handleSuccessList_base1: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_base1.push(res.path)
-        this.i_base1++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_base1.push(resp.data)
-        })
-      }
+    uploadPicBase(value){
+      this.Damage.pic_base = value
     },
 
-    // 特征照片base2
-    handleView_base2 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_base2 = true
+    // 树干
+    deletePicTrunk(value){
+      this.Damage.pic_trunk = value
     },
-    handleRemoveList_base2 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_base2[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_base2.splice(index, 1)
-      this.PicUrlList_base2.splice(index, 1)
+    uploadPicTrunk(value){
+      this.Damage.pic_trunk = value
     },
-    handleSuccessList_base2: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_base2.push(res.path)
-        this.i_base2++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_base2.push(resp.data)
-        })
-      }
+    // 构成骨架大枝
+    deletePicSke(value){
+      this.Damage.pic_ske = value
+    },
+    uploadPicSke(value){
+      this.Damage.pic_ske = value
+    },
+    // 树洞
+    deletePicHole(value){
+      this.Damage.pic_hole = value
+    },
+    uploadPicHole(value){
+      this.Damage.pic_hole = value
     },
 
-    // 特征照片base3
-    handleView_base3 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_base3 = true
+    // 树冠
+    deletePicCrown(value){
+      this.Damage.pic_crown = value
     },
-    handleRemoveList_base3 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_base3[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_base3.splice(index, 1)
-      this.PicUrlList_base3.splice(index, 1)
-    },
-    handleSuccessList_base3: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_base3.push(res.path)
-        this.i_base3++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_base3.push(resp.data)
-        })
-      }
+    uploadPicCrown(value){
+      this.Damage.pic_crown = value
     },
 
-    // 特征照片trunk1
-    handleView_trunk1 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_t1 = true
+    // 树体劈裂特征照片splitting
+    deletePicSplitting(value){
+      this.Damage.pic_splitting = value
     },
-    handleRemoveList_trunk1 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_trunk1[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_trunk1.splice(index, 1)
-      this.PicUrlList_trunk1.splice(index, 1)
-    },
-    handleSuccessList_trunk1: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_trunk1.push(res.path)
-        this.i_trunk1++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_trunk1.push(resp.data)
-        })
-      }
+    uploadPicSplitting(value){
+      this.Damage.pic_splitting = value
     },
 
-    // 特征照片trunk2
-    handleView_trunk2 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_t2 = true
+    // 枝条掉落危险特征照片falling
+    deletePicFalling(value){
+      this.Damage.pic_falling = value
     },
-    handleRemoveList_trunk2 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_trunk2[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_trunk2.splice(index, 1)
-      this.PicUrlList_trunk2.splice(index, 1)
-    },
-    handleSuccessList_trunk2: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_trunk2.push(res.path)
-        this.i_trunk2++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_trunk2.push(resp.data)
-        })
-      }
+    uploadPicFalling(value){
+      this.Damage.pic_falling = value
     },
 
-    // 特征照片trunk3
-    handleView_trunk3 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_t3 = true
-    },
-    handleRemoveList_trunk3 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_trunk3[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_trunk3.splice(index, 1)
-      this.PicUrlList_trunk3.splice(index, 1)
-    },
-    handleSuccessList_trunk3: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_trunk3.push(res.path)
-        this.i_trunk3++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_trunk3.push(resp.data)
-        })
-      }
-    },
-
-    // 特征照片ske1
-    handleView_ske1 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_s1 = true
-    },
-    handleRemoveList_ske1 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_ske1[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_ske1.splice(index, 1)
-      this.PicUrlList_ske1.splice(index, 1)
-    },
-    handleSuccessList_ske1: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_ske1.push(res.path)
-        this.i_ske1++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_ske1.push(resp.data)
-        })
-      }
-    },
-    // 特征照片ske2
-    handleView_ske2 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_s2 = true
-    },
-    handleRemoveList_ske2 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_ske2[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_ske2.splice(index, 1)
-      this.PicUrlList_ske2.splice(index, 1)
-    },
-    handleSuccessList_ske2: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_ske2.push(res.path)
-        this.i_ske2++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_ske2.push(resp.data)
-        })
-      }
-    },
-    // 特征照片ske3
-    handleView_ske3 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_s3 = true
-    },
-    handleRemoveList_ske3 (index) {
-      // 删除
-      DeletePic(this.Damage.pic_ske3[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.Damage.pic_ske3.splice(index, 1)
-      this.PicUrlList_ske3.splice(index, 1)
-    },
-    handleSuccessList_ske3: function (res, file) {
-      if (res.code === 500) {
-        this.Damage.pic_ske3.push(res.path)
-        this.i_ske3++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_ske3.push(resp.data)
-        })
-      }
-    },
   }
 }
 </script>

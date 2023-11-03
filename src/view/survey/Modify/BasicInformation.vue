@@ -18,7 +18,7 @@
           </ul>
         </div>
       </div>
-      <h2 slot="title" style="text-align: center">名木古树基本信息调查表</h2>
+      <h2 slot="title" style="text-align: center">古树名木基本信息调查表</h2>
       <Form :label-width="140" label-position="right" ref="Tree_form" :model="TreeInformation" :rules="ruleValidate" inline>
 
         <Row>
@@ -127,7 +127,7 @@
             </Col>
             <Col span="10">
               <FormItem label="拉丁名：" prop="Base.ld_name" class="error-tip">
-                <Input v-model="TreeInformation.Base.ld_name" readonly></Input>
+                <Input v-model="TreeInformation.Base.ld_name" clearable></Input>
               </FormItem>
             </Col>
           </Row>
@@ -167,13 +167,13 @@
 
         <Row>
           <Col offset="1" span="10">
-            <FormItem label="东经：" prop="Position.longitude">
-              <Input v-model="TreeInformation.Position.longitude" placeholder="请输入经度"></Input>
+            <FormItem label="东经：" prop="Base.longitude">
+              <Input v-model="TreeInformation.Base.longitude" placeholder="请输入经度"></Input>
             </FormItem>
           </Col>
           <Col span="10">
-            <FormItem label="北纬：" prop="Position.latitude">
-              <Input v-model="TreeInformation.Position.latitude" placeholder="请输入纬度"></Input>
+            <FormItem label="北纬：" prop="Base.latitude">
+              <Input v-model="TreeInformation.Base.latitude" placeholder="请输入纬度"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -214,8 +214,8 @@
             </FormItem>
           </Col>
           <Col span="10">
-            <FormItem label="预估树龄：" prop="Dong.estimate_age">
-              <Input v-model="TreeInformation.Dong.estimate_age"><span slot="append">年</span></Input>
+            <FormItem label="预估树龄：" prop="Base.estimate_age">
+              <Input v-model="TreeInformation.Base.estimate_age"><span slot="append">年</span></Input>
             </FormItem>
           </Col>
         </Row>
@@ -249,25 +249,11 @@
           <Col span="10">
             <FormItem label="胸围：" prop="Base.bust">
               <Input v-model="TreeInformation.Base.bust" placeholder="请输入古树的胸围" >
-                <span slot="append">厘米</span>
+                <span slot="append">m</span>
               </Input>
             </FormItem>
           </Col>
         </Row>
-<!--        <Row>-->
-<!--          <Col span="9" offset="1">-->
-<!--            <FormItem label="科属种" prop="Base.treetype">-->
-<!--              <Cascader v-model="TreeInformation.Base.treetype" :data="options" clearable	trigger="hover"-->
-<!--                        @on-change="(value, selectedData) => showLdname(value, selectedData)">-->
-<!--              </Cascader>-->
-<!--            </FormItem>-->
-<!--          </Col>-->
-<!--          <Col span="9">-->
-<!--            <FormItem label="拉丁名" prop="Base.ld_name">-->
-<!--              <Input v-model="TreeInformation.Base.ld_name" placeholder="请先选择科属种" ></Input>-->
-<!--            </FormItem>-->
-<!--          </Col>-->
-<!--        </Row>-->
 
         <div style="color: mediumseagreen;  margin-left: 130px; margin-bottom: 5px; font-weight: bold" >
           <span>冠幅:</span>
@@ -292,10 +278,6 @@
         <Row>
           <Col span="10" offset="1">
             <FormItem label="南北：" prop="Dong.c_nb">
-              <!--              <InputNumber v-model="TreeInformation.Dong.c_nb"-->
-              <!--                           :step="0.01"-->
-              <!--                           :formatter="value => `${value}  m`"-->
-              <!--                           :parser="value => value.replace('  m', '')"></InputNumber>-->
               <Input v-model="TreeInformation.Dong.c_nb" placeholder="请输入冠幅南北" >
                 <span slot="append"> m </span>
               </Input>
@@ -342,8 +324,8 @@
         </div>
         <Row>
           <Col offset="1" span="10">
-            <FormItem label="生长势：" prop="Dong.g_vigor" style="width: 95%">
-              <RadioGroup v-model="TreeInformation.Dong.g_vigor">
+            <FormItem label="生长势：" prop="Base.growth_vigor" style="width: 95%">
+              <RadioGroup v-model="TreeInformation.Base.growth_vigor">
                 <Radio v-for="item in GVigorList" :label="item.value" :key="item.value"
                        style="width: 50px;margin-right: 15px"></Radio>
               </RadioGroup>
@@ -369,7 +351,7 @@
 
         <Row>
           <Col offset="1">
-            <FormItem label="新增名木古树原因：" prop="Dong.reason">
+            <FormItem label="新增古树名木原因：" prop="Dong.reason">
               <RadioGroup v-model="TreeInformation.Dong.reason">
                 <Radio v-for="item in ReasonList" :label="item.value" :key="item.value"></Radio>
               </RadioGroup>
@@ -387,31 +369,8 @@
         <Row>
           <Col offset="1">
             <FormItem label="文化历史照片：" prop="Dong.history_pic">
-              <div class="demo-upload-list" v-for="(item,index) in historyPicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"  />
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView_history(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_history(index)"></Icon>
-                </div>
-              </div>
-              <Upload
-                :show-upload-list="false"
-                name="filename"
-                :on-exceeded-size="handleMaxSize"
-                :on-success="handleSuccessList_history"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                multiple
-                type="drag"
-                :action="UploadPicAPI"
-                class="pic-upload-list">
-                <div class="camera-style">
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible_h">
-                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_h" style="width: 100%" />
-              </Modal>
+              <UploadPicCom :img-name-list="TreeInformation.Dong.history_pic" @delete="deletePicHistory" @onUpload="uploadPicHistory">
+              </UploadPicCom>
             </FormItem>
           </Col>
         </Row>
@@ -450,44 +409,21 @@
         </Row>
 
         <div style="color: mediumseagreen;  margin-left: 100px; margin-bottom: 5px; font-weight: bold" >
-          <span>古树图片:</span>
+          <span>古树树体图片:</span>
         </div>
         <Row>
           <Col span="18" offset="1">
-            <FormItem label="古树照片的说明：" prop="Pic.explain">
-              <Input v-model="TreeInformation.Pic.explain" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px"
+            <FormItem label="古树照片的说明：" prop="Base.explain">
+              <Input v-model="TreeInformation.Base.explain" type="textarea" :autosize="{minRows: 2,maxRows: 10}" placeholder="Enter something..." style="width: 500px"
                      class="TextStyle"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col offset="1">
-            <FormItem label="古树照片：" prop="Pic.path">
-              <div class="demo-upload-list" v-for="(item,index) in PicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"/>
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView_pic(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_pic(item,index)"></Icon>
-                </div>
-              </div>
-              <Upload
-                :show-upload-list="false"
-                name="filename"
-                :on-exceeded-size="handleMaxSize"
-                :on-success="handleSuccessList_pic"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                multiple
-                type="drag"
-                :action="UploadPicAPI"
-                class="pic-upload-list">
-                <div class="camera-style">
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible_p">
-                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_p" style="width: 100%" />
-              </Modal>
+            <FormItem label="古树树体典型照片：" prop="Base.pic_path">
+              <UploadPicCom :img-name-list="TreeInformation.Base.pic_path" @delete="deletePic" @onUpload="uploadPic">
+              </UploadPicCom>
             </FormItem>
           </Col>
         </Row>
@@ -521,39 +457,24 @@
           <Col offset="1">
             <FormItem label="其它后台信息：" prop="Brand.is_right">
               <RadioGroup v-model="TreeInformation.Brand.is_right">
-                <Radio v-for="item in IsRightList" :value="item" :key="item">{{item}}</Radio>
+                <Radio v-for="item in IsRightList" :label="item" :key="item">{{item}}</Radio>
               </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row v-if="TreeInformation.Brand.is_right === '不准确'">
+          <Col offset="1">
+            <FormItem label="需要修改的内容：" prop="Brand.content" style="width: 50%;">
+              <Input v-model="TreeInformation.Brand.content">
+              </Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col offset="1">
             <FormItem label="树牌照片：" prop="Brand.brand_pic">
-              <div class="demo-upload-list" v-for="(item,index) in brandPicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"  />
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView_brand(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_brand(index)"></Icon>
-                </div>
-              </div>
-              <Upload
-                :show-upload-list="false"
-                name="filename"
-                :on-exceeded-size="handleMaxSize"
-                :on-success="handleSuccessList_brand"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                multiple
-                type="drag"
-                :action="UploadPicAPI"
-                style="display: inline-block;width:100px;">
-                <div style="width: 100px;height:100px;line-height: 100px;">
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible_b">
-                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_b" style="width: 100%" />
-              </Modal>
+              <UploadPicCom :img-name-list="TreeInformation.Brand.brand_pic" @delete="deletePicBrand" @onUpload="uploadPicBrand">
+              </UploadPicCom>
             </FormItem>
           </Col>
 
@@ -604,9 +525,9 @@ import {
   queryTjxmRecord,
   getBasic,
   AddDynamic,
-  AddGeo, AddTreePic, AddBrand, postTjxmRecord
+  AddGeo,  AddBrand, postTjxmRecord
 } from "@/api/table";
-import {DeletePic, ShowPic, ShowQRcode, UploadPicApi} from "@/api/upload";
+
 import { dateToString } from "@/libs/tools";
 import name from "@/view/tools-methods/name.json"
 import {
@@ -624,18 +545,20 @@ import { queryUnits, queryUsers} from "@/api/user";
 import {QuerySpecies} from "@/api/tree_species";
 import UserMixin from "@/mixin/UserMixin";
 import AMap from "AMap";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 
 export default {
   name: "BasicInformation",
   mixins: [UserMixin],
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar },
   data: function () {
     return {
+
       isShow: false,
       timeIndex: 0,
       timeLineList: PathToList,
-      UploadPicAPI: UploadPicApi,
+
       QrcodeImg: '',
       initRes: undefined,
 
@@ -694,10 +617,18 @@ export default {
           gh_unit: '', // 管护单位
           gh_username: '', // 管护人
           ghr_name: '', //管护人姓名
-          dc_unit: '',
+
           dc_username: '',
           is_signed: '', // 是否签订管护责任书
           tree_code: '',
+
+          pic_path: [], // 树体照片
+          explain: '', // 图片说明
+          longitude: '', //经度
+          latitude: '', //纬度
+          estimate_age: '', //预估树龄
+          growth_vigor: '',  //生长势
+
         },
         Position: {
           id: 0,
@@ -706,8 +637,7 @@ export default {
           area_code: '', // 区
           town_code: '', // 乡镇/街道
 
-          longitude: '', // 经度
-          latitude: '', // 纬度
+
           elevation: '', // 海拔
           aspect: '', // 坡向
           slope: '', // 坡度
@@ -724,10 +654,10 @@ export default {
           c_average: null, // 冠幅平均
           c_dx: null, // 冠幅东西
           c_nb: null, // 冠幅南北
-          g_vigor: '', // 生长势
+
           g_environment: '', //  生长环境
 
-          estimate_age: '', // 预估树龄
+
           basis: '', // 树龄估测依据
           history: '', // 古树历史信息描述
           history_pic: [], // 古树历史信息图片
@@ -735,12 +665,7 @@ export default {
           yhfz_status: [], // 养护复壮现状
           tree_code: '',
         },
-        Pic: {
-          id: 0,
-          path: [], // 图片路径
-          explain: '', // 图片说明
-          tree_code: '',
-        },
+
         Brand: {
           id: 0,
           has_brand: '', // 有无树牌
@@ -782,19 +707,9 @@ export default {
 
       ZhongList:[],
 
-      showImageUrl: '',
 
-      brandPicUrlList: [],
-      visible_b: false,
-      i_b: 0,
 
-      visible_h: false,
-      i_h: 0,
-      historyPicUrlList: [],
 
-      visible_p: false,
-      i_p: 0,
-      PicUrlList: [],
 
       ruleValidate: {
         'Base.zw_name': [{ required: true, trigger:'change', message: '请选择中文名' }],
@@ -803,22 +718,21 @@ export default {
         'Base.genus': [{ required: true, message: '属' }],
         'Base.dizhi': [{ required: true, message: '请选择' }],
         'Base.level': [{ required: true, message: '请选择' }],
-        'Position.longitude': [{ required: true, validator: checkLon, message: '请填写经度(-180~180,小数限7位)', trigger: 'blur' }],
-        'Position.latitude': [{ required: true, validator: checkLat, message: '请填写纬度(-90~90,小数限7位)', trigger: 'blur' }],
+        'Base.longitude': [{ required: true, validator: checkLon, message: '请填写经度(-180~180,小数限7位)', trigger: 'blur' }],
+        'Base.latitude': [{ required: true, validator: checkLat, message: '请填写纬度(-90~90,小数限7位)', trigger: 'blur' }],
         'Base.owner': [{ required: true, message: '请选择' }],
         'Base.gh_unit': [{ required: true, message: '请填写', trigger: 'change' }],
-        'Base.dc_unit': [{ required: true, message: '请填写', trigger: 'change' }],
         'Base.dc_username': [{ required: true, message: '请选择', trigger: 'change' }],
         'Dong.real_age': [{ required: true, message: '请填写' }],
         'Dong.height': [{ required: true, message: '请填写', trigger: 'blur' }],
         'Dong.bust': [{ required: true, message: '请填写', trigger: 'blur' }],
-        'Dong.g_vigor': [{ required: true, message: '请选择' }],
+        'Base.growth_vigor': [{ required: true, message: '请选择' }],
       },
 
     }
   },
   created () {
-    this.DataTurn(name.contents)
+    // this.DataTurn(name.contents)
   },
   methods: {
     filterGhUnits(value){
@@ -963,29 +877,7 @@ export default {
     },
 
 
-    // // 将数据库数据转成级联选择器的data格式
-    // DataTurn () {
-    //   var option = []
-    //   var shuArr = []
-    //
-    //   GetKe().then(ke=>{
-    //     option = ke.data.families
-    //     for(let [index, elem] of option.entries()){
-    //       GetShu({'family':elem.value}).then(shu=>{
-    //         shuArr = shu.data.genuses
-    //         option[index]['children'] = shuArr
-    //         for(let [j, item] of option[index]['children'].entries()){ // 对children遍历
-    //           GetZhong({'genus':item.value}).then(name=>{
-    //             option[index]['children'][j]['children']=name.data.names
-    //           })
-    //         }
-    //       })
-    //     }
-    //     this.options = option
-    //     console.log(this.TreeInformation.Base.treetype)
-    //   })
-    //
-    // },
+
     ok () {
       this.showModal = false
       this.$router.push({ path: `/survey/environment/${this.tree_code}` })
@@ -1015,70 +907,6 @@ export default {
       console.log(typelist)
     },
 
-    // showLdname (cid) {
-    //   console.log(44,cid)
-    //   if(cid!==undefined) {
-    //     queryClassTypes({'cid': cid}).then((res => {
-    //       this.LDnameList = res.data.class_types
-    //     }))
-    //   }else {
-    //     this.LDnameList=[]
-    //   }
-    // },
-    // showLdname (value,selectedData) {
-    //   console.log('11',value)
-    //   console.log('xx',selectedData)
-    //   // console.log('22',this.TreeInformation.Base.treetype)
-    //   queryClassTypes({'zw_name':value[2]}).then((res=>{
-    //     this.TreeInformation.Base.ld_name = res.data.class_types[0].ld_name
-    //   }))
-    // },
-
-    // // 科属种的级联选择器的数据
-    // fetchOptions(){
-    //   queryFamilyTypes().then((family=>{
-    //     var family = family.data.species_types
-    //
-    //     for(let i in family) {
-    //       console.log('2',family[i])
-    //       this.options.push({
-    //           value: family[i].fname,
-    //           label: family[i].fname,
-    //           children: []
-    //         }
-    //       )
-    //
-    //       queryGenusTypes({'fid': family[i].fid}).then((genus_res=>{
-    //         var Genus=genus_res.data.genus_types
-    //         console.log('i:',i, genus_res)
-    //         for(let j in Genus){
-    //           this.options[i].children.push({
-    //             value: Genus[j].genus,
-    //             label: Genus[j].genus,
-    //             children: []
-    //           })
-    //
-    //           queryClassTypes({'gid':Genus[j].gid}).then((class_res=>{
-    //             var Class=class_res.data.class_types
-    //             for(let k in Class){
-    //               this.options[i].children[j].children.push({
-    //                 value: Class[k].zw_name,
-    //                 label: Class[k].zw_name
-    //               })
-    //             }
-    //           }))
-    //         }
-    //
-    //       }))
-    //     }
-    //
-    //
-    //
-    //
-    //     console.log('options',this.options)
-    //   }))
-    // },
-
     // 更新省市区街道信息
     regionChange (data) {
       console.log(data)
@@ -1104,7 +932,7 @@ export default {
     handleMaxSize (file) {
       this.$Notice.warning({
         title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
+        desc: '文件 ' + file.name + '太大,不能超过 4M.'
       })
     },
     Save () {
@@ -1232,13 +1060,13 @@ export default {
         this.$Message.error('失败')
       })
 
-      await AddTreePic(this.TreeInformation.Pic).then(res=>{
-        if(res.data.code !== 200){
-          this.$Message.error('失败')
-        }
-      }).catch(error=>{
-        this.$Message.error('失败')
-      })
+      // await AddTreePic(this.TreeInformation.Pic).then(res=>{
+      //   if(res.data.code !== 200){
+      //     this.$Message.error('失败')
+      //   }
+      // }).catch(error=>{
+      //   this.$Message.error('失败')
+      // })
       await AddBrand(this.TreeInformation.Brand).then(res=>{
         if(res.data.code !== 200){
           this.$Message.error('失败')
@@ -1253,6 +1081,7 @@ export default {
           this.$Message.error('失败')
         }else {
           this.$Message.success('成功')
+          this.fetchData()
         }
       }).catch(error=>{
         this.$Message.error('失败')
@@ -1326,7 +1155,7 @@ export default {
     async SubmitTreeInfo(){
       this.TreeInformation.Dong.tree_code = this.tree_code
       this.TreeInformation.Brand.tree_code = this.tree_code
-      this.TreeInformation.Pic.tree_code = this.tree_code
+      // this.TreeInformation.Pic.tree_code = this.tree_code
       this.TreeInformation.Position.tree_code = this.tree_code
       this.tjxm_record.tree_code = this.tree_code
       // 信息修改之后变为  未审核
@@ -1376,13 +1205,13 @@ export default {
       }).catch(error=>{
         this.$Message.error('失败')
       })
-      await updatePic(this.TreeInformation.Pic.id, this.TreeInformation.Pic).then(res=>{
-        if(res.data.code !== 200){
-          this.$Message.error('失败')
-        }
-      }).catch(error=>{
-        this.$Message.error('失败')
-      })
+      // await updatePic(this.TreeInformation.Pic.id, this.TreeInformation.Pic).then(res=>{
+      //   if(res.data.code !== 200){
+      //     this.$Message.error('失败')
+      //   }
+      // }).catch(error=>{
+      //   this.$Message.error('失败')
+      // })
       await updateBrand(this.TreeInformation.Brand.id,this.TreeInformation.Brand).then(res=>{
         if(res.data.code !== 200){
           this.$Message.error('失败')
@@ -1427,138 +1256,54 @@ export default {
           this.TreeInformation.Base = res.data.tree_basic_info.basic
           this.TreeInformation.tree_code = this.tree_code
           this.TreeInformation.Position = res.data.tree_basic_info.geo
-          this.TreeInformation.Pic = res.data.tree_basic_info.pic
+
           this.TreeInformation.Brand = res.data.tree_basic_info.brand
           this.TreeInformation.Dong = res.data.tree_basic_info.dynamic
           this.tjxm_record = res.data.tree_basic_info.record
-          console.log('record', this.tjxm_record)
-          this.picTurnUrl()
+
         })
 
 
       }
 
 
-    },
-    picTurnUrl () {
-      if (this.TreeInformation.Dong.history_pic.length !== 0) {
-        this.TreeInformation.Dong.history_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.historyPicUrlList.push(resp.data)
-          })
-        })
-      }
-
-      if (this.TreeInformation.Brand.brand_pic.length !== 0) {
-        this.TreeInformation.Brand.brand_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.brandPicUrlList.push(resp.data)
-          })
-        })
-      }
-
-      if (this.TreeInformation.Pic.path.length !== 0) {
-        this.TreeInformation.Pic.path.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList.push(resp.data)
-          })
-        })
-      }
     },
 
     // 文化历史照片
-    handleView_history (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_h = true
+    deletePicHistory(value){
+      this.TreeInformation.Dong.history_pic = value
     },
-    handleRemoveList_history (index) {
-      // 删除
-      DeletePic(this.TreeInformation.Dong.history_pic[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.TreeInformation.Dong.history_pic.splice(index, 1)
-      this.historyPicUrlList.splice(index, 1)
-    },
-    handleSuccessList_history: function (res, file) {
-      if (res.code === 500) {
-        this.TreeInformation.Dong.history_pic.push(res.path)
-        this.i_h++
-        ShowPic(res.path).then(resp => {
-          this.historyPicUrlList.push(resp.data)
-        })
-      }
+    uploadPicHistory(value){
+      this.TreeInformation.Dong.history_pic = value
     },
 
     // 树牌照片
-    handleView_brand (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_b = true
+    deletePicBrand(value){
+      this.TreeInformation.Brand.brand_pic = value
     },
-    handleRemoveList_brand (index) {
-      // 删除
-      DeletePic(this.TreeInformation.Brand.brand_pic[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.TreeInformation.Brand.brand_pic.splice(index, 1)
-      this.brandPicUrlList.splice(index, 1)
-    },
-    handleSuccessList_brand: function (res, file) {
-      if (res.code === 500) {
-        this.TreeInformation.Brand.brand_pic.push(res.path)
-        this.i_b++
-        ShowPic(res.path).then(resp => {
-          this.brandPicUrlList.push(resp.data)
-        })
-      }
+    uploadPicBrand(value){
+      this.TreeInformation.Brand.brand_pic = value
     },
 
     // 古树照片
-    handleView_pic (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_p = true
+    deletePic(value){
+      this.TreeInformation.Base.pic_path = value
     },
-    handleRemoveList_pic (item,index) {
-      // 删除
-      //删除图片在static中的名称
-      DeletePic(this.TreeInformation.Pic.path[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.TreeInformation.Pic.path.splice(index, 1)
-      this.PicUrlList.splice(index, 1)
+    uploadPic(value){
+      this.TreeInformation.Base.pic_path = value
     },
-    handleSuccessList_pic: function (res, file) {
-      if (res.code === 500) {
-        this.TreeInformation.Pic.path.push(res.path)
-        this.i_p++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList.push(resp.data)
-          console.log('&&&&&&pic', this.TreeInformation.Pic.path)
-        })
-      }
-    },
-    getQrcode(){
-      ShowQRcode(this.tree_code).then(res=>{
-        this.QrcodeImg = res.data
-      })
-    }
+
+    // getQrcode(){
+    //   ShowQRcode(this.tree_code).then(res=>{
+    //     this.QrcodeImg = res.data
+    //   })
+    // }
   },
 
   mounted: function () {
     this.fetchData()
     this.InitIndex()
-    this.getQrcode()
+    // this.getQrcode()
     this.GetGhUnit()
     this.initZwNameList()
 

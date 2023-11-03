@@ -1,5 +1,4 @@
 import Main from '@/components/main'
-
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
  * meta: {
@@ -21,11 +20,22 @@ export default [
     path: '/login',
     name: 'login',
     meta: {
-      title: 'Login - 登录',
+      title: '首页',
       hideInMenu: true
     },
-    component: () => import('@/view/login/login.vue')
+    component: () => import('@/view/login/login.vue'),
   },
+  // {
+  //   path: '/loginMap',
+  //   name: 'loginMap',
+  //   meta: {
+  //     title: '首页',
+  //     hideInMenu: true
+  //   },
+  //   component: () => import('@/view/login/loginMap.vue')
+  // },
+
+
   // {
   //   path: '/',
   //   name: '_home',
@@ -79,16 +89,6 @@ export default [
       hideInBread: true,
     },
     children: [
-      // {
-      //   path: '/home',
-      //   name: 'home',
-      //   meta: {
-      //     icon: 'md-home',
-      //     title: '首页'
-      //   },
-      //   component: () => import('@/view/Maphome/home')
-      // },
-
       {
         path: '/home',
         name: 'home',
@@ -98,15 +98,6 @@ export default [
         },
         component: () => import('@/view/Maphome/homeMap')
       }
-      // {
-      //   path: '/homeTest',
-      //   name: 'homeTest',
-      //   meta: {
-      //     icon: 'md-home',
-      //     title: '首页测试'
-      //   },
-      //   component: () => import('@/view/Maphome/homeTest')
-      // }
     ]
   },
   {
@@ -134,7 +125,7 @@ export default [
     path: '/survey',
     name: 'survey',
     meta: {
-      title: '名木古树建档',
+      title: '古树名木建档',
       icon: 'ios-book',
       access: ['超级管理员', '单位管理员', '调查人员']
     },
@@ -163,7 +154,7 @@ export default [
         path: 'right/:tree_code',
         name: 'right_page',
         meta: {
-          title: '名木古树基本调查表',
+          title: '古树名木基本调查表',
           hideInMenu: true
         },
         component: () => import('@/view/survey/right.vue')
@@ -226,7 +217,7 @@ export default [
         path: 'update/BasicInformation/:tree_code',
         name: 'BaseInfo',
         meta: {
-          title: '名木古树基本信息调查表',
+          title: '古树名木基本信息调查表',
           hideInMenu: true
         },
         component: () => import('@/view/survey/Modify/BasicInformation')
@@ -244,6 +235,99 @@ export default [
       }
     ]
   },
+  {
+    path: '/e-reportManage',
+    name: 'e-reportManage',
+    meta: {
+      title: '电子档案',
+      icon: 'ios-folder-open',
+      access: ['单位管理员', '超级管理员']
+    },
+    component: Main,
+    children: [
+      {
+        path: 'e-report',
+        name: 'e-report',
+        meta: {
+          icon: 'ios-document',
+          title: '电子档案',
+          access: ['单位管理员','超级管理员']
+        },
+        component: () => import('@/view/E-Report/EReport')
+      },
+      {
+        path: 'pdf',
+        name: 'pdf',
+        meta: {
+          icon: 'ios-document',
+          title: 'pdf预览',
+          access: ['单位管理员','超级管理员'],
+          hideInMenu: true
+        },
+        component: () => import('@/view/E-Report/PdfModal')
+      },
+      {
+        path: 'word',
+        name: 'word',
+        meta: {
+          icon: 'ios-document',
+          title: 'word预览',
+          access: ['单位管理员','超级管理员'],
+          hideInMenu: true
+        },
+        component: () => import('@/view/E-Report/WordModal')
+      },
+
+    ]
+
+  },
+
+  {
+    path: '/radar_detection',
+    name: 'radar_detection',
+    meta: {
+      title: '健康检测',
+      icon: 'ios-folder-open',
+      access: ['超级管理员','单位管理员']
+    },
+    component: Main,
+    children: [
+      {
+        path: 'trunk_detection',
+        name: 'trunk_detection',
+        meta: {
+          icon: 'ios-document',
+          title: '树干检测',
+          access: ['超级管理员','单位管理员']
+
+        },
+        component: () => import('@/view/RadarDetection/TrunkDetection/TrunkDetectionTablePage')
+      },
+      // {
+      //   path: 'upload_test',
+      //   name: 'upload_test',
+      //   meta: {
+      //     icon: 'ios-document',
+      //     title: '上传图片',
+      //     access: ['超级管理员','单位管理员']
+      //   },
+      //   component: () => import('@/view/RadarDetection/UploadImage')
+      // },
+      {
+        path: 'tree_root_detection',
+        name: 'tree_root_detection',
+        meta: {
+          icon: 'ios-document',
+          title: '树根检测',
+          access: ['超级管理员','单位管理员'],
+          notCache: true
+        },
+        component: () => import('@/view/RadarDetection/TreeRootDetection/TreeRootDetectionTablePage')
+      },
+    ]
+
+  },
+
 
   {
     path: '/yh_manage',
@@ -288,6 +372,40 @@ export default [
     ]
 
   },
+
+  // {
+  //   path: '/form',
+  //   name: 'formCenter',
+  //   meta: {
+  //     title: '表单管理',
+  //     icon: 'ios-folder-open',
+  //     access: ['单位管理员', '超级管理员']
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'form_designer',
+  //       name: 'formDesigner',
+  //       meta: {
+  //         icon: 'ios-document',
+  //         title: '表单设计',
+  //         access: ['单位管理员','超级管理员']
+  //       },
+  //       component: () => import('@/view/FormCenter/FormDesigner/VFormDesigner')
+  //     },
+  //     {
+  //       path: 'form_manage',
+  //       name: 'formManage',
+  //       meta: {
+  //         icon: 'ios-document',
+  //         title: '模板管理',
+  //         access: ['单位管理员','超级管理员']
+  //       },
+  //       component: () => import('@/view/FormCenter/FormManage/FormManagePage')
+  //     }
+  //   ]
+  //
+  // },
 
   {
     name: 'system',
@@ -591,15 +709,15 @@ export default [
   //       },
   //       component: () => import('@/view/components/cropper/cropper.vue')
   //     },
-  //     {
-  //       path: 'tables_page',
-  //       name: 'tables_page',
-  //       meta: {
-  //         icon: 'md-grid',
-  //         title: '多功能表格'
-  //       },
-  //       component: () => import('@/view/components/tables/tables.vue')
-  //     },
+      // {
+      //   path: 'tables_page',
+      //   name: 'tables_page',
+      //   meta: {
+      //     icon: 'md-grid',
+      //     title: '多功能表格'
+      //   },
+      //   component: () => import('@/view/components/tables/tables.vue')
+      // },
   //     {
   //       path: 'split_pane_page',
   //       name: 'split_pane_page',

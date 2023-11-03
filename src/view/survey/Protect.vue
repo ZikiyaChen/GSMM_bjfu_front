@@ -93,7 +93,8 @@
           </div>
           <Row>
             <Col offset="1">
-              <FormItem prop="fit_status"  :key="Protect.fit_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+<!--              <FormItem prop="fit_status"  :key="Protect.fit_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">-->
+              <FormItem prop="fit_status"  :key="Protect.fit_status" >
                 <span slot="label" >与树体贴合情况：</span>
                 <RadioGroup v-model="Protect.fit_status">
                   <Radio v-for="item in FitStatusList" :label="item.value" :key="item.value"></Radio>
@@ -104,7 +105,8 @@
 
           <Row>
             <Col offset="1">
-              <FormItem prop="drain_hole" :key="Protect.drain_hole" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+<!--              <FormItem prop="drain_hole" :key="Protect.drain_hole" :rules="[{required: true, trigger: 'change', message: '请选择' }]">-->
+              <FormItem prop="drain_hole" :key="Protect.drain_hole">
                 <span slot="label" >排水孔和排湿孔：</span>
                 <RadioGroup v-model="Protect.drain_hole">
                   <Radio v-for="item in DrainHolesList" :label="item.value" :key="item.value"></Radio>
@@ -139,7 +141,8 @@
           </div>
           <Row>
             <Col offset="1">
-              <FormItem prop="clean_status" :key="Protect.clean_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+<!--              <FormItem prop="clean_status" :key="Protect.clean_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">-->
+              <FormItem prop="clean_status" :key="Protect.clean_status" >
                 <span slot="label" >内壁清理程度：</span>
                 <RadioGroup v-model="Protect.clean_status">
                   <Radio v-for="item in CleanStatusList" :label="item.value" :key="item.value"></Radio>
@@ -175,7 +178,8 @@
           </div>
           <Row>
             <Col offset="1" span="11">
-              <FormItem prop="hard_support" :key="Protect.hard_support" :rules="[{required: true,  message: '请输入' }]">
+<!--              <FormItem prop="hard_support" :key="Protect.hard_support" :rules="[{required: true,  message: '请输入' }]">-->
+              <FormItem prop="hard_support" :key="Protect.hard_support">
                 <span slot="label" >硬支撑：</span>
                 <Input v-model="Protect.hard_support">
                   <span slot="append">处</span>
@@ -183,7 +187,8 @@
               </FormItem>
             </Col>
             <Col span="11">
-              <FormItem prop="protaging" :key="Protect.protaging" :rules="[{required: true,  message: '请输入' }]">
+<!--              <FormItem prop="protaging" :key="Protect.protaging" :rules="[{required: true,  message: '请输入' }]">-->
+              <FormItem prop="protaging" :key="Protect.protaging">
                 <span slot="label" >拉纤：</span>
                 <Input v-model="Protect.protaging">
                   <span slot="append">处</span>
@@ -204,7 +209,8 @@
           </Row>
           <Row>
             <Col offset="1">
-              <FormItem prop="support_type" :key="Protect.support_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+              <FormItem prop="support_type" :key="Protect.support_type">
+<!--              <FormItem prop="support_type" :key="Protect.support_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">-->
                 <span slot="label" >支撑类型：</span>
                 <RadioGroup v-model="Protect.support_type">
                   <Radio v-for="item in SupportTypeList" :label="item.value" :key="item.value"></Radio>
@@ -224,7 +230,8 @@
           </Row>
           <Row>
             <Col offset="1">
-              <FormItem prop="hoop_status" :key="Protect.hoop_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+<!--              <FormItem prop="hoop_status" :key="Protect.hoop_status" :rules="[{required: true, trigger: 'change', message: '请选择' }]">-->
+              <FormItem prop="hoop_status" :key="Protect.hoop_status">
                 <span slot="label" >抱箍：</span>
                 <RadioGroup v-model="Protect.hoop_status">
                   <Radio v-for="item in HoopStatusList" :label="item.value" :key="item.value"></Radio>
@@ -271,7 +278,8 @@
           </div>
           <Row>
             <Col offset="1">
-              <FormItem prop="ditch_type" :key="Protect.ditch_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">
+<!--              <FormItem prop="ditch_type" :key="Protect.ditch_type" :rules="[{required: true, trigger: 'change', message: '请选择' }]">-->
+              <FormItem prop="ditch_type" :key="Protect.ditch_type">
                 <span slot="label" >复壮沟类型：</span>
                 <RadioGroup v-model="Protect.ditch_type">
                   <Radio v-for="item in DitchTypeList" :label="item.value" :key="item.value"></Radio>
@@ -281,7 +289,8 @@
           </Row>
           <Row>
             <Col offset="1" span="11">
-              <FormItem prop="ditch_num" :key="Protect.ditch_num" :rules="[{required: true,  message: '请输入' }]">
+<!--              <FormItem prop="ditch_num" :key="Protect.ditch_num" :rules="[{required: true,  message: '请输入' }]">-->
+              <FormItem prop="ditch_num" :key="Protect.ditch_num">
                 <span slot="label" >数量：</span>
                 <Input v-model="Protect.ditch_num"><span slot="append">处</span></Input>
               </FormItem>
@@ -301,7 +310,8 @@
               </FormItem>
             </Col>
             <Col span="11">
-              <FormItem prop="pipe_num" label="通气管：" :key="Protect.pipe_num" :rules="[{required: true, message: '请输入' }]">
+<!--              <FormItem prop="pipe_num" label="通气管：" :key="Protect.pipe_num" :rules="[{required: true, message: '请输入' }]">-->
+              <FormItem prop="pipe_num" label="通气管：" :key="Protect.pipe_num">
                 <Input v-model="Protect.pipe_num"><span slot="append">处</span></Input>
               </FormItem>
             </Col>
@@ -328,7 +338,8 @@
 
           <Row>
             <Col offset="1" span="11">
-              <FormItem prop="well_num" label="渗井：" :key="Protect.well_num" :rules="[{required: true,  message: '请输入' }]">
+<!--              <FormItem prop="well_num" label="渗井：" :key="Protect.well_num" :rules="[{required: true,  message: '请输入' }]">-->
+              <FormItem prop="well_num" label="渗井：" :key="Protect.well_num">
                 <Input v-model="Protect.well_num"><span slot="append">处</span></Input>
               </FormItem>
             </Col>
@@ -366,31 +377,10 @@
                 <div slot="content">反映现有复壮保护措施的典型照片3-9张</div>
               <Icon type="md-alert" size="15" color="#808695"/>
             </Tooltip>特征照片(3-9张)：</span>
-              <div class="demo-upload-list" v-for="(item,index) in PicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"  />
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList(index)"></Icon>
-                </div>
-              </div>
-              <Upload
-                :show-upload-list="false"
-                name="filename"
-                :on-exceeded-size="handleMaxSize"
-                :on-success="handleSuccessList"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                multiple
-                type="drag"
-                :action="UploadPicAPI"
-                class="pic-upload-list">
-                <div class="camera-style">
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible">
-                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible" style="width: 100%" />
-              </Modal>
+
+              <UploadPicCom :img-name-list="Protect.pic" @delete="deletePic" @onUpload="uploadPic">
+              </UploadPicCom>
+
             </FormItem>
 
           </Col>
@@ -457,23 +447,23 @@ import {
 import { dateToString } from "@/libs/tools";
 import {
   AddFzbh,
-  AddFzbhAnalysis, AddGrowthVigor, getNewGrowthVigor, getNewProtect,
+  AddFzbhAnalysis,  getNewProtect,
   getOneTreeBaseInfo, getProtect_By_id,
   postTjxmRecord,
-  queryTjxmRecord, updateGrowthVigor, updateProtect, updateTjxmRecord
+  queryTjxmRecord,  updateProtect, updateTjxmRecord
 } from "@/api/table";
 import Float_bar from "_c/FloatBar/float_bar";
-import { ShowPic, UploadPicApi } from "@/api/upload";
 import { queryUnits, queryUsers } from "@/api/user";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 export default {
   name: "Protect",
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar },
   data () {
     return {
-      UploadPicAPI: UploadPicApi,
       timeIndex: 0,
       timeLineList: PathToList,
+
 
       isShow: false,
       isSubmit: false,
@@ -520,16 +510,12 @@ export default {
       PositionIsList: position_isList,
       CapillaryRootsList: capillary_rootsList,
 
-      PicUrlList: [],
-      showImageUrl: '',
-      visible: false,
-      i: 0,
 
       Protect: {
         id: 0,
         protect: [], // 地上保护措施
         soil_improve: [], // 地下土壤改良措施
-        is_block: null, // 是否封堵树洞
+        is_block: -1, // 是否封堵树洞
 
         fit_status: '', // （封堵）与树体贴合情况
         drain_hole: '', // （封堵）排水孔和排湿孔
@@ -539,17 +525,17 @@ export default {
         clean_status: '', // *（未封堵）内壁清理程度
         antiseptic: '', // *（未封堵）内壁防腐处理
 
-        is_support: null, // *是否存在支撑
+        is_support: -1, // *是否存在支撑
         hard_support: null, // *（有支撑）硬支撑几处
         protaging: null, // *（有支撑）拉纤几处
         steady: '', // （有支撑）稳固情况
         support_type: '', // *（有支撑）支撑类型
         support_isrea: '', // （有支撑）支撑部位是否合理
         hoop_status: '', // *（有支撑）抱箍情况
-        rubber_is: null, // （有支撑）橡胶垫设置是否合理
-        hoop_is: null, // （有支撑）抱箍设置是否合理
+        rubber_is: -1, // （有支撑）橡胶垫设置是否合理
+        hoop_is: -1, // （有支撑）抱箍设置是否合理
 
-        has_ditch: null, // 复壮沟有无
+        has_ditch: -1, // 复壮沟有无
         ditch_type: '', // *（有）复壮沟类型
         ditch_num: null, // *（有）复壮沟数量
         ditch_width: null, // 复壮沟宽度
@@ -565,21 +551,24 @@ export default {
         tree_code: '',
       },
       ruleValidate: {
-        protect: [{ required: true, message: '请选择' }],
-        soil_improve: [{ required: true, message: '请选择' }],
-        is_block: [{ required: true, message: '请选择' }],
-        is_support: [{ required: true, message: '请选择' }],
-        has_ditch: [{ required: true, message: '请选择' }],
-        investigate_username: [{ required: true, trigger: 'change', message: '请选择调查人姓名' }],
-        dc_unit: [{ required: true, trigger: 'change', message: '请选择调查单位' }],
-        update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
+        // protect: [{ required: true, message: '请选择' }],
+        // soil_improve: [{ required: true, message: '请选择' }],
+        // is_block: [{ required: true, message: '请选择' }],
+        // is_support: [{ required: true, message: '请选择' }],
+        // has_ditch: [{ required: true, message: '请选择' }],
+        // investigate_username: [{ required: true, trigger: 'change', message: '请选择调查人姓名' }],
+
+        // update_time: [{ required: true, type: 'date', message: '请选择日期', trigger: 'change' }],
       }
     }
   },
   created () {
+    console.log('111fzbh',this.Protect)
     this.fetchTreeBasicData()
     this.fetchData()
     this.InitIndex()
+
+
   },
   methods: {
     InitIndex () {
@@ -618,6 +607,7 @@ export default {
     },
 
     add(){
+      console.log('333Fz',this.Protect)
       AddFzbh(this.Protect).then(res => {
         getNewProtect(this.tree_code).then(resp => {
           this.tjxm_record.t_id = resp.data.new_Fzbh.id
@@ -648,6 +638,7 @@ export default {
     async SubmitTable(){
       this.Protect.tree_code = this.tree_code
       this.tjxm_record.tree_code = this.tree_code
+      console.log('222Fz',this.Protect)
       this.$refs.protect_form.validate((valid) => {
         if (valid) {
           if(this.isShow){
@@ -674,7 +665,7 @@ export default {
             this.Protect = res.data.new_Fzbh
             this.dcUnits.push({ 'unit': res.data.new_Fzbh.dc_unit })
             this.dcUsers.push(res.data.new_Fzbh.dc_user)
-            this.fetchPic()
+
           })
         } else {
           this.isShow = true
@@ -685,16 +676,7 @@ export default {
         }
       })
     },
-    fetchPic () {
-      this.PicUrlList = []
-      if (this.Protect.pic.length !== 0) {
-        this.Protect.pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList.push(resp.data)
-          })
-        })
-      }
-    },
+
 
     okNext () {
       this.showNextPageModal = false
@@ -850,27 +832,15 @@ export default {
     handleMaxSize (file) {
       this.$Notice.warning({
         title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
+        desc: '文件 ' + file.name + '太大,不能超过 4M.'
       })
     },
     // 特征照片
-    handleView (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible = true
+    deletePic(value){
+      this.Protect.pic = value
     },
-    handleRemoveList (index) {
-      // 删除
-      this.Protect.pic.splice(index, 1)
-      this.PicUrlList.splice(index, 1)
-    },
-    handleSuccessList: function (res, file) {
-      if (res.code === 500) {
-        this.Protect.pic.push(res.path)
-        this.i++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList.push(resp.data)
-        })
-      }
+    uploadPic(value){
+      this.Protect.pic= value
     },
   }
 }

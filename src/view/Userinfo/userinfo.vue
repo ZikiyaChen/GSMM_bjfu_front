@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 style="text-align: center;margin-top: 20px;margin-bottom: 40px">用户个人信息</h1>
     <edit-user-info ref="editUserInfo" @modify="getNewData"></edit-user-info>
     <reset-modal @hideModal="hideModal" :showResetModal="showResetModal"></reset-modal>
     <Row type="flex" justify="center" class="code-row-bg">

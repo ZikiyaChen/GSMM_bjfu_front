@@ -146,7 +146,7 @@ export default {
     return{
       CheckStateList:['已审核','未审核'],
       CheckResultList:['审核通过','审核不通过'],
-      healthList: ['基本','详细'],
+      healthList: ['基础','详细'],
       showModal: false,
 
       res1:undefined,
@@ -162,6 +162,7 @@ export default {
         investigator: '',
         accessStartTime:null,//评估开始时间
         accessEndTime: null, //评估结束时间
+        dc_unit: '',
 
         recorder: '', //报告编制人
         signedTime: null, //报告签发日期
@@ -203,7 +204,18 @@ export default {
 
     }
   },
+  created() {
+    this.initDcUnit()
+  },
   methods:{
+    initDcUnit(){
+      if(this.userInfo.userInfo.is_unitAdmin){
+        this.CoverInfo.dc_unit = this.userInfo.userInfo.username
+      }else if(this.userInfo.userInfo.is_dc){
+        this.CoverInfo.dc_unit = this.userInfo.userInfo.create_by
+      }
+    },
+
     NextPage () {
       if(this.CoverInfo.tree_code){
         this.$router.push({ path: `/survey/update/BasicInformation/${this.CoverInfo.tree_code}` })
@@ -224,14 +236,49 @@ export default {
       })
     },
 
+    // async add(){
+    //   await AddCoverPage(this.CoverInfo).then(res1=>{
+    //     if(res1.data.code === 200){
+    //       this.res1 = res1
+    //     }
+    //   }).catch(error=>{
+    //     this.$Message.error('失败')
+    //   })
+    //   if(this.res1.data.code === 200){
+    //     await getBasic({tree_code:this.CoverInfo.tree_code}).then(res2=>{
+    //       if(res2.data.code === 200){
+    //         this.res2 = res2
+    //       }
+    //     }).catch(error=>{
+    //       this.$Message.error('失败')
+    //     })
+    //   }
+    //   if(this.res2.data.code === 200){
+    //     this.tjxm_record.t_id = this.res2.data.basic.id
+    //     await postTjxmRecord(this.tjxm_record).then(res3=>{
+    //       if(res3.data.code === 200){
+    //         this.$Message.success('成功')
+    //       }else {
+    //         this.$Message.error('失败')
+    //       }
+    //     }).catch(error=>{
+    //       this.$Message.error('失败')
+    //     })
+    //   }
+    // },
     async add(){
-      await AddCoverPage(this.CoverInfo).then(res1=>{
-        if(res1.data.code === 200){
-          this.res1 = res1
-        }
-      }).catch(error=>{
-        this.$Message.error('失败')
-      })
+      this.res1 = await AddCoverPage(this.CoverInfo)
+
+      // await AddCoverPage(this.CoverInfo).then(res1=>{
+      //   this.res1 = res1
+      //   if(res1.data.code === 200){
+      //     this.res1 = res1
+      //   }else if(res1.data.code === 501){
+      //     this.$Message.error('该树存在，不可重复提交')
+      //   }
+      // }).catch(error=>{
+      //   this.$Message.error('失败')
+      // })
       if(this.res1.data.code === 200){
         await getBasic({tree_code:this.CoverInfo.tree_code}).then(res2=>{
           if(res2.data.code === 200){
@@ -241,17 +288,20 @@ export default {
           this.$Message.error('失败')
         })
       }
-      if(this.res2.data.code === 200){
+      if(this.res2.data.code === 200 ){
         this.tjxm_record.t_id = this.res2.data.basic.id
-        await postTjxmRecord(this.tjxm_record).then(res3=>{
-          if(res3.data.code === 200){
-            this.$Message.success('成功')
-          }else {
-            this.$Message.error('失败')
-          }
-        }).catch(error=>{
-          this.$Message.error('失败')
-        })
+        if(this.res1.data.code === 200){
+          await postTjxmRecord(this.tjxm_record).then(res3=>{
+            if(res3.data.code === 200){
+              this.$Message.success('成功')
+            }else {
+              this.$Message.error('失败')
+            }
+          })
+        }else if(this.res1.data.code === 501){
+          this.$Message.error('该树存在，不可重复提交')
+        }
+
       }
     },
 

@@ -1,16 +1,20 @@
 .login{
     width: 100%;
     height: 100%;
-    background-image: url('../../assets/images/login-bg.jpg');
+    //background-image: url('../../assets/images/login-background.jpg');
+    //background-image: url('../../assets/images/login-tree.jpg');
     background-size: cover;
-    background-position: center;
-    position: relative;
+    background-position: center 89%;
+    //position: relative;
     &-con{
-        position: absolute;
-        right: 160px;
-        top: 50%;
-        transform: translateY(-60%);
-        width: 300px;
+        position: relative;
+        //right: 160px;
+        //bottom: 20%;
+        //transform: translateY(-60%);
+        margin-top: 6%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 350px;
         &-header{
             font-size: 16px;
             font-weight: 300;
@@ -25,5 +29,9 @@
             text-align: center;
             color: #c3c3c3;
         }
+        .form{
+            background-image: url('../../assets/images/login-tree.jpg');
+        }
     }
+
 }

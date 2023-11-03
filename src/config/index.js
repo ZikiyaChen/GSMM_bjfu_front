@@ -1,8 +1,10 @@
+
+
 export default {
   /**
    * @description 配置显示在浏览器标签的title
    */
-  title: '古树名木信息管理系统',
+  title: '北京林业大学古树名木管护系统',
   /**
    * @description token在Cookie中存储的天数，默认1天
    */
@@ -14,15 +16,20 @@ export default {
    */
   // useI18n: true,
   useI18n: false,
+
   /**
    * @description api请求基础路径
    */
   baseUrl: {
     // dev: 'https://www.easy-mock.com/mock/5add9213ce4d0e69998a6f51/iview-admin/',
     // dev: 'http://8.140.170.84:35000/',
-    dev: 'http://localhost:5000/',
+    // dev: 'http://localhost:5000/',  //本地
+    // dev: 'http://43.142.37.150:9095/',
+    dev: 'http://49.232.244.63:5005/',
+
     // pro: 'https://produce.com'
-    pro: 'http://8.140.170.84:35000/'
+    pro: 'http://49.232.244.63:5005/',
+    // pro: 'http://49.232.244.63:9095/'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home

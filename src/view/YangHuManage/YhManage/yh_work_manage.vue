@@ -354,6 +354,7 @@ export default {
                   click: () => {
                     console.log(params.row)
                     this.taskInsert.show = true
+                    this.taskInsert.readOnly = true
                     this.taskInsert.type = params.row.yh_type
                     this.taskInsert.allotOrder = params.row.allot_order
                     this.taskInsert.treeNumber = params.row.tree_code
@@ -550,8 +551,8 @@ export default {
   created () {
     this.fetchData()
     const initializeTreeNumberList = () => {
-      queryTreeBasic().then(message => {
-        this.treeNumber.list = message.data.basic.map(item => {
+      queryTreeBasicProperty().then(message => {
+        this.treeNumber.list = message.data.trees_basic_property.map(item => {
           return item.tree_code
         })
       })

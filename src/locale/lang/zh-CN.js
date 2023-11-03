@@ -2,9 +2,9 @@ export default {
   home: '首页',
   homeTest: '首页测试',
   login: '登录',
-  survey: '名木古树调查建档',
-  base_survey_page: '名木古树信息',
-  right_page: '名木古树调查填写',
+  survey: '古树名木调查建档',
+  base_survey_page: '古树名木信息',
+  right_page: '古树名木调查填写',
   environment: '生长环境评估分析',
   growth_vigor: '生长势分析',
   protect: '已采取复壮保护措施情况与分析',
@@ -29,12 +29,16 @@ export default {
   yh_options: '养护项目选项管理',
   other: '其它信息管理',
 
-  BaseInfo: '名木古树基本信息',
+  BaseInfo: '古树名木基本信息',
   environmentUpdate: '生长环境评估分析查看修改',
   GrowthVigorUpdate: '生长势分析查看修改',
   ProtectUpdate: '已采取复壮保护措施情况与分析-查看修改',
 
-  tree_class_page: '名木古树树种管理',
+  radar_detection: '探地雷达检测',
+  trunk_detection: '树干检测',
+  tree_root_detection: '树根检测',
+
+  tree_class_page: '古树名木树种管理',
   // 管理员---看所有的记录
   admin_yh_manage: '养护管理',
   admin_yh_work_manage: '养护任务结果管理',

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import {queryTreeBasic} from "@/api/table";
+import {queryTreeBasic, queryTreeBasicProperty} from "@/api/table";
 import {addTreeToAllot} from "@/api/yh_manage";
 
 export default {
@@ -74,8 +74,8 @@ export default {
       if(this.show) {
         let treesCode = this.trees.split(',')
         console.log('treesCode', treesCode)
-        queryTreeBasic().then(message => {
-          this.taskInfo.treeNumber.list = message.data.basic.map(item => {
+        queryTreeBasicProperty().then(message => {
+          this.taskInfo.treeNumber.list = message.data.trees_basic_property.map(item => {
             if (!treesCode.includes(item.tree_code)) {
               return item.tree_code
             } else {

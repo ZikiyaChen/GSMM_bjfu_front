@@ -49,17 +49,23 @@ router.beforeEach(async (to, from, next) => {
       name: homeName // 跳转到homeName页
     });
   } else {
+
+    console.log('@@@@@@@@',JSON.parse(sessionStorage.getItem('store')))
     console.log("---", store.state.user.hasGetInfo);
     if (store.state.user.hasGetInfo) {
       console.log("1111");
       turnTo(to, store.state.user.access, next);
     } else {
       try {
+
         let result = await store.dispatch("getUserInfo");
 
-        console.log(result);
+        console.log('result',result);
+        console.log('state***',store.state)
 
         let auth = [...result.current_user.role_names];
+
+
         // 拉取用户信息，通过用户权限和跳转的页面的name来判断是否有权限访问;access必须是一个数组，如：['super_admin'] ['super_admin', 'admin']
         turnTo(to, auth, next);
       } catch (err) {

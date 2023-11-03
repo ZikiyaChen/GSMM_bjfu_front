@@ -48,7 +48,9 @@ export default {
         result.trees = tempArray
         insertRecordByTypeAssignment(this.content.type, this.content.allotOrder, result).then(message => {
           if(message.data.code === 200) {
+
             this.$Message.success('提交成功')
+
           }else {
             this.$Message.error('提交失败')
           }
@@ -115,6 +117,7 @@ export default {
         }
         this.changeShowFlag()
         this.changeBasicFormData(basicFormData)
+
         switchComponent()
       })
     }

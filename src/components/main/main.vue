@@ -7,8 +7,10 @@
         <div class="logo-con">
 <!--          <img v-show="!collapsed" :src="maxLogo" key="max-logo" />-->
 <!--          <img v-show="collapsed" :src="minLogo" key="min-logo" />-->
-          <div  v-show="!collapsed" ><span style="font-size: 20px;padding-left: 5px;color: #eeeeee;"><img :src="maxLogo" key="max-logo" style="float: left" />古树名木管理系统</span></div>
-          <img v-show="collapsed" :src="minLogo" key="min-logo" />
+          <div  v-show="!collapsed" ><span style="font-size: 20px;padding-left: 5px;color: #eeeeee;">
+<!--            <img :src="maxLogo" key="max-logo" style="float: left" />-->
+            北林古树名木管护系统</span></div>
+<!--          <img v-show="collapsed" :src="minLogo" key="min-logo" />-->
         </div>
       </side-menu>
     </Sider>
@@ -20,6 +22,11 @@
 <!--          <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>-->
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
 
+          <ButtonGroup style="margin-top: 15px; margin-right: 10px" size="large" v-if="this.userInfo.userInfo.is_reader === true">
+            <Button v-for="(value,index) in this.userInfo.userInfo.role_names" :key="value" @click="handleClickToDcYh(value)"
+                    :type="getBtnTypeUnitAdmin(value)">{{value}}
+            </Button>
+          </ButtonGroup>
           <span style="margin-right: 30px;font-size: medium" >
               {{this.userInfo.userInfo.name}}, 您好!
             </span>
@@ -73,10 +80,15 @@
         </Menu>
       </div>
 
-      <div class="logo-style">
+      <div class="logo-style" style=" margin-left: 20%;" v-if="this.userInfo.userInfo.is_reader === false">
         <div><span style="font-size: 20px;padding-left: 5px;color: #eeeeee;">
           <img :src="maxLogo" key="max-logo" style="float: left; height: 40px;width: 40px;margin-top: 10px" />
-          古树名木管理系统</span></div>
+          北京林业大学古树名木管护系统</span></div>
+      </div>
+      <div class="logo-style" v-else>
+        <div><span style="font-size: 20px;padding-left: 5px;color: #eeeeee;">
+          <img :src="maxLogo" key="max-logo" style="float: left; height: 40px;width: 40px;margin-top: 10px" />
+          北京林业大学古树名木管护系统</span></div>
       </div>
       <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange" style="width: 100%">
 
@@ -84,7 +96,11 @@
         <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px" :lang="local"/>
 <!--        <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>-->
         <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
-
+        <ButtonGroup style="margin-top: 15px; margin-right: 10px" size="large" v-if="this.userInfo.userInfo.is_reader === true">
+          <Button v-for="(value,index) in this.userInfo.userInfo.role_names" :key="value" @click="handleClickTo(value)"
+                  :type="getBtnTypeDcYh(value)">{{value}}
+          </Button>
+        </ButtonGroup>
         <span style="margin-right: 30px;font-size: medium; color: white" >
               Hi {{this.userInfo.userInfo.unit}}  的  {{this.userInfo.userInfo.name}}, 您好!
             </span>
@@ -124,7 +140,7 @@ import Fullscreen from './components/fullscreen'
 import Language from './components/language'
 import ErrorStore from './components/error-store'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
-import { getNewTagList, routeEqual } from '@/libs/util'
+import {getNewTagList, localSave, routeEqual} from '@/libs/util'
 import routers from '@/router/routers'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
@@ -143,6 +159,7 @@ export default {
     User,
     ABackTop
   },
+  inject: ['reload'],
   mixins: [UserMixin],
   data () {
     return {
@@ -169,6 +186,7 @@ export default {
     },
     cacheList () {
       const list = ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
+      console.log('$$$,',list)
       return list
     },
     menuList () {
@@ -191,7 +209,10 @@ export default {
       'addTag',
       'setLocal',
       'setHomeRoute',
-      'closeTag'
+      'closeTag',
+      'setIs',
+      'setAccess',
+      'setCurrentAccess'
     ]),
     ...mapActions([
       'handleLogin',
@@ -230,6 +251,50 @@ export default {
       }
       this.setTagNavList(res)
     },
+
+    handleClickToDcYh (value) {
+      this.setCurrentAccess(value)
+      this.setIs(value)
+      this.reload()
+      this.$router.push({name:'home'})
+      // localStorage.tagNaveList = []
+      this.setTagNavList([])
+      // localSave('tagNaveList',[])
+      if(value === '调查人员'){
+        this.setAccess(['调查人员'])
+      }else if(value === '养护人员'){
+        this.setAccess(['养护人员'])
+      }else if(value === '单位管理员'){
+        this.setAccess(['单位管理员'])
+      }
+    },
+    handleClickTo(value) {
+      this.setCurrentAccess(value)
+      if (value === '调查人员') {
+        this.setAccess(['调查人员'])
+      } else if (value === '养护人员') {
+        this.setAccess(['养护人员'])
+      } else if (value === '单位管理员') {
+        this.setAccess(['单位管理员'])
+      }
+      this.setIs(value)
+      this.reload()
+      this.$router.push({name:'home'})
+      // localSave('tagNaveList',[])
+      this.setTagNavList([])
+      // localStorage.tagNaveList = []
+    },
+    getBtnTypeUnitAdmin: function (value) {
+      if (value === this.current_role) {
+        return 'info'
+      }
+    },
+    getBtnTypeDcYh: function (value) {
+      console.log('%',value,this.current_role)
+      if (value === this.current_role) {
+        return 'info'
+      }
+    },
     handleClick (item) {
       this.turnToPage(item)
     },
@@ -238,7 +303,9 @@ export default {
     }
   },
   watch: {
-    '$route' (newRoute) {
+    '$route' (newRoute,oldRoute) {
+      console.log('oldRoute',oldRoute)
+      console.log('newRoute',newRoute)
       const { name, query, params, meta } = newRoute
       this.addTag({
         route: { name, query, params, meta },
@@ -295,6 +362,6 @@ export default {
 .logo-style {
   position: relative;
   float: left;
-  margin-left: 20%;
+
 }
 </style>

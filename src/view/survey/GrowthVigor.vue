@@ -179,6 +179,59 @@
           </Col>
         </Row>
 
+
+<!--        <Row>-->
+<!--          <Col offset="1">-->
+<!--            <FormItem prop="pic_path">-->
+<!--            <span slot="label" >-->
+<!--              <Tooltip placement="top" max-width="200" >-->
+<!--                <div slot="content">新梢典型照片，叶片宿存情况照片，非正常叶片照片</div>-->
+<!--              <Icon type="md-alert" size="15" color="#808695"/>-->
+<!--            </Tooltip>特征照片</span>-->
+
+<!--              <div class="demo-upload-list" v-for="(item,index) in GrowthVigor.pic_path" :key="index">-->
+
+<!--&lt;!&ndash;                <img :src="'data:image/jpg;base64,'+item"  />&ndash;&gt;-->
+<!--&lt;!&ndash;                <template v-if="!showCircle">&ndash;&gt;-->
+<!--                <img :src="getPicAPI+item"  />-->
+<!--                <div class="demo-upload-list-cover">-->
+<!--                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>-->
+<!--                  <Icon type="ios-trash-outline" @click.native="handleRemoveList(index)"></Icon>-->
+<!--                </div>-->
+<!--&lt;!&ndash;                </template>&ndash;&gt;-->
+<!--&lt;!&ndash;                <template v-else>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <i-circle  :percent="percent" style="font-size:24px; position: absolute; z-index: 2; width: 90%; height: 90%; transform: translateX(-50%)">&ndash;&gt;-->
+<!--&lt;!&ndash;                      <span >{{ percent }}%</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </i-circle>&ndash;&gt;-->
+<!--&lt;!&ndash;                </template>&ndash;&gt;-->
+<!--              </div>-->
+
+
+<!--              <Upload-->
+<!--                :show-upload-list="false"-->
+<!--                name="filename"-->
+<!--                :on-exceeded-size="handleMaxSize"-->
+<!--                :on-success="handleSuccessList"-->
+<!--                :before-upload="beforeUpload"-->
+<!--                :format="['jpg','jpeg','png']"-->
+<!--                :max-size="4096"-->
+<!--                multiple-->
+<!--                type="drag"-->
+<!--                :action="UploadPicAPI"-->
+<!--                class="pic-upload-list">-->
+<!--                <div class="camera-style">-->
+<!--                  <Icon type="ios-camera" size="20"></Icon>-->
+<!--                </div>-->
+<!--              </Upload>-->
+
+<!--              <Modal title="图片预览" v-model="visible">-->
+<!--&lt;!&ndash;                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible" style="width: 100%" />&ndash;&gt;-->
+<!--                <img :src="getPicAPI+showImageUrl" v-if="visible" style="width: 100%" />-->
+<!--              </Modal>-->
+<!--            </FormItem>-->
+
+<!--          </Col>-->
+<!--        </Row>-->
         <Row>
           <Col offset="1">
             <FormItem prop="pic_path">
@@ -187,31 +240,8 @@
                 <div slot="content">新梢典型照片，叶片宿存情况照片，非正常叶片照片</div>
               <Icon type="md-alert" size="15" color="#808695"/>
             </Tooltip>特征照片</span>
-              <div class="demo-upload-list" v-for="(item,index) in PicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"  />
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList(index)"></Icon>
-                </div>
-              </div>
-              <Upload
-                :show-upload-list="false"
-                name="filename"
-                :on-exceeded-size="handleMaxSize"
-                :on-success="handleSuccessList"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                multiple
-                type="drag"
-                :action="UploadPicAPI"
-                class="pic-upload-list">
-                <div class="camera-style">
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible">
-                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible" style="width: 100%" />
-              </Modal>
+              <UploadPicCom :img-name-list="GrowthVigor.pic_path" @delete="deletePic" @onUpload="uploadPic">
+              </UploadPicCom>
             </FormItem>
 
           </Col>
@@ -277,25 +307,29 @@ import {
 } from "@/view/survey/options";
 import { dateToString } from "@/libs/tools";
 import {
-  AddEnvironment,
-  AddGpAnalysis, AddGrowthVigor, getGrowthVigorById, getNewGeAnalysis,
+  AddGpAnalysis, AddGrowthVigor, getGrowthVigorById,
   getNewGrowthVigor,
   getOneTreeBaseInfo,
-  postTjxmRecord, queryTjxmRecord, updateEnvironment, updateGrowthVigor, updateTjxmRecord
+  postTjxmRecord, queryTjxmRecord,  updateGrowthVigor, updateTjxmRecord
 } from "@/api/table"
-import {DeletePic, ShowPic, UploadPicApi} from "@/api/upload";
+
 import { checkDecimal } from "@/view/tools-methods/someValidateRule";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 export default {
   name: "GrowthVigor",
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar},
   data () {
     return {
-      UploadPicAPI: UploadPicApi,
+      percent: 80,
+      showCircle: false,
+
+
       timeIndex: 0,
       timeLineList: PathToList,
+
 
       isShow: false,
       isSubmit: false,
@@ -303,10 +337,10 @@ export default {
       showPreviousPageModal: false,
       tree_code: this.$route.params.tree_code,
       value: 0,
-      PicUrlList: [],
-      showImageUrl: '',
-      visible: false,
-      i: 0,
+
+
+
+
 
       dcUnits: [],
       dcUsers: [],
@@ -365,6 +399,31 @@ export default {
     this.InitIndex()
   },
   methods: {
+    deletePic(value){
+      this.GrowthVigor.pic_path = value
+    },
+    uploadPic(value){
+      this.GrowthVigor.pic_path = value
+    },
+    // onProgress(e, file,fileList){
+    //   console.log('--e',e)
+    //   console.log('--file',file)
+    //   console.log('--fileList',fileList)
+    //
+    //   e.target.onprogress=(e)=>{
+    //     console.log('***',e)
+    //     if(e.loaded!==e.total){
+    //       this.showCircle = true
+    //       this.percent = parseFloat(((e.loaded / e.total) * 100).toFixed(2))
+    //
+    //     }else {
+    //       this.showCircle = false
+    //     }
+    //
+    //   }
+    //
+    // },
+
     InitIndex () {
       this.timeLineList.forEach((item, index) => {
         // 执行代码
@@ -458,7 +517,7 @@ export default {
             this.GrowthVigor = res.data.growth_vigor
             this.dcUnits.push({ 'unit': res.data.growth_vigor.dc_unit })
             this.dcUsers.push(res.data.growth_vigor.dc_user)
-            this.fetchPic()
+
           })
         } else {
           this.isShow = true
@@ -468,16 +527,6 @@ export default {
           })
         }
       })
-    },
-    fetchPic () {
-      this.PicUrlList = []
-      if (this.GrowthVigor.pic_path.length !== 0) {
-        this.GrowthVigor.pic_path.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList.push(resp.data)
-          })
-        })
-      }
     },
 
     Update () {
@@ -617,38 +666,6 @@ export default {
       this.GrowthVigor.photosynthetic = (this.GrowthVigor.Fm - this.GrowthVigor.Fo) / this.GrowthVigor.Fm
     },
 
-    handleMaxSize (file) {
-      this.$Notice.warning({
-        title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
-      })
-    },
-    // 特征照片
-    handleView (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible = true
-    },
-    handleRemoveList (index) {
-      // 删除
-      this.GrowthVigor.pic_path.splice(index, 1)
-      this.PicUrlList.splice(index, 1)
-      DeletePic(this.GrowthVigor.pic_path[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-    },
-    handleSuccessList: function (res, file) {
-      if (res.code === 500) {
-        this.GrowthVigor.pic_path.push(res.path)
-        this.i++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList.push(resp.data)
-        })
-      }
-    },
   }
 }
 </script>

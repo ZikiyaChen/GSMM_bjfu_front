@@ -2,7 +2,7 @@
   <Modal
     width="44"
     :value="show"
-    title="名木古树养护历史"
+    title="古树名木养护历史"
     @on-ok="handleOK"
     @on-cancel="handleCancel"
     @on-visible-change="fetchData">

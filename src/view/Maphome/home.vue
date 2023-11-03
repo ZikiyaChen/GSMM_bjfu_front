@@ -124,7 +124,7 @@ export default {
       // let place={dis:'平谷区',level:'district'}
       // this.drawPolygon(place)
 
-    },500)
+    },800)
 
   },
   methods: {

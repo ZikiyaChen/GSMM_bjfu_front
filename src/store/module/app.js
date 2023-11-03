@@ -46,6 +46,7 @@ export default {
       state.homeRoute = getHomeRoute(routes, homeName)
     },
     setTagNavList (state, list) {
+      console.log('11',state,list)
       let tagList = []
       if (list) {
         tagList = [...list]
@@ -57,6 +58,7 @@ export default {
         tagList.unshift(homeTag)
       }
       state.tagNavList = tagList
+
       setTagNavListInLocalstorage([...tagList])
     },
     closeTag (state, route) {

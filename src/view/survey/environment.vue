@@ -148,9 +148,9 @@
 
       <Row>
         <Col span="11" offset="1">
-          <FormItem label="土壤容量：" prop="soil_capacity">
-            <Input v-model="environment.soil_capacity" placeholder="请输入土壤容量">
-              <span slot="append"> g/cm<sup>2</sup></span>
+          <FormItem label="土壤容重：" prop="soil_capacity">
+            <Input v-model="environment.soil_capacity" placeholder="请输入土壤容重">
+              <span slot="append"> g/cm<sup>3</sup></span>
             </Input>
           </FormItem>
         </Col>
@@ -286,31 +286,8 @@
       <Row>
         <Col offset="1">
           <FormItem label="现状保护示意图：" prop="protect_pic">
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList1" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView1(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList1(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList1"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible1">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible1" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="environment.protect_pic" @delete="deletePicProtect" @onUpload="uploadPicProtect">
+            </UploadPicCom>
           </FormItem>
         </Col>
       </Row>
@@ -387,31 +364,8 @@
                 <div slot="content">提供古树保护范围实景照片，土壤特征照片，保护范围内设施、构筑物及其他植物照片3-6张</div>
               <Icon type="md-alert" size="15" color="#808695"/>
             </Tooltip>特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList2" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView2(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList2(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList2"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible2">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible2" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="environment.pic_path" @delete="deletePic" @onUpload="uploadPic">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -471,16 +425,18 @@ import {
   postTjxmRecord,
   queryTjxmRecord, updateEnvironment, updateTjxmRecord
 } from "@/api/table";
-import { ShowPic, UploadPicApi } from "@/api/upload";
+import {getPicApi, ShowPic, UploadPicApi} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 export default {
   name: "environment",
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar },
   data () {
     return {
-      UploadPicAPI: UploadPicApi,
+
+
       timeIndex: 0,
       timeLineList: PathToList,
 
@@ -488,15 +444,11 @@ export default {
       isSubmit: false,
       loading: false,
       showNextPageModal: false,
-      showImageUrl: '',
 
-      PicUrlList1: [],
-      visible1: false,
-      i1: 0,
 
-      PicUrlList2: [],
-      visible2: false,
-      i2: 0,
+
+
+
 
       dcUsers: [],
       dcUnits: [],
@@ -583,10 +535,10 @@ export default {
         aspect: [{ required: true, trigger: 'blur', message: '请填写坡向' }],
         slope: [{ required: true, message: '请填写坡度' }],
         slope_position: [{ required: true, trigger: 'blur', message: '请填写坡位' }],
-        protect_E: [{ required: true, message: '请填写数据' }],
-        protect_W: [{ required: true, message: '请填写数据' }],
-        protect_N: [{ required: true, message: '请填写数据' }],
-        protect_S: [{ required: true, message: '请填写数据' }],
+        // protect_E: [{ required: true, message: '请填写数据' }],
+        // protect_W: [{ required: true, message: '请填写数据' }],
+        // protect_N: [{ required: true, message: '请填写数据' }],
+        // protect_S: [{ required: true, message: '请填写数据' }],
         other_plants: [{ required: true, trigger: 'change', message: '请选择' }],
         evaluation: [{ required: true, trigger: 'change', message: '请选择' }],
         envoriment_problem: [{ required: true, trigger: 'blur', message: '请填写' }],
@@ -715,7 +667,7 @@ export default {
             this.environment = res.data.environment_by_id
             this.dcUnits.push({ 'unit': this.environment.dc_unit })
             this.dcUsers.push(this.environment.dc_user)
-            this.fetchPic()
+
           })
         } else {
           queryUnits().then(res => {
@@ -726,25 +678,7 @@ export default {
         }
       })
     },
-    fetchPic () {
-      this.PicUrlList1 = []
-      this.PicUrlList2 = []
-      if (this.environment.protect_pic.length !== 0) {
-        this.environment.protect_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList1.push(resp.data)
-          })
-        })
-      }
 
-      if (this.environment.pic_path.length !== 0) {
-        this.environment.pic_path.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList2.push(resp.data)
-          })
-        })
-      }
-    },
 
     ok () {
       this.showNextPageModal = false
@@ -903,49 +837,20 @@ export default {
       })
     },
 
-    handleMaxSize (file) {
-      this.$Notice.warning({
-        title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
-      })
-    },
+
     // 保护范围示意图
-    handleView1 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible1 = true
+    deletePicProtect(value){
+      this.environment.protect_pic = value
     },
-    handleRemoveList1 (index) {
-      // 删除
-      this.environment.protect_pic.splice(index, 1)
-      this.PicUrlList1.splice(index, 1)
-    },
-    handleSuccessList1: function (res, file) {
-      if (res.code === 500) {
-        this.environment.protect_pic.push(res.path)
-        this.i1++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList1.push(resp.data)
-        })
-      }
+    uploadPicProtect(value){
+      this.environment.protect_pic = value
     },
     // 特征照片
-    handleView2 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible2 = true
+    deletePic(value){
+      this.environment.pic_path = value
     },
-    handleRemoveList2 (index) {
-      // 删除
-      this.environment.pic_path.splice(index, 1)
-      this.PicUrlList2.splice(index, 1)
-    },
-    handleSuccessList2: function (res, file) {
-      if (res.code === 500) {
-        this.environment.pic_path.push(res.path)
-        this.i2++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList2.push(resp.data)
-        })
-      }
+    uploadPic(value){
+      this.environment.pic_path = value
     },
   }
 }

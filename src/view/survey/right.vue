@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <h2 slot="title" style="text-align: center">名木古树每木调查表</h2>
+      <h2 slot="title" style="text-align: center">古树名木每木调查表</h2>
       <Form :label-width="120" label-position="right" ref="Tree_form" :model="TreeInformation" :rules="ruleValidate" inline>
         <h4>基本信息：</h4>
         <Row>
@@ -403,31 +403,8 @@
         <Row>
           <Col offset="1">
         <FormItem label="文化历史照片" prop="Dong.history_pic">
-          <div class="demo-upload-list" v-for="(item,index) in historyPicUrlList" :key="index">
-            <img :src="'data:image/jpg;base64,'+item"  />
-            <div class="demo-upload-list-cover">
-              <Icon type="ios-eye-outline" @click.native="handleView_history(item)"></Icon>
-              <Icon type="ios-trash-outline" @click.native="handleRemoveList_history(index)"></Icon>
-            </div>
-          </div>
-          <Upload
-            :show-upload-list="false"
-            name="filename"
-            :on-exceeded-size="handleMaxSize"
-            :on-success="handleSuccessList_history"
-            :format="['jpg','jpeg','png']"
-            :max-size="2048"
-            multiple
-            type="drag"
-            :action="UploadPicAPI"
-            style="display: inline-block;width:70px;">
-            <div style="width: 70px;height:70px;line-height: 70px;">
-              <Icon type="ios-camera" size="20"></Icon>
-            </div>
-          </Upload>
-          <Modal title="图片预览" v-model="visible_h">
-            <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_h" style="width: 100%" />
-          </Modal>
+          <UploadPicCom :img-name-list="TreeInformation.Dong.history_pic" @delete="deletePicHistory" @onUpload="uploadPicHistory">
+          </UploadPicCom>
         </FormItem>
           </Col>
         </Row>
@@ -482,31 +459,8 @@
         <Row>
           <Col offset="1">
             <FormItem label="古树照片" prop="Pic.path">
-              <div class="demo-upload-list" v-for="(item,index) in PicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"  />
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView_pic(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_pic(index)"></Icon>
-                </div>
-              </div>
-              <Upload
-                :show-upload-list="false"
-                name="filename"
-                :on-exceeded-size="handleMaxSize"
-                :on-success="handleSuccessList_pic"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                multiple
-                type="drag"
-                :action="UploadPicAPI"
-                style="display: inline-block;width:70px;">
-                <div style="width: 70px;height:70px;line-height: 70px;">
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible_p">
-                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_p" style="width: 100%" />
-              </Modal>
+              <UploadPicCom :img-name-list="TreeInformation.Pic.path" @delete="deletePic" @onUpload="uploadPic">
+              </UploadPicCom>
             </FormItem>
           </Col>
         </Row>
@@ -552,31 +506,8 @@
         <Row>
           <Col offset="1">
             <FormItem label="树牌照片" prop="Brand.brand_pic">
-              <div class="demo-upload-list" v-for="(item,index) in brandPicUrlList" :key="index">
-                <img :src="'data:image/jpg;base64,'+item"  />
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView_brand(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemoveList_brand(index)"></Icon>
-                </div>
-              </div>
-              <Upload
-                :show-upload-list="false"
-                name="filename"
-                :on-exceeded-size="handleMaxSize"
-                :on-success="handleSuccessList_brand"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                multiple
-                type="drag"
-                :action="UploadPicAPI"
-                style="display: inline-block;width:70px;">
-                <div style="width: 70px;height:70px;line-height: 70px;">
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible_b">
-                <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_b" style="width: 100%" />
-              </Modal>
+              <UploadPicCom :img-name-list="TreeInformation.Brand.brand_pic" @delete="deletePicBrand" @onUpload="uploadPicBrand">
+              </UploadPicCom>
             </FormItem>
           </Col>
         </Row>
@@ -596,7 +527,7 @@
         title="提醒"
         @on-ok="ok"
         @on-cancel="cancel">
-        <p>请先填写《名木古树基本信息表》，并提交或保存该表</p>
+        <p>请先填写《古树名木基本信息表》，并提交或保存该表</p>
         <p>如果需要填写，请点击“确定”</p>
       </Modal>
 
@@ -606,37 +537,37 @@
 
 <script>
 import AMap from 'AMap';
-import { is_signedList, levelList, familyList, palceList, placing_characterList,
+import { is_signedList, levelList, palceList, placing_characterList,
   ownerList, reasonList, has_brandList, brand_rightList, is_rightList, g_vigorList,
   g_environmentList, conserve_statusList, yhfz_statusList } from "@/view/survey/right_base_options";
 import { dateToString, forEach } from "@/libs/tools";
-import axios from "@/libs/api.request";
+
 import {
-  getTest,
   AddBasicProperty,
   AddDynamicProperty,
   AddGeoProperty,
   AddTreeBrand,
   AddPicRecord,
   queryFamilyTypes, queryGenusTypes, queryClassTypes,
-  postFamilyTypes, postGenusTypes, postClassTypes,
-  getBasic, postTjxmRecord, queryTreeBasicProperty, getOneTreeBaseInfo
+
+  getBasic, postTjxmRecord, getOneTreeBaseInfo
 } from "@/api/table";
-import {DeletePic, ProduceQrcode, ShowPic, UploadPicApi} from "@/api/upload";
+import {DeletePic} from "@/api/upload";
 import name from "@/view/tools-methods/name.json"
 
 import Float_bar from "_c/FloatBar/float_bar";
-import { queryUnits, queryUnitUsers, queryUsers } from "@/api/user";
+import { queryUnits, queryUsers } from "@/api/user";
 import UserMixin from "@/mixin/UserMixin";
 import {GetKe, GetShu, GetZhong} from "@/api/tree_species";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 export default {
   name: "right",
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar },
   mixins: [UserMixin],
   data () {
     return {
-      UploadPicAPI: UploadPicApi,
+
       showModal: false,
       date: new Date(),
 
@@ -761,19 +692,8 @@ export default {
 
       },
 
-      showImageUrl: '',
 
-      brandPicUrlList: [],
-      visible_b: false,
-      i_b: 0,
 
-      visible_h: false,
-      i_h: 0,
-      historyPicUrlList: [],
-
-      visible_p: false,
-      i_p: 0,
-      PicUrlList: [],
 
       map: null,
       lng: null,
@@ -1111,9 +1031,9 @@ export default {
               postTjxmRecord(this.basic_record).then(record => {
                 if (record.data.code === 200) {
                   this.$Message.success('成功')
-                  ProduceQrcode(this.TreeInformation.tree_code).then(msg =>{
-                    console.log(msg)
-                  })//生成二维码 文件以tree_code命名
+                  // ProduceQrcode(this.TreeInformation.tree_code).then(msg =>{
+                  //   console.log(msg)
+                  // })//生成二维码 文件以tree_code命名
                 }
               })
             })
@@ -1170,91 +1090,29 @@ export default {
       console.log(this.TreeInformation)
     },
 
-    handleMaxSize (file) {
-      this.$Notice.warning({
-        title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
-      })
-    },
+
     // 文化历史照片
-    handleView_history (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_h = true
+    deletePicHistory(value){
+      this.TreeInformation.Dong.history_pic = value
     },
-    handleRemoveList_history (index) {
-      // 删除
-      DeletePic(this.TreeInformation.Dong.history_pic[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.TreeInformation.Dong.history_pic.splice(index, 1)
-      this.historyPicUrlList.splice(index, 1)
-    },
-    handleSuccessList_history: function (res, file) {
-      if (res.code === 500) {
-        this.TreeInformation.Dong.history_pic.push(res.path)
-        this.i_h++
-        ShowPic(res.path).then(resp => {
-          this.historyPicUrlList.push(resp.data)
-        })
-      }
+    uploadPicHistory(value){
+      this.TreeInformation.Dong.history_pic = value
     },
 
     // 树牌照片
-    handleView_brand (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_b = true
+    deletePicBrand(value){
+      this.TreeInformation.Brand.brand_pic = value
     },
-    handleRemoveList_brand (index) {
-      // 删除
-      DeletePic(this.TreeInformation.Brand.brand_pic[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.TreeInformation.Brand.brand_pic.splice(index, 1)
-      this.brandPicUrlList.splice(index, 1)
-    },
-    handleSuccessList_brand: function (res, file) {
-      if (res.code === 500) {
-        this.TreeInformation.Brand.brand_pic.push(res.path)
-        this.i_b++
-        ShowPic(res.path).then(resp => {
-          this.brandPicUrlList.push(resp.data)
-        })
-      }
+    uploadPicBrand(value){
+      this.TreeInformation.Brand.brand_pic = value
     },
 
     // 古树照片
-    handleView_pic (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_p = true
+    deletePic(value){
+      this.TreeInformation.Pic.path = value
     },
-    handleRemoveList_pic (index) {
-      // 删除
-      DeletePic(this.TreeInformation.Pic.path[index]).then(msg=>{
-        if(msg.data.code === 200){
-          this.$Message.success('删除成功')
-        }else {
-          this.$Message.error('删除失败')
-        }
-      })
-      this.TreeInformation.Pic.path.splice(index, 1)
-      this.PicUrlList.splice(index, 1)
-    },
-    handleSuccessList_pic: function (res, file) {
-      if (res.code === 500) {
-        this.TreeInformation.Pic.path.push(res.path)
-        this.i_p++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList.push(resp.data)
-        })
-      }
+    uploadPic(value){
+      this.TreeInformation.Pic.path = value
     },
 
     // var address  = document.getElementById('address').value;

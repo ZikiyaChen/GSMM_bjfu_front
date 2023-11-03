@@ -207,6 +207,7 @@ export default {
     },
 
     handleDelete (row) {
+      console.log('养护项目分类删除',row)
       deleteUnitYhOptions(row.id).then((result) => {
         if (result.data.code === 200) {
           this.$Message.success('信息删除成功')

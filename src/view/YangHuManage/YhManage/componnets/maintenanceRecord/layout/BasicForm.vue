@@ -2,6 +2,7 @@
   <div>
     <Modal
       width="44"
+      :mask-closable="false"
       :value="show"
       :loading="loading"
       @on-ok="handleConfirm"
@@ -44,7 +45,8 @@
         <FormItem label="古树树号" prop="treeNumber">
           <Row>
             <Col span="4">
-              <Input v-model="maintenanceInfo.treeNumber.prefix" style="text-align: center" readonly></Input>
+              <Input v-if="this.userInfo.userInfo.area==='白水县'" value="61052700" style="text-align: center" readonly>61052700</Input>
+              <Input v-else value="110131" style="text-align: center" readonly>110131</Input>
             </Col>
             <Col span="20">
               <Select
@@ -112,10 +114,16 @@ import { getCurrentWeather } from "@/api/yh_manage";
 import {queryTreeBasic, queryTreeBasicProperty} from "@/api/table";
 import { getUserInfo } from "@/api/user";
 import { mapState } from "vuex";
+import UserMixin from "@/mixin/UserMixin";
 export default {
   name: 'BasicForm',
+  mixins: [UserMixin],
   props: {
     show: {
+      type: Boolean,
+      default: false
+    },
+    onlyRead: {
       type: Boolean,
       default: false
     }
@@ -159,7 +167,7 @@ export default {
           loading: false,
           list: [],
           options: [],
-          prefix: '110131'
+          // prefix: '110131'
         },
       },
     }
@@ -267,8 +275,8 @@ export default {
       if (this.showFlag) {
         this.maintenanceInfo.treeNumber.model1 = this.basicFormData.treeNumber
       }
-      queryTreeBasic().then(message => {
-        this.treesBasicProperty = message.data.basic
+      queryTreeBasicProperty().then(message => {
+        this.treesBasicProperty = message.data.trees_basic_property
         this.maintenanceInfo.treeNumber.list = this.treesBasicProperty.map(item => {
           return item.tree_code
         })

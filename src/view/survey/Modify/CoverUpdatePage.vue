@@ -152,7 +152,7 @@
 
 <script>
 import Float_bar from "_c/FloatBar/float_bar";
-import {AddCoverPage, getBasic, postTjxmRecord, queryTjxmRecord, updateBasic} from "@/api/table";
+import {AddCoverPage, getBasic, postTjxmRecord, queryTjxmRecord, updateCover} from "@/api/table";
 import {dateToString} from "@/libs/tools";
 import {PathToList} from "@/view/survey/options";
 import UserMixin from "@/mixin/UserMixin";
@@ -162,13 +162,14 @@ export default {
   mixins: [UserMixin],
   data(){
     return{
+      is_add: false, //判断当前cover是否有
       nowDate: new Date(),
       timeIndex: 0,
       timeLineList: PathToList,
 
       CheckStateList:['已审核','未审核'],
       CheckResultList:['审核通过','审核不通过'],
-      healthList: ['基本','详细'],
+      healthList: ['基础','详细'],
       showModal: false,
 
       tree_code: this.$route.params.tree_code,
@@ -274,9 +275,22 @@ export default {
         dw_CheckTime: this.CoverInfo.dw_CheckTime,
         dw_CheckResult: this.CoverInfo.dw_CheckResult,
         dw_Reason: this.CoverInfo.dw_Reason,
-        dw_Checker: this.CoverInfo.dw_Checker
+        dw_Checker: this.CoverInfo.dw_Checker,
+
+        CompanyA: this.CoverInfo.CompanyA,
+        CompanyB: this.CoverInfo.CompanyB,
+        checker: this.CoverInfo.checker,
+        investigator: this.CoverInfo.investigator,
+        accessStartTime: this.CoverInfo.accessStartTime,//评估开始时间
+        accessEndTime: this.CoverInfo.accessEndTime, //评估结束时间
+        recorder: this.CoverInfo.recorder, //报告编制人
+        signedTime: this.CoverInfo.signedTime, //报告签发日期
+        zyjgfx: this.CoverInfo.zyjgfx, //主要结果分析
+        healthCondition: this.CoverInfo.healthCondition,//健康评估状况
+
       }
-      updateBasic(this.tree_code, check).then(res=>{
+
+      updateCover(this.tree_code, check).then(res=>{
         if(res.data.code === 200){
           this.$Message.success('成功')
         }else {
@@ -286,14 +300,22 @@ export default {
     },
 
     Submit(){
-      this.CoverInfo.accessStartTime = dateToString(this.CoverInfo.accessStartTime,"yyyy-MM-dd hh:mm:ss")
-      this.CoverInfo.accessEndTime = dateToString(this.CoverInfo.accessEndTime,"yyyy-MM-dd hh:mm:ss")
+      let timelist = ['accessStartTime','accessEndTime','signedTime']
+      for (let i = 0; i < timelist.length; i++) {
+        if(this.CoverInfo[timelist[i]]){ //判断是time是否为null或''
+          //time不为空
+          this.CoverInfo[timelist[i]] = dateToString(this.CoverInfo[timelist[i]],"yyyy-MM-dd hh:mm:ss")
+        }else {
+          //time为空
+          this.CoverInfo[timelist[i]] = null
+        }
+      }
       this.$refs.cover_form.validate((valid) => {
         if(valid){
           this.tjxm_record.tree_code = this.CoverInfo.tree_code
-          if(this.CoverInfo.dw_CheckState === '已审核'){
+          if(this.is_add){ //有，则只需更新
             this.ShenHe()
-          }else {
+          }else { //没有，需要加入
             this.add()
           }
         }
@@ -307,11 +329,15 @@ export default {
     },
     async initData(){
       await  queryTjxmRecord({ 'tree_code': this.tree_code, 'type_yw': 'Cover' }).then(record => {
-        if(record.data.total!==0){
+        if (record.data.total !== 0) {
           this.tjxm_record = record.data.tjxm_records[0]
+          this.is_add = true
+        } else {
+          this.is_add = false
         }
       })
       if(this.tjxm_record.tree_code){
+        console.log('tjxm_record', this.tjxm_record)
         await getBasic({'tree_code':this.tree_code}).then(res=>{
           if(res.data.code === 200){
             this.CoverInfo = res.data.basic

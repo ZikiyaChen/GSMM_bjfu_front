@@ -83,31 +83,9 @@
         <Col offset="2">
           <FormItem prop="base_pic">
             <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_base" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_base(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_base(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_base"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_base">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_base" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Diseases.base_pic" @delete="deletePicBase" @onUpload="uploadPicBase">
+            </UploadPicCom>
+
           </FormItem>
 
         </Col>
@@ -157,31 +135,8 @@
         <Col offset="2">
           <FormItem prop="trunk_pic">
             <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_trunk" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_trunk(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_trunk(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_trunk"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_trunk">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_trunk" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Diseases.trunk_pic" @delete="deletePicTrunk" @onUpload="uploadPicTrunk">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -231,31 +186,8 @@
         <Col offset="2">
           <FormItem prop="ske_pic">
             <span slot="label" >特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_ske" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_ske(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_ske(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_ske"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_ske">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_ske" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Diseases.ske_pic" @delete="deletePicSke" @onUpload="uploadPicSke">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -291,31 +223,8 @@
         <Col offset="2">
           <FormItem prop="blade_pic">
             <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_blade" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_blade(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_blade(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_blade"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_blade">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_blade" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Diseases.blade_pic" @delete="deletePicBlade" @onUpload="uploadPicBlade">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -350,31 +259,8 @@
         <Col offset="2">
           <FormItem prop="branch_pic">
             <span slot="label">特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList_branch" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_branch(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_branch(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_branch"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="visible_branch">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="visible_branch" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Diseases.branch_pic" @delete="deletePicBranch" @onUpload="uploadPicBranch">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -473,20 +359,22 @@ import {
   postTjxmRecord,
   queryTjxmRecord, updateDiseases, updateEnvironment, updateTjxmRecord
 } from "@/api/table"
-import { ShowPic , UploadPicApi} from "@/api/upload";
+import {getPicApi, ShowPic, UploadPicApi} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 export default {
   name: "Diseases",
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar },
   data () {
     return {
-      UploadPicAPI: UploadPicApi,
+
       timeIndex: 0,
       timeLineList: PathToList,
       dcUsers: [],
       dcUnits: [],
+
 
       showPreviousPageModal: false,
 
@@ -496,27 +384,6 @@ export default {
       tree_code: this.$route.params.tree_code,
       OptionList: damageList,
 
-      showImageUrl: '',
-
-      visible_base: false,
-      i_base: 0,
-      PicUrlList_base: [],
-
-      visible_trunk: false,
-      i_trunk: 0,
-      PicUrlList_trunk: [],
-
-      visible_ske: false,
-      i_ske: 0,
-      PicUrlList_ske: [],
-
-      visible_blade: false,
-      i_blade: 0,
-      PicUrlList_blade: [],
-
-      visible_branch: false,
-      i_branch: 0,
-      PicUrlList_branch: [],
 
       TreeInformation: {
         Base: {
@@ -567,14 +434,14 @@ export default {
         tree_code: ''
       },
       ruleValidate: {
-        bmoth_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        bdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        tmoth_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        tdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        smoth_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        sdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        blade_status: [{ required: true, trigger: 'change', message: '请选择' }],
-        branch_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // bmoth_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // bdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // tmoth_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // tdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // smoth_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // sdisease_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // blade_status: [{ required: true, trigger: 'change', message: '请选择' }],
+        // branch_status: [{ required: true, trigger: 'change', message: '请选择' }],
       }
     }
   },
@@ -654,7 +521,7 @@ export default {
             this.Diseases = res.data.tree_Bch
             this.dcUsers.push(res.data.tree_Bch.dc_user)
             this.dcUnits.push({ 'unit': res.data.tree_Bch.dc_unit })
-            this.fetchPic()
+
           })
         } else {
           this.isShow = true
@@ -665,49 +532,7 @@ export default {
         }
       })
     },
-    fetchPic () {
-      this.PicUrlList_base = []
-      this.PicUrlList_trunk = []
-      this.PicUrlList_ske = []
-      this.PicUrlList_blade = []
-      this.PicUrlList_branch = []
 
-      if (this.Diseases.base_pic.length !== 0) {
-        this.Diseases.base_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_base.push(resp.data)
-          })
-        })
-      }
-      if (this.Diseases.trunk_pic.length !== 0) {
-        this.Diseases.trunk_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_trunk.push(resp.data)
-          })
-        })
-      }
-      if (this.Diseases.ske_pic.length !== 0) {
-        this.Diseases.ske_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_ske.push(resp.data)
-          })
-        })
-      }
-      if (this.Diseases.blade_pic.length !== 0) {
-        this.Diseases.blade_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_blade.push(resp.data)
-          })
-        })
-      }
-      if (this.Diseases.branch_pic.length !== 0) {
-        this.Diseases.branch_pic.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList_branch.push(resp.data)
-          })
-        })
-      }
-    }, //* ****
     add(){
       AddBchFx(this.Diseases).then(res => {
         getDiseases({'tree_code':this.tree_code}).then(resp => {
@@ -839,110 +664,44 @@ export default {
     },
 
     // 特征照片base
-    handleMaxSize (file) {
-      this.$Notice.warning({
-        title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
-      })
+    deletePicBase(value){
+      this.Diseases.base_pic = value
     },
-    handleView_base (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_base = true
-    },
-    handleRemoveList_base (index) {
-      // 删除
-      this.PicUrlList_base.splice(index, 1)
-      this.Diseases.base_pic.splice(index, 1)
-    },
-    handleSuccessList_base: function (res, file) {
-      if (res.code === 500) {
-        this.Diseases.base_pic.push(res.path)
-        this.i_base++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_base.push(resp.data)
-        })
-      }
+    uploadPicBase(value){
+      this.Diseases.base_pic = value
     },
 
     // 特征照片trunk
-    handleView_trunk (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_trunk = true
+    deletePicTrunk(value){
+      this.Diseases.trunk_pic = value
     },
-    handleRemoveList_trunk (index) {
-      // 删除
-      this.PicUrlList_trunk.splice(index, 1)
-      this.Diseases.trunk_pic.splice(index, 1)
-    },
-    handleSuccessList_trunk: function (res, file) {
-      if (res.code === 500) {
-        this.Diseases.trunk_pic.push(res.path)
-        this.i_trunk++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_trunk.push(resp.data)
-        })
-      }
+    uploadPicTrunk(value){
+      this.Diseases.trunk_pic = value
     },
 
     // 特征照片ske
-    handleView_ske (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_ske = true
+    deletePicSke(value){
+      this.Diseases.ske_pic = value
     },
-    handleRemoveList_ske (index) {
-      // 删除
-      this.PicUrlList_ske.splice(index, 1)
-      this.Diseases.ske_pic.splice(index, 1)
-    },
-    handleSuccessList_ske: function (res, file) {
-      if (res.code === 500) {
-        this.Diseases.ske_pic.push(res.path)
-        this.i_ske++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_ske.push(resp.data)
-        })
-      }
+    uploadPicSke(value){
+      this.Diseases.ske_pic = value
     },
 
     // 特征照片blade
-    handleView_blade (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_blade = true
+    deletePicBlade(value){
+      this.Diseases.blade_pic = value
     },
-    handleRemoveList_blade (index) {
-      // 删除
-      this.PicUrlList_blade.splice(index, 1)
-      this.Diseases.blade_pic.splice(index, 1)
-    },
-    handleSuccessList_blade: function (res, file) {
-      if (res.code === 500) {
-        this.Diseases.blade_pic.push(res.path)
-        this.i_blade++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_blade.push(resp.data)
-        })
-      }
+    uploadPicBlade(value){
+      this.Diseases.blade_pic = value
     },
 
     // 特征照片branch
-    handleView_branch (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.visible_branch = true
+    deletePicBranch(value){
+      this.Diseases.branch_pic = value
     },
-    handleRemoveList_branch (index) {
-      // 删除
-      this.PicUrlList_branch.splice(index, 1)
-      this.Diseases.branch_pic.splice(index, 1)
+    uploadPicBranch(value){
+      this.Diseases.branch_pic = value
     },
-    handleSuccessList_branch: function (res, file) {
-      if (res.code === 500) {
-        this.Diseases.branch_pic.push(res.path)
-        this.i_branch++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList_branch.push(resp.data)
-        })
-      }
-    }
   }
 }
 </script>

@@ -15,6 +15,7 @@ export default {
     username: '',
     userId: '',
     userInfo: {},
+    current_role: '',
     avatarImgPath: '',
     token: getToken(),
     access: [],
@@ -41,8 +42,45 @@ export default {
       state.username = resData.username
     },
     setAccess (state, access) {
+      console.log('setAccess',access)
       state.access = access
     },
+
+    setCurrentAccess(state,status){
+      console.log(status)
+      state.current_role = status
+    },
+    setIs(state,status){
+      console.log('state',state,status)
+      if(status === '调查人员'){
+        state.userInfo.is_yh = false
+        state.userInfo.is_dc = true
+        state.userInfo.is_unitAdmin = false
+      }else if(status === '养护人员'){
+        state.userInfo.is_yh = true
+        state.userInfo.is_dc = false
+        state.userInfo.is_unitAdmin = false
+      }else if(status === '单位管理员'){
+        state.userInfo.is_yh = false
+        state.userInfo.is_dc = false
+        state.userInfo.is_unitAdmin = true
+      }
+    }
+    ,
+
+    // judgeSuperAccess(state,resData){
+    //   let arr = ['超级管理员','单位管理员','调查人员','养护人员']
+    //   for(let i=0;i<arr.length;i++){
+    //     if(resData.role_names.indexOf(arr[i])>-1){
+    //       state.access=[arr[i]]
+    //       if(state.access.indexOf())
+    //         break
+    //     }
+    //     else {
+    //       state.access=[]
+    //     }
+    //   }
+    // },
     setToken (state, token) {
       state.token = token
       setToken(token)
@@ -82,6 +120,10 @@ export default {
     username: state => {
       return state.username
     },
+    current_role: state =>{
+      return state.current_role
+    },
+
     messageUnreadCount: state => state.messageUnreadList.length,
     messageReadedCount: state => state.messageReadedList.length,
     messageTrashCount: state => state.messageTrashList.length
@@ -123,6 +165,8 @@ export default {
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
         commit('setToken', '')
         commit('setAccess', [])
+        sessionStorage.removeItem('store')
+        // commit('judgeSuperAccess', { role_names: [], id: 0, userName: '' })
         resolve()
       })
     },
@@ -132,36 +176,32 @@ export default {
         try {
           console.log('#', state.token)
           getUserInfo().then(res => {
-          // getUserInfo().then(res => {
             console.log('getUserinfo', res)
-            // localStorage.setItem('loginxinix', res.data)
-            // localStorage.getItem('loginxinix')
             const data = res.data
 
             commit('setAvatar', 'https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png')
             commit('setUsername', data.current_user.username)
             commit('setUserId', data.current_user.id)
-            commit('setUserInfo', data.current_user)
-            // let roles = []
-            // if(data.current_user.role_names.includes('组长') && data.current_user.is_yh === true){
-            // roles= data.current_user.role_names.filter(item => item !== '养护人员'); // 过滤掉值不为3,返回新数组
-            //   console.log('%%%%',roles)
-            //   commit('setAccess', roles)
-            // }else {
-            //   commit('setAccess', data.current_user.role_names)
-            // }
-
-            // 带group 组长的
-            // if(data.current_user.role_names.includes('养护组长')){
-            //   commit('setAccess', ['养护组长'])
-            // }else if(data.current_user.role_names.includes('调查组长')){
-            //   commit('setAccess', ['调查组长'])
-            // }else {
-            //   commit('setAccess', data.current_user.role_names)
-            // }
-
-            commit('setAccess', data.current_user.role_names)
             commit('setHasGetInfo', true)
+
+            if(sessionStorage.getItem('store')) {
+              let now_store = JSON.parse(sessionStorage.getItem('store'))
+              commit('setUserInfo', now_store.user.userInfo)
+              commit('setCurrentAccess', now_store.user.current_role)
+              commit('setAccess', now_store.user.access)
+
+            }else {
+              commit('setUserInfo', data.current_user)
+              commit('setCurrentAccess', data.current_user.role_names[0])
+              if (data.current_user.is_reader === true) {
+                commit('setAccess', ['单位管理员'])
+              } else {
+                commit('setAccess', data.current_user.role_names)
+              }
+              console.log('55', state.access)
+
+
+            }
             resolve(data)
           }).catch(err => {
             reject(err)

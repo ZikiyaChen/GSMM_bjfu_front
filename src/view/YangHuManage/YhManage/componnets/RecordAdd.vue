@@ -2,6 +2,7 @@
   <div>
     <Button type="primary" @click="handleAddClick">个人养护记录添加</Button>
     <Modal
+      :mask-closable="false"
       :value="radioModal"
       title="选择表单种类"
       @on-ok="handleRadioClick"

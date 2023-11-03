@@ -78,16 +78,16 @@ export const soil_textureList = [
 
 export const organic_contentList = [
   {
-    value: '<1%土壤颜色较浅'
+    value: '＜1%土壤颜色较浅'
   },
   {
-    value: '1%~2%呈灰色'
+    value: '1%～2%呈灰色'
   },
   {
-    value: '2%~3%之间呈灰黑色'
+    value: '2%～3%之间呈灰黑色'
   },
   {
-    value: '>4%以上颜色呈黑色或深黑色'
+    value: '＞4%以上颜色呈黑色或深黑色'
   }
 ]
 export const is_buriedList = [
@@ -162,7 +162,7 @@ export const shootList1 = [
 
 export const shootList2 = [
   {
-    value: '优>=2.5'
+    value: '优≥2.5'
   },
   {
     value: '良1.5~2.5'
@@ -195,10 +195,10 @@ export const blade_persistentList = [
     value: '寄存3年以上'
   },
   {
-    value: '寄存3年'
+    value: '宿存3年'
   },
   {
-    value: '寄存2年'
+    value: '宿存2年'
   },
   {
     value: '无宿存'
@@ -259,6 +259,9 @@ export const protectList = [
   },
   {
     value: '其它'
+  },
+  {
+    value: '无'
   }
 ]
 
@@ -283,6 +286,9 @@ export const soil_improveList = [
   },
   {
     value: '其它'
+  },
+  {
+    value: '无'
   }
 ]
 
@@ -341,16 +347,16 @@ export const outerList = [
     value: '未处理'
   },
   {
-    value: '整体仿真 好'
+    value: '整体仿真：好'
   },
   {
-    value: '整体仿真 一般'
+    value: '整体仿真：一般'
   },
   {
-    value: '贴仿真树皮 一般'
+    value: '贴仿真树皮：一般'
   },
   {
-    value: '贴仿真树皮 差'
+    value: '贴仿真树皮：差'
   }
 ]
 
@@ -403,7 +409,7 @@ export const steadyList = [
 
 export const support_typeList = [
   {
-    value: '简单支持'
+    value: '简单支撑'
   },
   {
     value: '仿真支撑'

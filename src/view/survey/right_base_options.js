@@ -23,6 +23,9 @@ export const SignList = [
 
 export const levelList = [
   {
+    value: '特级'
+  },
+  {
     value: '一级'
   },
   {

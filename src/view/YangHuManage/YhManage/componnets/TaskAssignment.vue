@@ -180,8 +180,8 @@ export default {
   },
   created () {
     const initializeTreeNumberList = () => {
-        queryTreeBasic().then(message => {
-          this.taskInfo.treeNumber.list = message.data.basic.map(item => {
+      queryTreeBasicProperty().then(message => {
+          this.taskInfo.treeNumber.list = message.data.trees_basic_property.map(item => {
             return item.tree_code
           })
         })

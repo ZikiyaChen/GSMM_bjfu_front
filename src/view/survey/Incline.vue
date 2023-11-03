@@ -50,31 +50,9 @@
         <Col offset="2">
           <FormItem prop="pic_1">
             <span slot="label">树基松动特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList1" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_1(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_1(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_1"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v1">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v1" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_1" @delete="deletePic1" @onUpload="uploadPic1">
+            </UploadPicCom>
+
           </FormItem>
 
         </Col>
@@ -99,31 +77,8 @@
         <Col offset="2">
           <FormItem prop="pic_2">
             <span slot="label">根部腐朽特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList2" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_2(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_2(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_2"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v2">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v2" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_2" @delete="deletePic2" @onUpload="uploadPic2">
+            </UploadPicCom>
           </FormItem>
         </Col>
       </Row>
@@ -142,7 +97,8 @@
           </FormItem>
         </Col>
       </Row>
-      <Row v-if="Incline.root_bare !== '无'">
+<!--      <Row v-if="Incline.root_bare !== '无'">-->
+        <Row>
         <Col offset="2" span="10">
           <FormItem prop="bare_length">
             <span slot="label">根部裸露总长度：</span>
@@ -154,31 +110,8 @@
         <Col offset="2">
           <FormItem prop="pic_3">
             <span slot="label">根部裸露特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList3" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_3(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_3(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_3"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v3">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v3" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_3" @delete="deletePic3" @onUpload="uploadPic3">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -193,7 +126,7 @@
               <Icon type="md-alert" size="15" color="#808695"/>
             </Tooltip>主干音异常：</span>
             <RadioGroup v-model="Incline.has_absound">
-              <Radio v-for="item in HasAbsoundList" :label="item.value" :key="item.value">{{item.label}}</Radio>
+              <Radio v-for="item in HasAbsoundList" :label="item" :key="item">{{item}}</Radio>
             </RadioGroup>
           </FormItem>
         </Col>
@@ -218,31 +151,8 @@
         <Col offset="2">
           <FormItem prop="pic_4">
             <span slot="label">主干倾斜特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList4" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_4(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_4(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_4"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v4">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v4" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_4" @delete="deletePic4" @onUpload="uploadPic4">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -266,32 +176,8 @@
       <Row>
         <Col offset="2">
           <FormItem prop="pic_5">
-            <span slot="label">分枝点部位异常特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList5" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_5(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_5(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_5"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v5">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v5" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_5" @delete="deletePic5" @onUpload="uploadPic5">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -315,31 +201,8 @@
         <Col offset="2">
           <FormItem prop="pic_6">
             <span slot="label">偏冠特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList6" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_6(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_6(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_6"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v6">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v6" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_6" @delete="deletePic6" @onUpload="uploadPic6">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -363,31 +226,8 @@
         <Col offset="2">
           <FormItem prop="pic_7">
             <span slot="label">枯枝特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList7" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_7(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_7(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_7"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v7">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v7" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_7" @delete="deletePic7" @onUpload="uploadPic7">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -411,31 +251,8 @@
         <Col offset="2">
           <FormItem prop="pic_8">
             <span slot="label" >枝条整理留茬特征照片：</span>
-            <div class="demo-upload-list" v-for="(item,index) in PicUrlList8" :key="index">
-              <img :src="'data:image/jpg;base64,'+item"  />
-              <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView_8(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemoveList_8(index)"></Icon>
-              </div>
-            </div>
-            <Upload
-              :show-upload-list="false"
-              name="filename"
-              :on-exceeded-size="handleMaxSize"
-              :on-success="handleSuccessList_8"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              multiple
-              type="drag"
-              :action="UploadPicAPI"
-              class="pic-upload-list">
-              <div class="camera-style">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <Modal title="图片预览" v-model="v8">
-              <img :src="'data:image/jpg;base64,'+ showImageUrl" v-if="v8" style="width: 100%" />
-            </Modal>
+            <UploadPicCom :img-name-list="Incline.pic_8" @delete="deletePic8" @onUpload="uploadPic8">
+            </UploadPicCom>
           </FormItem>
 
         </Col>
@@ -450,6 +267,16 @@
             </Tooltip>主干空腐率：</span>
             <Input v-model="Incline.empty_rot_rate"><span slot="append">%</span></Input>
           </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col offset="2">
+          <FormItem prop="pic_9">
+            <span slot="label" >主干空腐特征照片：</span>
+            <UploadPicCom :img-name-list="Incline.pic_9" @delete="deletePic9" @onUpload="uploadPic9">
+            </UploadPicCom>
+          </FormItem>
+
         </Col>
       </Row>
       <Row>
@@ -551,16 +378,16 @@ import {
   getOneTreeBaseInfo, postTjxmRecord,
   queryTjxmRecord, updateEnvironment, updateIncline, updateTjxmRecord
 } from "@/api/table";
-import { ShowPic, UploadPicApi } from "@/api/upload";
+import {getPicApi, ShowPic, UploadPicApi} from "@/api/upload";
 import Float_bar from "_c/FloatBar/float_bar";
 import { queryUnits, queryUsers } from "@/api/user";
+import UploadPicCom from "_c/Upload/UploadPicCom";
 
 export default {
   name: "Incline",
-  components: { Float_bar },
+  components: {UploadPicCom, Float_bar },
   data () {
     return {
-      UploadPicAPI: UploadPicApi,
       timeIndex: 0,
       timeLineList: PathToList,
 
@@ -571,36 +398,11 @@ export default {
       tree_code: this.$route.params.tree_code,
       BaseLooseList: base_looseList,
       OptionList: damageList,
-      HasAbsoundList: has_absoundList,
+      HasAbsoundList: ['有','无'],
 
       showImageUrl: '',
       dcUnits: [],
       dcUsers: [],
-
-      i1: 0,
-      PicUrlList1: [],
-      i2: 0,
-      PicUrlList2: [],
-      i3: 0,
-      PicUrlList3: [],
-      i4: 0,
-      PicUrlList4: [],
-      i5: 0,
-      PicUrlList5: [],
-      i6: 0,
-      PicUrlList6: [],
-      i7: 0,
-      PicUrlList7: [],
-      i8: 0,
-      PicUrlList8: [],
-      v1: false,
-      v2: false,
-      v3: false,
-      v4: false,
-      v5: false,
-      v6: false,
-      v7: false,
-      v8: false,
 
       TreeInformation: {
         Base: {
@@ -628,7 +430,7 @@ export default {
         root_bare: '', // *根部裸露结果
         bare_length: 0, // *根部裸露总长度
         pic_3: [], // *根部裸露照片
-        has_absound: 0, // *主干异常音
+        has_absound: '', // *主干异常音
         trunk_inclined: '', // 主干倾斜结果
         pic_4: [], // 主干倾斜照片
         has_abbranch: '', // 分枝点部位异常结果
@@ -639,17 +441,18 @@ export default {
         pic_7: [], // 枯枝照片
         twig: '', // 枝条整理留茬结果
         pic_8: [], // 枝条整理留茬照片
-        empty_rot_rate: 0, // 主干空腐率
+        empty_rot_rate: null, // 主干空腐率
+        pic_9: [], //空腐照片
         qxkf_eval: '', // 倾斜空腐情况评价
         tree_code: ''
       },
       ruleValidate: {
         base_loose: [{ required: true, trigger: 'change', message: '请选择' }],
-        root_rot: [{ required: true, trigger: 'change', message: '请选择' }],
+        // root_rot: [{ required: true, trigger: 'change', message: '请选择' }],
         root_bare: [{ required: true, trigger: 'change', message: '请选择' }],
-        has_absound: [{ required: true, message: '请选择' }],
+        // has_absound: [{ required: true, message: '请选择' }],
         trunk_inclined: [{ required: true, trigger: 'change', message: '请选择' }],
-        has_abbranch: [{ required: true, trigger: 'change', message: '请选择' }],
+        // has_abbranch: [{ required: true, trigger: 'change', message: '请选择' }],
         lopsided: [{ required: true, trigger: 'change', message: '请选择' }],
         deadwood: [{ required: true, trigger: 'change', message: '请选择' }],
         twig: [{ required: true, trigger: 'change', message: '请选择' }],
@@ -709,7 +512,7 @@ export default {
             this.Incline = res.data.tree_Incline
             this.dcUsers.push(res.data.tree_Incline.dc_user)
             this.dcUnits.push({ 'unit': res.data.tree_Incline.dc_unit })
-            this.fetchPic()
+
           })
         } else {
           this.isShow = true
@@ -720,72 +523,7 @@ export default {
         }
       })
     },
-    fetchPic () {
-      this.PicUrlList1 = []
-      this.PicUrlList2 = []
-      this.PicUrlList3 = []
-      this.PicUrlList4 = []
-      this.PicUrlList5 = []
-      this.PicUrlList6 = []
-      this.PicUrlList7 = []
-      this.PicUrlList8 = []
-      if (this.Incline.pic_1.length !== 0) {
-        this.Incline.pic_1.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList1.push(resp.data)
-          })
-        })
-      }
-      if (this.Incline.pic_2.length !== 0) {
-        this.Incline.pic_2.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList2.push(resp.data)
-          })
-        })
-      }
-      if (this.Incline.pic_3.length !== 0) {
-        this.Incline.pic_3.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList3.push(resp.data)
-          })
-        })
-      }
-      if (this.Incline.pic_4.length !== 0) {
-        this.Incline.pic_4.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList4.push(resp.data)
-          })
-        })
-      }
-      if (this.Incline.pic_5.length !== 0) {
-        this.Incline.pic_5.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList5.push(resp.data)
-          })
-        })
-      }
-      if (this.Incline.pic_6.length !== 0) {
-        this.Incline.pic_6.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList6.push(resp.data)
-          })
-        })
-      }
-      if (this.Incline.pic_7.length !== 0) {
-        this.Incline.pic_7.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList7.push(resp.data)
-          })
-        })
-      }
-      if (this.Incline.pic_8.length !== 0) {
-        this.Incline.pic_8.forEach((pic_name) => {
-          ShowPic(pic_name).then(resp => {
-            this.PicUrlList8.push(resp.data)
-          })
-        })
-      }
-    },
+
     fetchTreeBasicData () {
       getOneTreeBaseInfo(this.tree_code).then(res => {
         this.TreeInformation.Base = res.data.tree_basic_info.basic
@@ -965,170 +703,75 @@ export default {
       })
     },
 
-    handleMaxSize (file) {
-      this.$Notice.warning({
-        title: '图片大小限制',
-        desc: '文件 ' + file.name + '太大,不能超过 2M.'
-      })
+    // 树基松动图片
+    deletePic1(value){
+      this.Incline.pic_1 = value
     },
-
-    handleView_1 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v1 = true
-    },
-    handleRemoveList_1 (index) {
-      // 删除
-      this.Incline.pic_1.splice(index, 1)
-      this.PicUrlList1.splice(index, 1)
-    },
-    handleSuccessList_1: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_1.push(res.path)
-        this.i1++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList1.push(resp.data)
-        })
-      }
+    uploadPic1(value){
+      this.Incline.pic_1 = value
     },
 
     // 根部腐朽特征照片
-    handleView_2 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v2 = true
+    deletePic2(value){
+      this.Incline.pic_2 = value
     },
-    handleRemoveList_2 (index) {
-      // 删除
-      this.Incline.pic_2.splice(index, 1)
-      this.PicUrlList2.splice(index, 1)
-    },
-    handleSuccessList_2: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_2.push(res.path)
-        this.i2++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList2.push(resp.data)
-        })
-      }
+    uploadPic2(value){
+      this.Incline.pic_2 = value
     },
 
     // 根部裸露特征照片
-    handleView_3 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v3 = true
+    deletePic3(value){
+      this.Incline.pic_3 = value
     },
-    handleRemoveList_3 (index) {
-      // 删除
-      this.Incline.pic_3.splice(index, 1)
-      this.PicUrlList3.splice(index, 1)
-    },
-    handleSuccessList_3: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_3.push(res.path)
-        this.i3++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList3.push(resp.data)
-        })
-      }
+    uploadPic3(value){
+      this.Incline.pic_3 = value
     },
 
     // 主干倾斜特征照片
-    handleView_4 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v4 = true
+    deletePic4(value){
+      this.Incline.pic_4 = value
     },
-    handleRemoveList_4 (index) {
-      // 删除
-      this.Incline.pic_4.splice(index, 1)
-      this.PicUrlList4.splice(index, 1)
-    },
-    handleSuccessList_4: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_4.push(res.path)
-        this.i4++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList4.push(resp.data)
-        })
-      }
+    uploadPic4(value){
+      this.Incline.pic_4 = value
     },
 
     // 分枝点部位异常特征照片
-    handleView_5 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v5 = true
+    deletePic5(value){
+      this.Incline.pic_5 = value
     },
-    handleRemoveList_5 (index) {
-      // 删除
-      this.Incline.pic_5.splice(index, 1)
-      this.PicUrlList5.splice(index, 1)
-    },
-    handleSuccessList_5: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_5.push(res.path)
-        this.i5++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList5.push(resp.data)
-        })
-      }
+    uploadPic5(value){
+      this.Incline.pic_5 = value
     },
 
     // 偏冠特征照片
-    handleView_6 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v6 = true
+    deletePic6(value){
+      this.Incline.pic_6 = value
     },
-    handleRemoveList_6 (index) {
-      // 删除
-      this.Incline.pic_6.splice(index, 1)
-      this.PicUrlList1.splice(index, 1)
+    uploadPic6(value){
+      this.Incline.pic_6 = value
     },
-    handleSuccessList_6: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_6.push(res.path)
-        this.i6++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList6.push(resp.data)
-        })
-      }
-    },
-
     // 枯枝特征照片
-    handleView_7 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v7 = true
+    deletePic7(value){
+      this.Incline.pic_7 = value
     },
-    handleRemoveList_7 (index) {
-      // 删除
-      this.Incline.pic_7.splice(index, 1)
-      this.PicUrlList7.splice(index, 1)
-    },
-    handleSuccessList_7: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_7.push(res.path)
-        this.i7++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList7.push(resp.data)
-        })
-      }
+    uploadPic7(value){
+      this.Incline.pic_7 = value
     },
 
     // 枝条整理留茬特征照片
-    handleView_8 (imageUrl) {
-      this.showImageUrl = imageUrl
-      this.v8 = true
+    deletePic8(value){
+      this.Incline.pic_8 = value
     },
-    handleRemoveList_8 (index) {
-      // 删除
-      this.Incline.pic_8.splice(index, 1)
-      this.PicUrlList8.splice(index, 1)
+    uploadPic8(value){
+      this.Incline.pic_8 = value
     },
-    handleSuccessList_8: function (res, file) {
-      if (res.code === 500) {
-        this.Incline.pic_8.push(res.path)
-        this.i8++
-        ShowPic(res.path).then(resp => {
-          this.PicUrlList8.push(resp.data)
-        })
-      }
+
+    // 空腐 特征照片
+    deletePic9(value){
+      this.Incline.pic_9 = value
+    },
+    uploadPic9(value){
+      this.Incline.pic_9 = value
     },
   }
 }

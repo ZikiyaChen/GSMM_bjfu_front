@@ -36,15 +36,15 @@
         </FormItem>
       </Col>
       <Col span="9">
-        <FormItem label="身份" prop="identity">
-          <CheckboxGroup v-model="userInfo.identities">
+        <FormItem label="身份" prop="identity" >
+          <span v-for="item in userInfo.identities" :key="item.id">{{item}}&nbsp;&nbsp;&nbsp;</span>
             <!--
               有其他身份的话，则继续加在这里，不可用 v-for 直接展示出来
             -->
-            <Checkbox label="管理员">
-              <span>管理员</span>
-            </Checkbox>
-          </CheckboxGroup>
+<!--            <Checkbox label="管理员">-->
+<!--              <span>管理员</span>-->
+<!--            </Checkbox>-->
+
         </FormItem>
       </Col>
     </Row>

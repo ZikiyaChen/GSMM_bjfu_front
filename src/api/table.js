@@ -1,4 +1,5 @@
 import axios from "@/libs/api.request";
+import {setToken} from "@/libs/util";
 
 export const getTest = () => {
   return axios.request({ // 这里返回的是一个Promise，request方法传入一个配置对象，配置项可参考axios
@@ -11,6 +12,14 @@ export const getTest = () => {
 export const AddCoverPage = (data) => {
   return axios.request({
     url: 'add_cover',
+    method: 'post',
+    data: data
+  })
+}
+
+export const AddBasic = (data) => {
+  return axios.request({
+    url: 'add_basic',
     method: 'post',
     data: data
   })
@@ -184,6 +193,32 @@ export const queryTreeBasicProperty = (params) => {
   })
 }
 
+export const queryMapTrees = (params) => {
+  return axios.request({
+    url:'query_map_trees',
+    method: 'get',
+    params: params
+  })
+}
+
+export const queryBasicCeshiTrees = (params) => {
+  // setToken('BSLYGSMM')
+  return axios.request({
+    url: 'query_ceshi_trees',
+    method: 'get',
+    params:params
+  })
+}
+
+export const queryBasicLoginCeshiTrees = (params) => {
+  // setToken('BSLYGSMM')
+  return axios.request({
+    url: 'query_login_trees',
+    method: 'get',
+    params:params
+  })
+}
+
 //根据tree_code获取一棵树的基本信息
 export const getOneTreeBaseInfo = (tree_code) => {
   return axios.request({
@@ -284,6 +319,15 @@ export const updateBasic =(tree_code,data) =>{
     url: 'update_basic/'+tree_code,
     method: 'put',
     // method: 'POST',
+    tree_code: tree_code,
+    data: data
+  })
+}
+
+export const updateCover =(tree_code,data) =>{
+  return axios.request({
+    url: 'update_cover/'+tree_code,
+    method: 'put',
     tree_code: tree_code,
     data: data
   })

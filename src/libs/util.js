@@ -161,12 +161,19 @@ const hasAccess = (access, route) => {
 }
 
 /**
+ * 判断当前用户是否未只读用户is_reader=true
+ * 如果是的话，返回当前state.current_role
+ */
+
+
+/**
  * 权鉴
  * @param {*} name 即将跳转的路由name
  * @param {*} access 用户权限数组
  * @param {*} routes 路由列表
  * @description 用户是否可跳转到该页
  */
+
 export const canTurnTo = (name, access, routes) => {
   const routePermissionJudge = (list) => {
     return list.some(item => {

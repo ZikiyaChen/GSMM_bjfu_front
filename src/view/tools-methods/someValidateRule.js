@@ -69,7 +69,7 @@ export function checkLon(rule, value, callback) {
 export function checkLat(rule, value, callback) {
   if (value) {
     value += ''
-    if (value.match(/^(\-|\+)?([0-8]?\d{1}\.\d{0,7}|90\.0{0,6}|[0-8]?\d{1}|90)$/)) {
+    if (value.match(/^(\-|\+)?([0-8]?\d{1}\.\d{0,8}|90\.0{0,6}|[0-8]?\d{1}|90)$/)) {
       callback()
     } else {
       callback(new Error('纬度为-90~90,小数限7位'))

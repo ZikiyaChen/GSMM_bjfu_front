@@ -1,7 +1,7 @@
 <template>
 <div>
   <Card>
-    <h2 slot="title">名木古树信息</h2>
+    <h2 slot="title">古树名木信息</h2>
     <Form :label-width="75" :model="query" inline>
       <FormItem label="古树编号">
         <Input v-model="query.tree_code_like" style="width: 120px" clearable placeholder="古树编号"></Input>
@@ -76,24 +76,24 @@
       </FormItem>
 
       <FormItem>
-      <router-link :to="{path: `/survey/cover`}" v-role="['超级管理员','单位管理员','调查人员']" >
+      <router-link :to="{path: `/survey/cover`}" v-role="['单位管理员','调查人员']" >
         <Button type="success" style="margin-right: 30px">新增古树</Button>
       </router-link>
       </FormItem>
-      <FormItem v-role="['单位管理员','超级管理员']">
+      <FormItem v-role="['单位管理员']">
         <Button type="primary" style="margin-right: 30px" @click="()=>{this.ShowDwCheckModal=true}">批量审核</Button>
       </FormItem>
     </Form>
 
 
 
-    <Table :columns="columns" :data="tableData" border max-height="500" :loading="loadingTable"
-           @on-selection-change="SelectTreesChange"></Table>
+    <Table :columns="columns" :data="tableData" :stripe="true" highlight-row
+           border max-height="800" :loading="loadingTable" @on-selection-change="SelectTreesChange"></Table>
     <div style="margin: 10px; overflow: hidden">
       <div style="float: right;">
         <Page :total="total"  :current="pages._page" :page-size="pages._per_page" show-total
               @on-change="onPageChange"
-              show-elevator show-sizer :page-size-opts="[10,20,30]" @on-page-size-change="onPageSizeChange"></Page>
+              show-elevator show-sizer :page-size-opts="[50,60,70]" @on-page-size-change="onPageSizeChange"></Page>
       </div>
     </div>
 
@@ -153,7 +153,7 @@ export default {
 
       deleteConfirmModal: false,
       delete_tree_code: undefined,
-      loadingTable: false, // 表格加载状态
+      loadingTable: false, // 表格加载状态，默认初始时加载
       loading: false,
 
       query: {
@@ -166,7 +166,7 @@ export default {
         owner: undefined,
         CompanyB: undefined,
         gh_unit: undefined,
-        dc_status: '已完成',
+        // dc_status: '已完成',
         dw_CheckState: undefined,
       },
       Unit: [],
@@ -179,7 +179,7 @@ export default {
       total: 0,
       pages: {
         _page: 1,
-        _per_page: 10
+        _per_page: 50
       }, // 分页
       trees_basic_property: {
         tree_code: undefined,
@@ -228,31 +228,34 @@ export default {
         {
           title: '古树编号',
           align: 'center',
+          key: 'tree_code',
           resizable: true,
+          sortable: true,
+          sortType: 'asc',
           width: 120,
           fixed: 'left',
           render: function (h, params) {
             return h('span', params.row.tree_code)
           }
         },
-        {
-          title: '科',
-          align: 'center',
-          resizable: true,
-          width: 90,
-          render: function (h, params) {
-            return h('span', params.row.family)
-          }
-        },
-        {
-          title: '属',
-          align: 'center',
-          resizable: true,
-          width: 90,
-          render: function (h, params) {
-            return h('span', params.row.genus)
-          }
-        },
+        // {
+        //   title: '科',
+        //   align: 'center',
+        //   resizable: true,
+        //   width: 90,
+        //   render: function (h, params) {
+        //     return h('span', params.row.family)
+        //   }
+        // },
+        // {
+        //   title: '属',
+        //   align: 'center',
+        //   resizable: true,
+        //   width: 90,
+        //   render: function (h, params) {
+        //     return h('span', params.row.genus)
+        //   }
+        // },
         {
           title: '中文名',
           align: 'center',
@@ -262,15 +265,15 @@ export default {
             return h('span', params.row.zw_name)
           }
         },
-        {
-          title: '拉丁名',
-          align: 'center',
-          resizable: true,
-          width: 170,
-          render: function (h, params) {
-            return h('span', params.row.ld_name)
-          }
-        },
+        // {
+        //   title: '拉丁名',
+        //   align: 'center',
+        //   resizable: true,
+        //   width: 170,
+        //   render: function (h, params) {
+        //     return h('span', params.row.ld_name)
+        //   }
+        // },
         {
           title: '古树等级',
           align: 'center',
@@ -281,18 +284,23 @@ export default {
           }
         },
         {
-          title: '真实树龄（年）',
+          title: '预估树龄（年）',
           align: 'center',
+          key: 'estimate_age',
           resizable: true,
+          sortable: true,
+
           width: 115,
           render: function (h, params) {
-            return h('span', params.row.real_age)
+            return h('span', params.row.estimate_age)
           }
         },
         {
           title: '树高（米）',
           align: 'center',
+          key: 'height',
           resizable: true,
+          sortable: true,
           width: 100,
           render: function (h, params) {
             return h('span', params.row.height)
@@ -304,7 +312,7 @@ export default {
           resizable: true,
           width: 90,
           render: function (h, params) {
-            return h('span', params.row.geo_property.longitude)
+            return h('span', params.row.longitude)
           }
         },
         {
@@ -313,7 +321,7 @@ export default {
           resizable: true,
           width: 90,
           render: function (h, params) {
-            return h('span', params.row.geo_property.latitude)
+            return h('span', params.row.latitude)
           }
         },
         {
@@ -326,15 +334,6 @@ export default {
           }
         },
         {
-          title: '管护人',
-          align: 'center',
-          resizable: true,
-          width: 90,
-          render: function (h, params) {
-            return h('span', params.row.ghr_name)
-          }
-        },
-        {
           title: '管护单位',
           align: 'center',
           resizable: true,
@@ -343,6 +342,16 @@ export default {
             return h('span', params.row.gh_unit)
           }
         },
+        // {
+        //   title: '管护人',
+        //   align: 'center',
+        //   resizable: true,
+        //   width: 90,
+        //   render: function (h, params) {
+        //     return h('span', params.row.ghr_name)
+        //   }
+        // },
+
 
         {
           title: '调查时间',
@@ -351,6 +360,15 @@ export default {
           resizable: true,
           render: function (h, params) {
             return h('span', params.row.accessStartTime)
+          }
+        },
+        {
+          title: '调查账号',
+          align: 'center',
+          resizable: true,
+          width: 90,
+          render: function (h, params) {
+            return h('span', params.row.dc_username)
           }
         },
         {
@@ -430,7 +448,7 @@ export default {
                 },
                 directives: [{
                   name: 'role',
-                  value: ['超级管理员', '单位管理员']
+                  value: ['超级管理员', '单位管理员','调查人员']
                 }],
                 style: {
                   marginRight: '2px'
@@ -475,6 +493,10 @@ export default {
       model1: '',
       levelList: [
         {
+          value: '特级',
+          label: '特级'
+        },
+        {
           value: '一级',
           label: '一级'
         },
@@ -493,6 +515,7 @@ export default {
       ]
     }
   },
+
   methods: {
     onDwCheckModalOK(data){
       let new_data = {
@@ -517,7 +540,8 @@ export default {
     //window.location.href 告诉您浏览器当前URL位置的属性。更改属性的值将重定向页面。
     //window.open 打开一个新的窗口并跳转到URL
     onExportReport(tree_code){
-      window.location.href='http://8.140.170.84:35000/export_report/'+tree_code
+      // window.location.href='http://8.140.170.84:35000/export_report/'+tree_code
+      window.location.href=`http://49.232.244.63:8086/docx/${tree_code}.docx`
   // /*    window.location.href='http://localhost:5000/export_report/'+tree_code*/
     },
     SelectTreesChange(selection){
@@ -573,6 +597,7 @@ export default {
       // 数据表发生变化请求数据
 
       let args = { ...this.query, ...this.pages }
+      console.log(typeof (this.query.tree_code_like))
 
       return queryTreeBasicProperty(args).then((resp) => {
         this.tableData = resp.data.trees_basic_property

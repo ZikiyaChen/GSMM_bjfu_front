@@ -1,8 +1,11 @@
 import axios from "@/libs/api.request";
 
 
-export const UploadPicApi =   'http://localhost:5000/uploadpic'
-// export const UploadPicApi = 'http://8.140.170.84:35000/uploadpic'
+// export const UploadPicApi =   'http://localhost:5000/uploadpic'
+export const UploadPicApi =   'http://49.232.244.63:5005/uploadpic'
+
+export const UploadImg = 'http://49.232.244.63:5005/upload_img'
+
 
 export const DeletePic = (file_name) =>{
   return axios.request({
@@ -34,4 +37,7 @@ export const ShowQRcode = (tree_code) =>{
   })
 }
 
-export const getPicApi = 'http://127.0.0.1:5000/get_pic/'
+// export const getPicApi = 'http://127.0.0.1:5000/get_pic/'
+
+export const getPicApi = 'http://49.232.244.63:5005/get_pic/'
+// export const getPicApi = 'http://49.232.244.63:8089/img/'

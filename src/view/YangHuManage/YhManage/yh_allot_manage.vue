@@ -104,7 +104,7 @@ import yh_record_extend_table from "@/view/YangHuManage/components/yh_record_ext
 import TaskAssignment from "@/view/YangHuManage/YhManage/componnets/TaskAssignment";
 import UserMixin from "@/mixin/UserMixin";
 import {yhTypeList} from "@/view/YangHuManage/YhManage/componnets/someoptions";
-import {queryTreeBasic} from "@/api/table";
+import {queryTreeBasic, queryTreeBasicProperty} from "@/api/table";
 import UpdateTaskAssignment from "@/view/YangHuManage/YhManage/componnets/UpdateTaskAssignment";
 import AddTreeToAllotModal from "@/view/YangHuManage/YhManage/componnets/maintenanceRecord/AddTreeToAllotModal";
 
@@ -396,8 +396,8 @@ export default {
   },
   created() {
     const initializeTreeNumberList = () => {
-      queryTreeBasic().then(message => {
-        this.treeNumber.list = message.data.basic.map(item => {
+      queryTreeBasicProperty().then(message => {
+        this.treeNumber.list = message.data.trees_basic_property.map(item => {
           return item.tree_code
         })
       })
