@@ -1,29 +1,21 @@
 <template >
-  <Row :gutter="16"  style="background:#eee;padding:20px" >
-    <Col span="6">
-
+  <Row :gutter="15"  style="background:#eee;padding: 20px; " >
+    <Col span="6" v-for="(tree, index) in treeList" :key="index">
       <div class="login-show">
-<!--          <div class="image-container" v-for="(imageUrl, index) in urlList" :key="index">-->
         <div class="image-container">
-            <Card  style="margin: 6px 6px;"  body-style="padding: 0px"  :bordered="false">
+            <Card  style="margin: 6px 6px;"  body-style="padding: 0px "  :bordered="false">
               <viewer>
-<!--                <img :src="imageUrl">-->
-                <img src="../../assets/images/loginShowList/image-demo-1.jpg"/>
+                <img :src="require(`@/assets/images/loginShowList/${tree.imageName}.jpg`)"/>
               </viewer>
               <div>
-                <p>树种：</p>
-                <p>描述：</p>
+                <h3>{{ tree.varieties}} </h3>
+                <p>{{ tree.describe }}</p>
               </div>
-          </Card>
-
+            </Card>
         </div>
-
       </div>
-
     </Col>
   </Row>
-
-
 </template>
 
 <script>
@@ -31,14 +23,48 @@ export default {
   name: "loginShow",
   data() {
     return {
-      urlList: [
-        '../../assets/images/loginShowList/image-demo-1.jpg',
-        '../../assets/images/loginShowList/image-demo-2.jpg',
-        '/src/assets/images/loginShowList/image-demo-3.jpg',
-        '/src/assets/images/loginShowList/image-demo-4.jpg',
-        '/src/assets/images/loginShowList/image-demo-3.jpg',
-
-      ],
+      treeList:[
+        {
+        imageName:'image-demo-9',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+        {
+        imageName:'image-demo-10',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+        {
+        imageName:'image-demo-11',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+        {
+        imageName:'image-demo-12',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+        {
+        imageName:'image-demo-5',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+        {
+        imageName:'image-demo-6',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+        {
+        imageName:'image-demo-1',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+        {
+        imageName:'image-demo-2',
+        varieties:'Lorem',
+        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        },
+      ]
     }
   },
 
@@ -61,8 +87,8 @@ export default {
 }
 
 .image-container img {
-  width: 240px;
-  height: 160px;
+  width: 300px;
+  height: 220px;
 }
 </style>
 
