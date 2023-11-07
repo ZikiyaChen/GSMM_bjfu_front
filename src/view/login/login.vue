@@ -234,6 +234,7 @@ export default {
     color: #9ea7b4;
   }
   .layout-form{
+    height: 100%;
     min-height: 700px;
     // margin: 15px;
     overflow: hidden;
@@ -270,7 +271,7 @@ export default {
   // 古树查询
   .Ancient_tree_query{
     margin-top: 0vh;
-    height:700px;
+    height:100%;
     display: flex;
   }
   .login_base_survey{
