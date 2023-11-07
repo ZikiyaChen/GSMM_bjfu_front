@@ -25,7 +25,7 @@
     </div>
 
     <!-- 内容区 -->
-    <div >
+    <div style="height: 100%;">
       <!-- 古树查询 -->
       <div v-if="activeMenu === '1'" class="Ancient_tree_query">
         <div class="login_base_survey" >
@@ -36,9 +36,9 @@
         </div>
       </div>
       <!-- 风采展示 -->
-      <div v-if="activeMenu === '2'">
+      <div v-if="activeMenu === '2'" style=" height: 100%; overflow-y: scroll; ">
         <div>
-          <login-show style=" height: 650px; overflow-y: auto; "></login-show>
+          <login-show ></login-show>
         </div>
       </div>
       <!-- 用户登录 -->
