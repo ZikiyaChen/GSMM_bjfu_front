@@ -1,8 +1,11 @@
 <template>
   <div>
-    <Card>
-      <h2 slot="title" style="font-size:x-large;text-align: center ">古树查询</h2>
-      <Form :label-width="75" :model="query" inline>
+    <Card id="card">
+      <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <h2 slot="title" style="font-size: 18px; text-align: left; user-select: none;">古树查询</h2>
+        <Icon slot="title" class="icon-btn" type="ios-keypad" size="25" @click="toggleForm"></Icon>
+      </div>
+      <Form v-show="showForm" style="display: flex;flex-direction: column;" :label-width="75" :model="query" inline>
         <FormItem label="古树编号">
           <Input v-model="query.tree_code_like" style="width: 100%" clearable placeholder="古树编号"></Input>
         </FormItem>
@@ -57,6 +60,9 @@ export default {
   components: {DwCheckModal,  tjxm_record_extend_table },
   data () {
     return {
+      // 是否展示From表单
+      showForm:true,
+
       selected_trees:[],
       ShowDwCheckModal: false,
       dcUsers: [],
@@ -429,6 +435,10 @@ export default {
   },
 
   methods: {
+    // 点击icon隐藏表单
+    toggleForm(){
+      this.showForm = !this.showForm;
+    },
     onDwCheckModalOK(data){
       let new_data = {
         trees_code: this.selected_trees,
@@ -586,6 +596,10 @@ export default {
 <style scoped>
 /*控制formItem上下间隔距离*/
 .ivu-form-item {
-  margin-bottom: 10px;
+  margin-bottom: 17px;
+}
+.icon-btn {
+  margin-left: 200px;
+  cursor: pointer;
 }
 </style>

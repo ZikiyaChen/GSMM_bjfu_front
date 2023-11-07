@@ -1,108 +1,47 @@
-<style lang="less">
-  @import './login.less';
-
-  .layout{
-    border: 1px solid #d7dde4;
-    background: #f5f7f9;
-  }
-  .layout-logo{
-    width: 100px;
-    height: 30px;
-    background: #5b6270;
-    border-radius: 3px;
-    float: left;
-    position: relative;
-    top: 15px;
-    left: 20px;
-  }
-  .layout-nav{
-    width: 420px;
-    margin: 0 auto;
-  }
-  .layout-assistant{
-    width: 300px;
-    margin: 0 auto;
-    height: inherit;
-  }
-  .layout-breadcrumb{
-    padding: 10px 15px 0;
-  }
-  .layout-content{
-    min-height: 700px;
-    margin: 15px;
-    overflow: hidden;
-    background: #fff;
-    border-radius: 4px;
-  }
-  .layout-content-main{
-    padding: 10px;
-  }
-  .layout-copy{
-    text-align: center;
-    padding: 10px 0 20px;
-    color: #9ea7b4;
-  }
-  .layout-form{
-    min-height: 700px;
-    margin: 15px;
-    overflow: hidden;
-    background: #fff;
-    border-radius: 4px;
-    background: url('../../assets/images/login-tree.jpg') no-repeat center  ;
-    background-size:cover;
-    background-position:center center;
-    //background-image: url('../../assets/images/login-tree.jpg');
-  }
-  .layout-login-card{
-    margin-top: 10%;
-    margin-left: 40%;
-    //left: 50%;
-    //transform: translateX(-50%);
-    width: 350px;
-  }
-</style>
-
 <template>
   <div class="login">
-<!--    <div style="text-align: center; padding-top: 2%">-->
-<!--    <span style="color: rgba(134, 194, 92,0.9); text-align: center; font-size: 65px; font-weight: bolder; font-family: 方正姚体 ">北京林业大学古树名木管护系统</span>-->
-<!--    </div>-->
-
+    <!-- 顶部导航条 -->
     <div class="layout">
-      <Menu mode="horizontal" theme="dark" active-name='activeMenu' @on-select="handleMenuSelect">
-<!--        <div class="layout-logo"></div>-->
+      <Menu mode="horizontal" theme="primary" active-name='activeMenu' @on-select="handleMenuSelect">
+        <div class="layout-logo">
+          <img class="logo_tree" src="../../assets/images/bjfu_logo.jpg" alt="logo">
+          <span class="system_name">北京林业大学古树名木管护系统</span>
+        </div>
         <div class="layout-nav">
-          <Menu-item name="1"  >
-            <Icon type="ios-navigate"></Icon>
+          <Menu-item name="1"  class="nav-item">
+            <Icon type="ios-search" size="25"></Icon>
             古树查询
           </Menu-item>
-          <Menu-item name="2">
-            <Icon type="ios-keypad"></Icon>
+          <Menu-item name="2" class="nav-item">
+            <Icon type="ios-images" size="25"></Icon>
             风采展示
           </Menu-item>
-          <Menu-item name="3">
-            <Icon type="ios-analytics"></Icon>
+          <Menu-item name="3" class="nav-item">
+            <Icon type="ios-person" size="25"></Icon>
             用户登录
           </Menu-item>
         </div>
       </Menu>
     </div>
 
-    <div>
-      <div v-if="activeMenu === '1'"  style="margin-top: 0vh;height:700px;display: flex;">
-        <div style="flex: 2.5; height:100%;  ">
-          <login-map ></login-map>
-        </div>
-        <div style="flex: 1; margin-left: 2vh; background: #eee; padding: 20px;  flex-direction: column;" class="layout-content">
+    <!-- 内容区 -->
+    <div style="height: 100%;">
+      <!-- 古树查询 -->
+      <div v-if="activeMenu === '1'" class="Ancient_tree_query">
+        <div class="login_base_survey" >
             <login_base_survey></login_base_survey>
         </div>
-      </div>
-      <div v-if="activeMenu === '2'">
-        <div style="margin-top: 2vh">
-          <login-show></login-show>
+        <div class="login-map">
+          <login-map ></login-map>
         </div>
-
       </div>
+      <!-- 风采展示 -->
+      <div v-if="activeMenu === '2'" style=" height: 100%; overflow-y: scroll; ">
+        <div>
+          <login-show ></login-show>
+        </div>
+      </div>
+      <!-- 用户登录 -->
       <div  v-if="activeMenu === '3'"  class="layout-form">
         <div class="layout-login-card">
           <Card icon="log-in" title="欢迎登录" :bordered="true" >
@@ -111,8 +50,7 @@
             </div>
           </Card>
         </div>
-     </div>
-
+      </div>
     </div>
   </div>
 </template>
@@ -121,12 +59,10 @@
 import LoginForm from '_c/login-form'
 import { mapActions } from 'vuex'
 import { setToken, getToken } from "@/libs/util";
-import loginMap from "@/view/login/loginMap";
 import LoginMap from "@/view/login/loginMap";
 import {ownerList} from "@/view/survey/right_base_options";
 import {GetKe, GetShu, GetZhong} from "@/api/tree_species";
 import {queryTreeBasicProperty} from "@/api/table";
-import login_base_survey from "@/view/survey/login_base_survey";
 import Login_base_survey from "@/view/survey/login_base_survey";
 import LoginShow from "@/view/login/loginShow";
 import imageViewer from "@/view/components/image/imageViewer";
@@ -254,4 +190,103 @@ export default {
 }
 </script>
 
+<style lang="less">
+  @import './login.less';
+  .layout{
+    border: 1px solid #d7dde4;
+    background: #f5f7f9;
+    height: 61px;
+  }
+  .layout-logo{
+    width: 400px;
+    height: 60px;
+    border-radius: 3px;
+    float: left;
+    position: relative;
+    top: 10px;
+    left: 20px;
+  }
+  .layout-nav{
+    width: 480px;
+    margin: 0 auto;
+  }
+  .layout-assistant{
+    width: 300px;
+    margin: 0 auto;
+    height: inherit;
+  }
+  .layout-breadcrumb{
+    padding: 10px 15px 0;
+  }
+  .layout-content{
+    min-height: 700px;
+    margin: 15px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+  }
+  .layout-content-main{
+    padding: 10px;
+  }
+  .layout-copy{
+    text-align: center;
+    padding: 10px 0 20px;
+    color: #9ea7b4;
+  }
+  .layout-form{
+    height: 100%;
+    min-height: 700px;
+    // margin: 15px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+    background: url('../../assets/images/login-tree.jpg') no-repeat center  ;
+    background-size:cover;
+    background-position:center center;
+  }
+  .layout-login-card{
+    margin-top: 10%;
+    margin-left: 40%;
+    width: 350px;
+  }
+  // nav-item部分
+  .nav-item:hover{
+    background-color: rgba(245, 250, 255, 0.2);
 
+  }
+  // logo部分
+  .logo_tree{
+    width: 40px;
+    height: 40px;
+    user-select: none;
+  }
+  .system_name{
+    font-size: 20px;
+    color:white;
+    position: relative;
+    top: -12px;
+    left: 20px;
+    user-select: none;
+  }
+  // 古树查询
+  .Ancient_tree_query{
+    margin-top: 0vh;
+    height:100%;
+    display: flex;
+  }
+  .login_base_survey{
+ 
+    flex: 0.5; 
+    background: #2d8cf0;
+    position: absolute;
+    top: 85px; 
+    left: 10px; 
+    z-index: 2;
+  }
+  .login-map{
+    flex: 2.5;
+    height:100%; 
+    position: relative; 
+    z-index: 1;
+  }
+</style>

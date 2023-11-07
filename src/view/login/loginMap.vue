@@ -262,7 +262,9 @@ export default {
 
       });
       AMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.OverView','AMap.DistrictSearch'], function () {
-        var toolBar = new AMap.ToolBar()
+        var toolBar = new AMap.ToolBar({
+          position: 'RT' 
+        });
         var scale = new AMap.Scale()
         const overView = new AMap.OverView()
         that.map.addControl(toolBar);
