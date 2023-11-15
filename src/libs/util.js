@@ -6,6 +6,11 @@ const { title, cookieExpires, useI18n } = config
 
 export const TOKEN_KEY = 'token'
 
+export const removeToken = () => {
+  Cookies.remove(TOKEN_KEY)
+}
+
+
 export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
 }
