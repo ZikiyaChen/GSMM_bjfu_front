@@ -24,3 +24,4 @@ export default {
   mixins: [ mixin, itemMixin ]
 }
 </script>
+

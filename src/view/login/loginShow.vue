@@ -1,9 +1,10 @@
 <template >
+  <div>
   <Row :gutter="15"  style="background:#eee;padding: 20px; " >
     <Col span="6" v-for="(tree, index) in treeList" :key="index">
       <div class="login-show">
         <div class="image-container">
-            <Card  style="margin: 6px 6px;"  body-style="padding: 0px "  :bordered="false">
+            <Card  style="margin: 6px 6px; height: 550px; "  body-style="padding: 0px "  :bordered="false">
               <viewer>
                 <img :src="require(`@/assets/images/loginShowList/${tree.imageName}.jpg`)"/>
               </viewer>
@@ -16,6 +17,7 @@
       </div>
     </Col>
   </Row>
+</div>
 </template>
 
 <script>
@@ -25,45 +27,41 @@ export default {
     return {
       treeList:[
         {
-        imageName:'image-demo-9',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        imageName:'刺槐-01',
+        varieties:'刺槐',
+        describe:'又名"洋槐”。落叶乔木，原产于美国中部和东部，现我国各地栽培普遍。小枝具有托叶刺。奇数羽状复叶，小叶7~25枚，椭圆形，先端圆，微凹，并有小尖刺，全缘。总状花序腋生，下垂，花蝶形，白色，芳香，花期4-5月。英果扁平，条状，褐色，果期8-9月。刺槐17世纪由美国传入欧洲，20世纪初从欧洲引入我国青岛栽培，为和土生土长的“国槐"相区别，又被称为"洋槐"。识别要点: (1) 叶片卵状椭圆形，先端圆或稍凹(2) 总状花序下垂，花白色，芳香，花期4-5月(3) 英果扁平状'
         },
         {
-        imageName:'image-demo-10',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        imageName:'国槐-01',
+        varieties:'国槐',
+        describe:'又名槐。落叶乔木，原产于我国，南北各省均有栽培奇数羽状复叶，小叶4~7对，卵状长圆形，先端渐尖圆锥花序顶生，蝶形花，淡黄绿色，略有芳香，花期7-8月。英果肉质，念珠状，果期8-10月。槐树在古代是三公宰辅之位的象征，出自《周礼·秋官》的“面三槐，三公位焉”。古汉语中槐官相连，如槐鼎比喻三公或三公之位，亦泛指执政大臣;槐位，指三公之位;槐卿，指三公九卿;槐蝉，指高官显贵。自唐代开始，槐树被认为是科举吉兆，举子赴考称踏槐或踏槐花，应试的月份称槐黄。'
         },
         {
-        imageName:'image-demo-11',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        imageName:'旱柳-01',
+        varieties:'旱柳',
+        describe:'落叶乔木，分布于我国北方地区，品种有馒头柳、缘柳、龙爪柳。小枝黄色，略下垂。单叶互生，披针形边缘有细锯齿且下面灰白色。花雌雄异株，雄花序和雌花序均为柔薰(rou tt)花序，与叶同放，花期3-4月。萌果，种子具有丝状毛，成熟后随风飘散，是北京春天飞絮的来源之一，果期4-5月。旱柳枝条柔软，树冠丰满，是中国北方常用的庭荫树、行道树。常栽培在河湖岸边或孤植于草坪，对植于建筑两旁。亦用作公路树、防护林及沙荒造林，农村“四旁”绿化等，是早春密源树种。'
         },
         {
-        imageName:'image-demo-12',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        imageName:'栾树-01',
+        varieties:'栾树',
+        describe:'落叶乔木，主要分布于我国北方地区。一至二回羽状复叶互生，小叶11~18枚，卵形至卵状椭圆形，有不规则粗齿或羽状深裂。大型圆锥花序顶生，花小，密集，黄色，花瓣4枚，不整齐，花期5-6月。荫果圆锥形，果皮膜质膨大，有3个棱，形似灯笼，幼时绿色，成熟时褐色，果期9-10月。人们常说来树“一年能占十月春”:春季时红色的嫩叶甚是可爱;夏季又开得满树黄花，花谢时整个花冠一起脱落，加上花量巨大，场面颇为壮观，十分切合它的英文名字"Golden Rain Tree”(金雨树) ;秋季果实挂满枝头，有如盏盏灯笼;是优良的观赏庭荫树及行道树种。'
         },
         {
-        imageName:'image-demo-5',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        imageName:'馒头柳-02',
+        varieties:'馒头柳',
+        describe:'旱柳的变型。分枝密，端稍整齐，树冠半圆形，状如馒头。馒头柳树冠圆整丰满，树形优美，枝条柔软，容易繁殖，深受人们喜爱，是中国北方地区主要防护林和园林绿化树种，可作庭荫树、行道树、护岸树，常栽培在河湖岸边或孤植于草坪，对植于建筑物两旁，亦用作公路树、防护林、用材林、沙荒造林、“四旁”绿化等。在中国北方园林中，柳属的一些绿化树种是落叶树种中绿期最长的一种，应用较广，特别是馒头柳作为柳树中的优良树种，呈逐步代替旱柳的趋势，在城市街道、公园、住宅小区及各种园林风景绿化中应用很广。'
         },
         {
-        imageName:'image-demo-6',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        imageName:'洋白蜡-03',
+        varieties:'洋白蜡',
+        describe:'又名美国红楼。落叶乔木，原产于北美，北京常见行道树。奇数羽状复叶对生，小叶7~9枚，长圆状披针形边缘有不明显钝锯齿。花雌雄异株，圆锥花序，生于去年生枝上，与叶同放，花期3-4月。翅果，狭倒披针形，脉棱明显，果期8-10月。便飘然而落。也正因如此，加之又需要和蓝天阳光的配合，所以秋季赏洋白蜡的日子便更加珍贵和难得。'
         },
         {
-        imageName:'image-demo-1',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
+        imageName:'银杏-03',
+        varieties:'银杏',
+        describe:'落叶乔木，原产于我国，现世界各地广泛栽培。雌雄异株。雄树枝条一般斜上生长，雌树枝条则较为开展。叶扇形，先端有各种不同凹缺，叶脉为种子植物罕见的二叉分支，秋叶金黄。花小，黄绿色，花期3一4月。种子核果状:外种皮肉质，有臭味;中种皮骨质;种仁通称白果，可食用，果期9-11月。银杏树生长较慢，自然条件下从栽种到结果要20多年40年后才能大量结果，因此又有人把它称作“公孙树”有“公种而孙得食”的含义，即年少时种的银杏要到当爷爷时才能吃到白果。银杏寿命极长，可达干年以上，是树中的老寿星。'
         },
-        {
-        imageName:'image-demo-2',
-        varieties:'Lorem',
-        describe:'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam maiores id debitis dolores doloribus, ad cum a deleniti. Fuga temporibus saepe maxime, maiores deleniti cum fugit quae voluptatum nemo veritatis ducimus asperiores hic eum sint quam distinctio adipisci? Minima beatae quasi laborum eius itaque aperiam in atque, at distinctio explicabo.'
-        },
+
       ]
     }
   },
@@ -90,10 +88,11 @@ export default {
   width: 300px;
   height: 220px;
 }
+p {
+  text-indent: 2em;
+}
+
 </style>
-
-
-
 
 
 
