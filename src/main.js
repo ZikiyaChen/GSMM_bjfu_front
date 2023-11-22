@@ -25,8 +25,11 @@ import UploadImage from "@/view/RadarDetection/UploadImage";
 import global from '../src/libs/Global'
 import Viewer from "v-viewer";
 import 'viewerjs/dist/viewer.css'
+import imageViewer from '@/view/components/image/imageViewer';// 图片查看
+import 'element-ui/lib/theme-chalk/index.css';
 
 
+Vue.use(Viewer)
 Viewer.setDefaults({
   navbar: true, //底部缩略图
   toolbar: true, //底部工具栏
@@ -56,7 +59,7 @@ Vue.use(ViewUI, {
 Vue.use(TreeTable)
 Vue.use(VOrgTree)
 Vue.use(UploadImage)
-
+Vue.use(imageViewer)
 
 Vue.use(ElementUI);
 // Vue.use(VForm)  //全局注册VForm(同时注册了v-form-designer和v-form-render组件)
