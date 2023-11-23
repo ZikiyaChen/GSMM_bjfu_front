@@ -48,9 +48,9 @@ router.beforeEach(async (to, from, next) => {
     // next({
     //   name: homeName // 跳转到homeName页
     // });
-    localStorage.clear(); // 清空所有 localStorage 数据
-    sessionStorage.clear(); // 清空所有 sessionStorage 数据
-    removeToken();
+    // localStorage.clear(); // 清空所有 localStorage 数据
+    // sessionStorage.clear(); // 清空所有 sessionStorage 数据
+    // removeToken();
     next(); // 跳转
     
   } else {
