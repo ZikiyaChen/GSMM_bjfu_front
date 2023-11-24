@@ -6,9 +6,9 @@
         <div class="image-container">
             <Card  style="margin: 6px 6px; height: 550px; "  body-style="padding: 0px "  :bordered="false">
               <viewer>
-                <img :src="require(`@/assets/images/loginShowList/${tree.imageList[0]}.jpg`)"/>
-                <img v-show="false" :src="require(`@/assets/images/loginShowList/${tree.imageList[1]}.jpg`)"/>
-                <img v-show="false" :src="require(`@/assets/images/loginShowList/${tree.imageList[2]}.jpg`)"/>
+                <img :src="require(`../../../public/${tree.imageList[0]}.jpg`)"/>
+                <img v-show="false" :src="require(`../../../public/${tree.imageList[1]}.jpg`)"/>
+                <img v-show="false" :src="require(`../../../public/${tree.imageList[2]}.jpg`)"/>
               </viewer>
               <div>
                 <h3>{{ tree.varieties}} </h3>
