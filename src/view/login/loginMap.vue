@@ -1,7 +1,6 @@
 <template>
   <div style="height: 100%; position: relative">
     <div id="container" class="container">
-<!--      <h1>测试</h1>-->
     </div>
   </div>
 </template>
@@ -14,16 +13,17 @@ import famous from '../../../public/famous.png'
 import teji from '../../../public/teji.png'
 import {queryBasicCeshiTrees,queryBasicLoginCeshiTrees,queryMapTrees, queryTreeBasicProperty} from "@/api/table";
 import name from '../tools-methods/name.json'
-import Vue from 'vue'
-import InfoWindowComponent from "@/view/Maphome/components/InfoWindow";
+// import InfoWindowComponent from "@/view/Maphome/components/InfoWindow";
 import AMap from 'AMap';
 import UserMixin from "@/mixin/UserMixin";
 import {ShowPic,getPicApi} from "@/api/upload";
+// 导入多边形区域数据
+import { multiplePolygons } from './polygons.js'
 
 
 export default {
   name: "loginMap",
-  components:{InfoWindowComponent},
+  // components:{InfoWindowComponent},
   inject: ['reload'],
   data () {
     return{
@@ -40,7 +40,7 @@ export default {
         district_type:'2',
         work_place_unit:'4',
         polygon_paths: [
-          {Q: 40.004282, R: 116.34011499999997, lng: 116.340115,lat: 40.004282},
+          {Q: 40.000774, R: 116.34011499999997, lng: 116.340115,lat: 40.000774},
           { Q: 40.000814, R: 116.34018, lng: 116.34018, lat: 40.000814 },
           { Q: 40.001028, R: 116.348999, lng: 116.348999, lat: 40.001028 },
           { Q: 40.002605, R: 116.348913, lng: 116.348913, lat: 40.002605 },
@@ -102,7 +102,8 @@ export default {
           value: '名木',
           label: '名木'
         }
-      ]
+      ],
+      multiplePolygons: multiplePolygons,
     }
   },
 
@@ -110,15 +111,90 @@ export default {
     this.getTree()
   },
   mounted () {
-    // this.getTree()
     this.loadmap()
+    // 调用添加多边形区域函数
+    this.addMultiplePolygons();
     setTimeout(()=>{
       this.initMarker()
       this.addCluster()   // 点聚合加载
     },1000)
+    
     window.SeeDetails = this.SeeDetails;
   },
   methods: {
+    // 添加多个多边形自定义区域
+    addMultiplePolygons() {
+      for (let i = 0; i < this.multiplePolygons.length; i++) {
+        let region = this.multiplePolygons[i];
+        this.addPolygon(region);
+      }
+    },
+    // 添加一个多边形区域
+    addPolygon(region) {
+      let polygon = new AMap.Polygon({
+        path: region.path,
+        fillColor: region.color,
+        strokeOpacity: 1,
+        fillOpacity: 0.4,
+        strokeColor: 'rgb(20,164,173)',
+        strokeWeight: 1,
+      });
+      this.map.add(polygon);
+      this.map.setZoom(17)
+      this.map.setCenter( { Q: 40.003710, R: 116.344387, lng: 116.344387, lat: 40.003710 },)
+      // 鼠标点击
+      polygon.on('click', () => {
+        polygon.setOptions({
+          fillOpacity: 0.4,
+        })
+        let bounds = polygon.getBounds();
+        let center = bounds.getCenter();
+        let infoWindow = new AMap.InfoWindow({
+          content:`<div style="width: 460px">
+                    <h2 style="text-align: center; margin-bottom: 10px">${region.name}</h2>
+                    ${region.treeList.map((tree, index) => `
+                      <div style="display: flex; flex-direction: row; justify-content: space-evenly; align-items: center;
+                                  margin-left: 10px; margin-right: 10px; margin-bottom: ${index !== region.treeList.length - 1 ? '20px' : '0'};
+                                  border-bottom: ${index !== region.treeList.length - 1 ? '1px solid #ccc' : 'none'}; padding-bottom: 10px;">
+                        <img src='${tree.pic_url}' style="height: 60px"/>
+                        <div style="display: flex; flex-direction: column; font-family: Microsoft YaHei; font-size: 14px; line-height: 20px;">
+                          <div style="display:flex; justify-content: space-between;">
+                            <p style="margin-right: 10px; width: 220px;">中文名：${tree.zw_name}</p>
+                            <p style="width: 120px;">科：${tree.family}</p>
+                          </div>
+                          <div style="display:flex; justify-content: space-between;">
+                            <p style="margin-right: 10px; width: 220px;">拉丁名：${tree.ld_name}</p>
+                            <p style="width: 120px;">属：${tree.genus}</p>
+                          </div>
+                        </div>
+                      </div>
+                    `).join('')}
+                    <p style="text-align: right; color: #666; font-size: 12px; margin-top: 10px;">
+                      现已统计${region.totalNum} 棵古树
+                    </p>
+                  </div>`,
+          offset: new AMap.Pixel(0, -30), // 设置信息窗体的偏移量，使其显示在多边形上方
+          autoMove:true,
+          closeWhenClickMap:true
+          
+        });
+        infoWindow.open(this.map, center); 
+      })
+      // 鼠标移入
+      // polygon.on('mouseover', () => {
+      //   polygon.setOptions({
+      //     fillOpacity: 0.9,
+      //   })
+      // });
+      // 鼠标移出
+      // polygon.on('mouseout', () => {
+      //   polygon.setOptions({
+      //     fillOpacity: 0.4,
+      //   })
+      // });
+      },
+
+
     initNameList(){
       this.NameList = name.contents
     },
@@ -184,15 +260,9 @@ export default {
                            <p>生长势：${this.tree[i].growth_vigor}</p>
                            <p>树高：${this.tree[i].height}米</p>
                            <p>经纬度：${this.tree[i].longitude}&#176，${this.tree[i].latitude}&#176</p>
-                           <p>地址：${this.tree[i].place_name}</p>
                            <p>管护单位：${this.tree[i].gh_unit}</p>
                            </div>
                            <img src='${this.getPicApi}${this.tree[i].pic_path[0]}' style="height: 240px"/>
-                           </div>
-                           <div style="text-align: center; margin-top: 15px">
-                           <Button onClick="SeeDetails('${this.tree[i].tree_code}')"
-                           style="color: #fff;background-color: #2d8cf0; width: 80px;height: 30px;border-width: 0px; border-radius: 3px;cursor: pointer;
-                           hover{background: #5599FF;}">查看详情</Button>
                            </div>
                           </div>`;
         //将创建的点标记添加到已有的地图实例中
@@ -322,7 +392,8 @@ export default {
           strokeDasharray: [10, 2, 10]
         });
         polygon.setPath(pathArray);
-        that.map.add(polygon)
+        that.map.add(polygon);
+
       })
     },
 
@@ -409,35 +480,39 @@ export default {
     },
 
     drawUnitPolygon(){
-      let that = this
+      // let that = this
 
-      var bounds = this.userInfo.polygon_paths
+      // var bounds = this.userInfo.polygon_paths
 
-      // 外多边形坐标数组和内多边形坐标数组
-      var outer = [
-        new AMap.LngLat(-360, 90, true),
-        new AMap.LngLat(-360, -90, true),
-        new AMap.LngLat(360, -90, true),
-        new AMap.LngLat(360, 90, true),
-      ];
-      var holes = [bounds] // 注意此格式，[ [   [],[],[]   ] ]
-      console.log(holes)
-      var pathArray = [
-        outer
-      ];
-      pathArray.push.apply(pathArray, holes)
-      var polygon = new AMap.Polygon({
-        path: pathArray,
-        bubble: true,
-        strokeColor: 'rgb(20,164,173)',//边框线颜色
-        strokeWeight: 2,
-        fillColor: "#3CB371",//遮罩图层颜色
-        fillOpacity: 0.4,
-        map: that.map
-      });
+      // // 外多边形坐标数组和内多边形坐标数组
+      // var outer = [
+      //   new AMap.LngLat(-360, 90, true),
+      //   new AMap.LngLat(-360, -90, true),
+      //   new AMap.LngLat(360, -90, true),
+      //   new AMap.LngLat(360, 90, true),
+      // ];
+      // var holes = [bounds] // 注意此格式，[ [   [],[],[]   ] ]
+      // console.log(holes)
+      // var pathArray = [
+      //   outer
+      // ];
+      // pathArray.push.apply(pathArray, holes)
+      // var polygon = new AMap.Polygon({
+      //   path: pathArray,
+      //   bubble: true,
+      //   strokeColor: 'rgb(20,164,173)',//边框线颜色
+      //   strokeWeight: 2,
+      //   fillColor: "#3CB371",//遮罩图层颜色
+      //   fillOpacity: 0.4,
+      //   map: that.map
+      // });
+      // that.map.setZoom(17)
+      // that.map.setCenter( { Q: 40.003710, R: 116.344387, lng: 116.344387, lat: 40.003710 },)
 
-      that.map.setZoom(17)
-      that.map.setCenter( { Q: 40.003710, R: 116.344387, lng: 116.344387, lat: 40.003710 },)
+
+
+
+
 
     },
 
